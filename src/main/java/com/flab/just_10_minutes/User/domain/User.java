@@ -1,7 +1,11 @@
 package com.flab.just_10_minutes.User.domain;
 
-import lombok.Builder;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class User {
 
     private Long id;
