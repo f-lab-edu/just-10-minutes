@@ -2,13 +2,13 @@ package com.flab.just_10_minutes.User.dto;
 
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.Util.validator.PhoneNumCheck;
-import jakarta.validation.ConstraintValidator;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+@Getter
 @Builder
 @AllArgsConstructor
 public class UserDto{
@@ -24,5 +24,4 @@ public class UserDto{
     @NotEmpty
     private String address;
     private User.ROLE role;
-
 }

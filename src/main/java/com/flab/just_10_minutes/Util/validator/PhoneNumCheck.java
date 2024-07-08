@@ -1,7 +1,6 @@
 package com.flab.just_10_minutes.Util.validator;
 
 import jakarta.validation.Constraint;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
