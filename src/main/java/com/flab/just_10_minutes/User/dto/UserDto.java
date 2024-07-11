@@ -24,4 +24,14 @@ public class UserDto{
     @NotEmpty
     private String address;
     private User.ROLE role;
+
+    public static User toDomain(UserDto userDto) {
+        return User.builder()
+                .loginId(userDto.getLoginId())
+                .password(userDto.getPassword())
+                .phone(userDto.getPhone())
+                .address(userDto.getAddress())
+                .role(userDto.getRole())
+                .build();
+    }
 }

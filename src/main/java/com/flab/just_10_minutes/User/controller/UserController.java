@@ -20,14 +20,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<HttpStatus> signUpPublic(@RequestBody @Valid UserDto userDto) {
-        userService.save(User.builder()
-                .loginId(userDto.getLoginId())
-                .password(userDto.getPassword())
-                .phone(userDto.getPhone())
-                .address(userDto.getAddress())
-                .role(User.ROLE.PUBLIC)
-                .build());
+    public ResponseEntity<HttpStatus> signUp(@RequestBody @Valid UserDto userDto) {
+        userService.save(UserDto.toDomain(userDto));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

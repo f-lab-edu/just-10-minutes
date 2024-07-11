@@ -4,8 +4,10 @@ import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.mapper.UserMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import java.util.Optional;
 
+@Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
