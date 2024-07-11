@@ -58,6 +58,38 @@ public class UserServiceTest {
     }
 
     @Test
+    public void validateExistedUser은_값이_null이면_false를_반환한다() {
+        //given
+        doReturn(null).when(userMapper).findByLoginId("testId");
+
+        //when
+        Boolean result = target.validateExistedUser("testId");
+
+        //then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    public void validateExistedUser은_값이_존재하면_true를_반환한다() {
+        //given
+        User user = User.builder()
+                .loginId("testId")
+                .password("testPassword")
+                .phone("010-1234-5678")
+                .address("testAddress")
+                .role(User.ROLE.PUBLIC)
+                .build();
+
+        doReturn(user).when(userMapper).findByLoginId("testId");
+
+        //when
+        Boolean result = target.validateExistedUser("testId");
+
+        //then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
     public void save는_이미_존재하는_회원이_있다면_실패한다() {
         //given
         User user = User.builder()

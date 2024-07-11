@@ -9,13 +9,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl{
 
     private final UserMapper userMapper;
 
-    @Override
-    public void save(User user) {
-        findByLoginId(user.getLoginId()).ifPresent(v -> {throw new RuntimeException("already exist loginId");});
+    public void save(final User user) {
+        if (validateExistedUser(user.getLoginId())) {
+            throw new RuntimeException("already exist loginId");
+        }
 
         int insertCount = userMapper.save(user);
 
@@ -24,8 +25,11 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    @Override
-    public Optional<User> findByLoginId(@NonNull String loginId) {
+    public Optional<User> findByLoginId(@NonNull final String loginId) {
         return Optional.ofNullable(userMapper.findByLoginId(loginId));
+    }
+
+    public Boolean validateExistedUser(final String loginId) {
+        return findByLoginId(loginId).isPresent();
     }
 }
