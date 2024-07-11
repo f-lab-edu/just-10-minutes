@@ -1,6 +1,5 @@
 package com.flab.just_10_minutes.User.controller;
 
-import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.dto.UserDto;
 import com.flab.just_10_minutes.User.service.UserService;
 import jakarta.validation.Valid;

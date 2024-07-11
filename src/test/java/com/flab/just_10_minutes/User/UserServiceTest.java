@@ -2,7 +2,7 @@ package com.flab.just_10_minutes.User;
 
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.mapper.UserMapper;
-import com.flab.just_10_minutes.User.service.UserServiceImpl;
+import com.flab.just_10_minutes.User.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
 
     @InjectMocks
-    private UserServiceImpl target;
+    private UserService target;
 
     @Mock
     private UserMapper userMapper;
