@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users/")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/public")
+    @PostMapping("/sign-up")
     public ResponseEntity<HttpStatus> signUpPublic(@RequestBody @Valid UserDto userDto) {
-
         userService.save(User.builder()
                 .loginId(userDto.getLoginId())
                 .password(userDto.getPassword())

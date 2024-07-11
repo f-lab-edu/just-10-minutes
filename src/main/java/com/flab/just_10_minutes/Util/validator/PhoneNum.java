@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PhoneNumCheckValidator.class)
-public @interface PhoneNumCheck {
+public @interface PhoneNum {
 
     String message() default "잘못된 휴대폰 번호입니다.";
 

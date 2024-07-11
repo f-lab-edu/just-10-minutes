@@ -13,7 +13,6 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void save(User user) {
-
         findByLoginId(user.getLoginId()).ifPresent(v -> {throw new RuntimeException("already exist loginId");});
 
         int insertCount = userMapper.save(user);
@@ -25,7 +24,6 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Optional<User> findByLoginId(String loginId) {
-
         Assert.notNull(loginId, "loginId must not be null");
 
         return Optional.ofNullable(userMapper.findByLoginId(loginId));

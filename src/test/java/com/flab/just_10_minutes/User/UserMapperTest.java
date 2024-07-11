@@ -2,19 +2,18 @@ package com.flab.just_10_minutes.User;
 
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.mapper.UserMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 @MybatisTest
 public class UserMapperTest {
 
     @Autowired
     private UserMapper userMapper;
+
     @Test
     public void findByLoginId_유저가_없는_경우() {
         //given
@@ -45,7 +44,7 @@ public class UserMapperTest {
 
     @Test
     public void save_성공() {
-
+        //given
         User user = User.builder()
                 .loginId("testId")
                 .password("testPassword")

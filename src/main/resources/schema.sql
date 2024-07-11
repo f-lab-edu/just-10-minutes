@@ -1,6 +1,6 @@
-CREATE TABLE user_table (
+CREATE TABLE users_table (
     id int AUTO_INCREMENT,
-    login_id VARCHAR(12),
+    login_id VARCHAR(12) UNIQUE,
     password VARCHAR(15),
     phone VARCHAR(13),
     address VARCHAR(30),
