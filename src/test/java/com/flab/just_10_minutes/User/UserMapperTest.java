@@ -61,5 +61,4 @@ public class UserMapperTest {
         assertThat(saveResult).isEqualTo(1);
         assertThat(saveUser.getId()).isEqualTo(2);
     }
-
 }

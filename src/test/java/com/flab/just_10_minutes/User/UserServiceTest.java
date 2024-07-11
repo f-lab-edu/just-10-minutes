@@ -95,6 +95,4 @@ public class UserServiceTest {
         verify(userMapper, times(1)).findByLoginId("testId");
         verify(userMapper, times(1)).save(any(User.class));
     }
-
-
 }
