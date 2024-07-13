@@ -5,8 +5,11 @@ import com.flab.just_10_minutes.User.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 
+import static com.flab.just_10_minutes.User.UserTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @MybatisTest
 public class UserMapperTest {
@@ -15,47 +18,45 @@ public class UserMapperTest {
     private UserMapper userMapper;
 
     @Test
-    public void findByLoginId_유저가_없는_경우() {
+    public void findByLoginId_유저가_없는_경우_null을_반환한다() {
         //given
-        final String longinId = "notExitsTestId";
-
         //when
-        User user = userMapper.findByLoginId(longinId);
+        User user = userMapper.findByLoginId(NOT_EXIST_ID);
 
         //then
         assertThat(user).isNull();
     }
 
     @Test
-    public void findByLoginId_유저가_존재하는_경우() {
+    public void findByLoginId_성공() {
         //given
-        final String longinId = "existTestId";
+        User existUser = createUser();
 
         //when
-        User user = userMapper.findByLoginId(longinId);
+        User user = userMapper.findByLoginId(EXIST_ID);
 
         //then
-        assertThat(user.getLoginId()).isEqualTo("existTestId");
-        assertThat(user.getPassword()).isEqualTo("testPassword");
-        assertThat(user.getPhone()).isEqualTo("010-1234-5678");
-        assertThat(user.getAddress()).isEqualTo("testAddress");
-        assertThat(user.getRole()).isEqualTo(User.ROLE.PUBLIC);
+        assertThat(user.equals(existUser)).isEqualTo(true);
+    }
+
+    @Test
+    public void save는_loginId_가_존재하면_예외를_반환한다() {
+        //given
+        User existUser = createUser();
+
+        //when
+        //then
+        assertThrows(DuplicateKeyException.class, () -> userMapper.save(existUser));
     }
 
     @Test
     public void save_성공() {
         //given
-        User user = User.builder()
-                .loginId("testId")
-                .password("testPassword")
-                .phone("010-1234-5678")
-                .address("testAddress")
-                .role(User.ROLE.PUBLIC)
-                .build();
+        User newUser = createUser("newId");
 
         //when
-        int saveResult = userMapper.save(user);
-        User saveUser = userMapper.findByLoginId(user.getLoginId());
+        int saveResult = userMapper.save(newUser);
+        User saveUser = userMapper.findByLoginId(newUser.getLoginId());
 
         //then
         assertThat(saveResult).isEqualTo(1);

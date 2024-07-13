@@ -10,11 +10,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
+import static com.flab.just_10_minutes.User.UserTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -28,10 +28,10 @@ public class UserServiceTest {
     @Test
     public void findByLoginId는_값이_없으면_null을_반환한다() {
         //given
-        doReturn(null).when(userMapper).findByLoginId("testId");
+        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
 
         //when
-        Optional<User> existUser = target.findByLoginId("testId");
+        Optional<User> existUser = target.findByLoginId(NOT_EXIST_ID);
 
         //then
         assertThat(existUser.isPresent()).isEqualTo(false);
@@ -40,18 +40,12 @@ public class UserServiceTest {
     @Test
     public void findByLoginId는_값이_있으면_null_이_아니다() {
         //given
-        User user = User.builder()
-                .loginId("testId")
-                .password("testPassword")
-                .phone("010-1234-5678")
-                .address("testAddress")
-                .role(User.ROLE.PUBLIC)
-                .build();
+        User user = createUser();
 
-        doReturn(user).when(userMapper).findByLoginId("testId");
+        doReturn(user).when(userMapper).findByLoginId(EXIST_ID);
 
         //when
-        Optional<User> existUser = target.findByLoginId("testId");
+        Optional<User> existUser = target.findByLoginId(EXIST_ID);
 
         //then
         assertThat(existUser.isPresent()).isEqualTo(true);
@@ -60,10 +54,10 @@ public class UserServiceTest {
     @Test
     public void validateExistedUser은_값이_null이면_false를_반환한다() {
         //given
-        doReturn(null).when(userMapper).findByLoginId("testId");
+        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
 
         //when
-        Boolean result = target.validateExistedUser("testId");
+        Boolean result = target.validateExistedUser(NOT_EXIST_ID);
 
         //then
         assertThat(result).isEqualTo(false);
@@ -72,18 +66,12 @@ public class UserServiceTest {
     @Test
     public void validateExistedUser은_값이_존재하면_true를_반환한다() {
         //given
-        User user = User.builder()
-                .loginId("testId")
-                .password("testPassword")
-                .phone("010-1234-5678")
-                .address("testAddress")
-                .role(User.ROLE.PUBLIC)
-                .build();
+        User user = createUser();
 
-        doReturn(user).when(userMapper).findByLoginId("testId");
+        doReturn(user).when(userMapper).findByLoginId(EXIST_ID);
 
         //when
-        Boolean result = target.validateExistedUser("testId");
+        Boolean result = target.validateExistedUser(EXIST_ID);
 
         //then
         assertThat(result).isEqualTo(true);
@@ -92,39 +80,28 @@ public class UserServiceTest {
     @Test
     public void save는_이미_존재하는_회원이_있다면_실패한다() {
         //given
-        User user = User.builder()
-                .loginId("testId")
-                .password("testPassword")
-                .phone("010-1234-5678")
-                .address("testAddress")
-                .role(User.ROLE.PUBLIC)
-                .build();
+        User existUser = createUser();
 
-        doReturn(user).when(userMapper).findByLoginId("testId");
+        doReturn(existUser).when(userMapper).findByLoginId(EXIST_ID);
 
         //when
         //then
-        assertThrows(RuntimeException.class, () -> target.save(user));
+        assertThrows(RuntimeException.class, () -> target.save(existUser));
     }
 
     @Test
-    public void save성공() {
+    public void save_성공() {
         //given
-        User user = User.builder()
-                .loginId("testId")
-                .password("testPassword")
-                .phone("010-1234-5678")
-                .address("testAddress")
-                .role(User.ROLE.PUBLIC)
-                .build();
-        doReturn(null).when(userMapper).findByLoginId("testId");
+        User notExistUser = createUser(NOT_EXIST_ID);
+
+        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
         doReturn(1).when(userMapper).save(any(User.class));
 
         //when
-        target.save(user);
+        target.save(notExistUser);
 
         //then
-        verify(userMapper, times(1)).findByLoginId("testId");
+        verify(userMapper, times(1)).findByLoginId(NOT_EXIST_ID);
         verify(userMapper, times(1)).save(any(User.class));
     }
 }
