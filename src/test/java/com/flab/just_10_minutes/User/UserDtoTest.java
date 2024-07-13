@@ -4,14 +4,13 @@ import com.flab.just_10_minutes.User.dto.UserDto;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@DisplayName("UserDto 테")
 class UserTest {
 
     public static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
