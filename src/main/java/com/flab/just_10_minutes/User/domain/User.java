@@ -17,7 +17,7 @@ public class User {
     private String phone;
     private String address;
     private ROLE role;
-    //TODO : point 필드 추가 -> Point 관리 로직 생성 후 적용 예정(7/14)
+    private Long point;
 
     public enum ROLE {
         PUBLIC,
