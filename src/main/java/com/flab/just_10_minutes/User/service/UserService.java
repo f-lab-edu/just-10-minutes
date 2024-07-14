@@ -24,4 +24,16 @@ public class UserService {
     public User getUserProfile(final String loginId) {
         return userDao.fetch(loginId);
     }
+
+    public void update(final String loginId, final Long pointQuantity) {
+        if (!validateExistedUser(loginId)) {
+            throw new RuntimeException("not exist user");
+        }
+
+        int updateCount = userMapper.update(loginId, pointQuantity);
+
+        if (updateCount != 1) {
+            throw new RuntimeException("Fail update. Please retry");
+        }
+    }
 }
