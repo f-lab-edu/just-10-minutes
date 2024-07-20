@@ -8,7 +8,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -41,7 +40,7 @@ class UserDtoTest {
         @DisplayName("UserDto의 파라미터에 null이 들어오면 에러를 반환한다")
         @ParameterizedTest(name = "{4} : null 체크")
         @MethodSource("invalidUserDtoParameter")
-        void invalidCreate(String loginId, String password, String phone, String address, String message)     {
+        void invalidCreate(String loginId, String password, String phone, String address, String message) {
             Set<ConstraintViolation<UserDto>> validations = validator.validate(createTestUserDto(loginId, password, phone, address));
             assertThat(validations.size()).isEqualTo(1);
         }
@@ -64,7 +63,7 @@ class UserDtoTest {
         @DisplayName("UserDto의 파라미터에 \"\"이 들어오면 에러를 반환한다")
         @ParameterizedTest(name = "{4}")
         @MethodSource("invalidUserDtoParameterCount")
-        void invalidCreate(String loginId, String password, String phone, String address, String message)     {
+        void invalidCreate(String loginId, String password, String phone, String address, String message) {
             Set<ConstraintViolation<UserDto>> validations = validator.validate(createTestUserDto(loginId, password, phone, address));
             assertThat(validations.size()).isEqualTo(1);
         }
@@ -72,7 +71,7 @@ class UserDtoTest {
         @DisplayName("UserDto의 파라미터에 \"\"이 들어오면 에러를 반환한다")
         @ParameterizedTest(name = "{4}")
         @MethodSource("invalidUserDtoParameterCountWithSize")
-        void invalidCreate2(String loginId, String password, String phone, String address, String message)     {
+        void invalidCreate2(String loginId, String password, String phone, String address, String message) {
             Set<ConstraintViolation<UserDto>> validations = validator.validate(createTestUserDto(loginId, password, phone, address));
             assertThat(validations.size()).isEqualTo(2);
         }
@@ -100,7 +99,7 @@ class UserDtoTest {
         @DisplayName("loginId는 5자리 미만 12자리 초과일 경우 예외를 반환한다")
         @ParameterizedTest(name = "{4} 자리 일 경우")
         @MethodSource("invalidLoginIdParameters")
-        void invalidLoginIdCreate(String loginId, String password, String phone, String address, Integer loginIdLength)     {
+        void invalidLoginIdCreate(String loginId, String password, String phone, String address, Integer loginIdLength) {
             Set<ConstraintViolation<UserDto>> validations = validator.validate(createTestUserDto(loginId, password, phone, address));
             assertThat(validations.size()).isEqualTo(1);
         }
@@ -108,7 +107,7 @@ class UserDtoTest {
         @DisplayName("password는 8자리 미만 15자리 초과일 경우 예외를 반환한다")
         @ParameterizedTest(name = "{4} 자리 일 경우")
         @MethodSource("invalidPasswordParameters")
-        void invalidPasswordCreate(String loginId, String password, String phone, String address, Integer passwordLength)     {
+        void invalidPasswordCreate(String loginId, String password, String phone, String address, Integer passwordLength) {
             Set<ConstraintViolation<UserDto>> validations = validator.validate(createTestUserDto(loginId, password, phone, address));
             assertThat(validations.size()).isEqualTo(1);
         }
@@ -116,7 +115,7 @@ class UserDtoTest {
         @DisplayName("phone은 010-(숫자 3-4자리)-(숫자 4자리) 가 아닐 경우 예외를 반환한다")
         @ParameterizedTest(name = "{4}")
         @MethodSource("invalidPhoneParameters")
-        void invalidPhoneCreate(String loginId, String password, String phone, String address, String message)     {
+        void invalidPhoneCreate(String loginId, String password, String phone, String address, String message) {
             Set<ConstraintViolation<UserDto>> validations = validator.validate(createTestUserDto(loginId, password, phone, address));
             assertThat(validations.size()).isEqualTo(1);
         }

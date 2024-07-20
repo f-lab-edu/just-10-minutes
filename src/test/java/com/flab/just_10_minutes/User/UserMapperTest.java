@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.User;
 
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.mapper.UserMapper;
+import com.flab.just_10_minutes.User.persistence.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class UserMapperTest {
     private UserMapper userMapper;
 
     @Test
-    public void findByLoginId_유저가_없는_경우_null을_반환한다() {
+    public void findByLoginId_null_반환_존재하지_않는_회원() {
         //given
         //when
         User user = userMapper.findByLoginId(NOT_EXIST_ID);
@@ -40,7 +40,7 @@ public class UserMapperTest {
     }
 
     @Test
-    public void save는_loginId_가_존재하면_예외를_반환한다() {
+    public void save_실패_이미_존재하는_회원() {
         //given
         User existUser = createUser();
 

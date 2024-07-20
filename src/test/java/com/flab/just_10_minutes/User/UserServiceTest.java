@@ -1,8 +1,10 @@
 package com.flab.just_10_minutes.User;
 
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.mapper.UserMapper;
+import com.flab.just_10_minutes.User.persistence.UserDao;
 import com.flab.just_10_minutes.User.service.UserService;
+import com.flab.just_10_minutes.Util.ErrorResult.UserErrorResult;
+import com.flab.just_10_minutes.Util.Exception.UserException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,38 +25,30 @@ public class UserServiceTest {
     private UserService target;
 
     @Mock
-    private UserMapper userMapper;
+    private UserDao userDao;
 
-    @Test
-    public void findByLoginId는_값이_없으면_null을_반환한다() {
-        //given
-        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
+    private Optional<User> createOptionalUser(String loginId) {
+        if (loginId == null) {
+            throw new RuntimeException("loginId must not be null");
+        }
 
-        //when
-        Optional<User> existUser = target.findByLoginId(NOT_EXIST_ID);
+        if (!EXIST_ID.equals(loginId) && !NOT_EXIST_ID.equals(loginId)) {
+            throw new RuntimeException("loginId must be EXIST_ID or NOT_EXIST_ID");
+        }
 
-        //then
-        assertThat(existUser.isPresent()).isEqualTo(false);
+        if (EXIST_ID.equals(loginId)) {
+            return Optional.ofNullable(createUser(loginId));
+        } else {
+            return Optional.ofNullable(null);
+        }
     }
 
     @Test
-    public void findByLoginId는_값이_있으면_null_이_아니다() {
+    public void validateExistedUser_false_반환_존재하지_않는_회원() {
         //given
-        User user = createUser();
+        Optional<User> user = createOptionalUser(NOT_EXIST_ID);
 
-        doReturn(user).when(userMapper).findByLoginId(EXIST_ID);
-
-        //when
-        Optional<User> existUser = target.findByLoginId(EXIST_ID);
-
-        //then
-        assertThat(existUser.isPresent()).isEqualTo(true);
-    }
-
-    @Test
-    public void validateExistedUser은_값이_null이면_false를_반환한다() {
-        //given
-        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
+        doReturn(user).when(userDao).findByLoginId(NOT_EXIST_ID);
 
         //when
         Boolean result = target.validateExistedUser(NOT_EXIST_ID);
@@ -64,11 +58,11 @@ public class UserServiceTest {
     }
 
     @Test
-    public void validateExistedUser은_값이_존재하면_true를_반환한다() {
+    public void validateExistedUser_true_반환_존재하는_회원() {
         //given
-        User user = createUser();
+        Optional<User> user = createOptionalUser(EXIST_ID);
 
-        doReturn(user).when(userMapper).findByLoginId(EXIST_ID);
+        doReturn(user).when(userDao).findByLoginId(EXIST_ID);
 
         //when
         Boolean result = target.validateExistedUser(EXIST_ID);
@@ -78,30 +72,33 @@ public class UserServiceTest {
     }
 
     @Test
-    public void save는_이미_존재하는_회원이_있다면_실패한다() {
+    public void save_실패_이미_존재하는_회원() {
         //given
-        User existUser = createUser();
+        Optional<User> user = createOptionalUser(EXIST_ID);
 
-        doReturn(existUser).when(userMapper).findByLoginId(EXIST_ID);
+        doReturn(user).when(userDao).findByLoginId(EXIST_ID);
 
         //when
+        final UserException result = assertThrows(UserException.class, () -> target.save(user.get()));
+
         //then
-        assertThrows(RuntimeException.class, () -> target.save(existUser));
+        assertThat(result.getErrorResult()).isEqualTo(UserErrorResult.DUPLICATED_USER_REGISTER);
     }
 
     @Test
     public void save_성공() {
         //given
-        User notExistUser = createUser(NOT_EXIST_ID);
+        Optional<User> notExistUser = createOptionalUser(NOT_EXIST_ID);
+        User inputUser = createUser(NOT_EXIST_ID);
 
-        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
-        doReturn(1).when(userMapper).save(any(User.class));
-
+        doReturn(notExistUser).when(userDao).findByLoginId(NOT_EXIST_ID);
+        doNothing().when(userDao).save(any(User.class));
+        //TODO : 아무것도 리턴 안하면 모킹을 안하는지? 혹은 doNothing으로 명시 해주는지? 질문
         //when
-        target.save(notExistUser);
+        target.save(inputUser);
 
         //then
-        verify(userMapper, times(1)).findByLoginId(NOT_EXIST_ID);
-        verify(userMapper, times(1)).save(any(User.class));
+        verify(userDao, times(1)).findByLoginId(NOT_EXIST_ID);
+        verify(userDao, times(1)).save(any(User.class));
     }
 }
