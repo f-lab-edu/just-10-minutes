@@ -22,6 +22,6 @@ public class UserController {
     public ResponseEntity<HttpStatus> signUp(@RequestBody @Valid UserDto userDto) {
         userService.save(UserDto.toDomain(userDto));
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
