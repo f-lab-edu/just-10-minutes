@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserErrorResult {
+public enum CommonErrorResult {
 
-    DUPLICATED_USER_REGISTER(HttpStatus.BAD_REQUEST, "Duplicated User Register Request"),
+    UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown Exception"),
     ;
 
     private final HttpStatus httpStatus;

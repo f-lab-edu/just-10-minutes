@@ -1,5 +1,6 @@
 package com.flab.just_10_minutes.Util.Handler;
 
+import com.flab.just_10_minutes.Util.ErrorResult.CommonErrorResult;
 import com.flab.just_10_minutes.Util.ErrorResult.UserErrorResult;
 import com.flab.just_10_minutes.Util.Exception.UserException;
 import lombok.Getter;
@@ -10,11 +11,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,12 +36,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.warn("Invalid DTO Parameter errors : {}", errorList);
 
-        return super.handleMethodArgumentNotValid(ex, headers, status, request);
+        return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<Object> makeErrorResponseEntity(final String errorDescription) {
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommonErrorResult errorResult) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), errorDescription));
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), errorResult.getMessage()));
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final UserErrorResult errorResult) {
@@ -54,7 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.warn("Exception occur : ", exception);
-        return this.makeErrorResponseEntity(UserErrorResult.UNKNOWN_EXCEPTION);
+        return this.makeErrorResponseEntity(CommonErrorResult.UNKNOWN_EXCEPTION);
     }
 
     @Getter
