@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.User.mapper;
+package com.flab.just_10_minutes.User.persistence;
 
 import com.flab.just_10_minutes.User.domain.User;
 import org.apache.ibatis.annotations.Insert;
