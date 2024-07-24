@@ -1,8 +1,10 @@
 package com.flab.just_10_minutes.Util.Handler;
 
-import com.flab.just_10_minutes.Util.ErrorResult.CommonErrorResult;
-import com.flab.just_10_minutes.Util.ErrorResult.UserErrorResult;
-import com.flab.just_10_minutes.Util.Exception.UserException;
+import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
+import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
+import com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException;
+import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
+import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,14 +13,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,26 +38,52 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommonErrorResult errorResult) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), errorResult.getMessage()));
+    @ExceptionHandler({DatabaseException.class})
+    public ResponseEntity<ErrorResponse> handleException(final DatabaseException exception) {
+        log.warn("DatabaseException occur : ", exception);
+
+        if (exception instanceof NotFoundException) {
+            return makeBadRequestResponseEntity(exception.getMessage());
+        } else if (exception instanceof DuplicatedKeyException) {
+            return makeConflictResponseEntity(exception.getMessage());
+        } else if (exception instanceof InternalException) {
+            return makeInternalErrorResponseEntity(exception.getMessage());
+        } else {
+            return makeNotFoundResponseEntity(exception.getMessage());
+        }
     }
 
-    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final UserErrorResult errorResult) {
-        return ResponseEntity.status(errorResult.getHttpStatus())
-                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-    }
+    @ExceptionHandler({BusinessException.class})
+    public ResponseEntity<ErrorResponse> handleException(final BusinessException exception) {
+        log.warn("BusinessException occur : ", exception);
 
-    @ExceptionHandler({UserException.class})
-    public ResponseEntity<ErrorResponse> handleRestApiException(final UserException exception) {
-        log.warn("UserException occur : ", exception);
-        return this.makeErrorResponseEntity(exception.getErrorResult());
+        return makeBadRequestResponseEntity(exception.getMessage());
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.warn("Exception occur : ", exception);
-        return this.makeErrorResponseEntity(CommonErrorResult.UNKNOWN_EXCEPTION);
+        return makeBadRequestResponseEntity(exception.getMessage());
+    }
+
+    private ResponseEntity<ErrorResponse> makeBadRequestResponseEntity(final String message) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), message));
+    }
+
+    private ResponseEntity<ErrorResponse> makeConflictResponseEntity(final String message) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(HttpStatus.CONFLICT.toString(), message));
+    }
+
+    private ResponseEntity<ErrorResponse> makeInternalErrorResponseEntity(final String message) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(), message));
+    }
+
+    private ResponseEntity<ErrorResponse> makeNotFoundResponseEntity(final String message) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.toString(), message));
     }
 
     @Getter
