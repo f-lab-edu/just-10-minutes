@@ -27,10 +27,11 @@ class UserDtoTest {
                 .build();
     }
 
-    private static final String VALID_LOGIN_ID = "testId";
-    private static final String VALID_PASSWORD = "testPassword";
-    private static final String VALID_PHONE = "010-1234-5678";
-    private static final String VALID_ADDRESS = "testAddress";
+    public static final String NOT_EXIST_ID = "notExistId";
+    public static final String VALID_LOGIN_ID = "testId";
+    public static final String VALID_PASSWORD = "testPassword";
+    public static final String VALID_PHONE = "010-1234-5678";
+    public static final String VALID_ADDRESS = "testAddress";
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -3,8 +3,7 @@ package com.flab.just_10_minutes.User;
 import com.flab.just_10_minutes.User.controller.UserController;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.service.UserService;
-import com.flab.just_10_minutes.Util.ErrorResult.UserErrorResult;
-import com.flab.just_10_minutes.Util.Exception.UserException;
+import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import com.flab.just_10_minutes.Util.Handler.GlobalExceptionHandler;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
@@ -208,9 +207,9 @@ public class UserControllerTest {
     @Test
     public void signUp_실패_UserService에서_에러_Throw() throws Exception {
         //given
-        final String url = "/users/sign-up";
+        final String url = "/users/sign_up";
 
-        doThrow(new UserException(UserErrorResult.DUPLICATED_USER_REGISTER))
+        doThrow(new BusinessException("Duplicate User Registration Request"))
                 .when(userService)
                 .save(any(User.class));
 

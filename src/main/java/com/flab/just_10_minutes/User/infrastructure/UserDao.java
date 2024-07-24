@@ -1,10 +1,8 @@
 package com.flab.just_10_minutes.User.persistence;
 
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.Util.ErrorResult.DaoErrorResult;
-import com.flab.just_10_minutes.Util.ErrorResult.UserErrorResult;
-import com.flab.just_10_minutes.Util.Exception.DaoException;
-import com.flab.just_10_minutes.Util.Exception.UserException;
+import com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException;
+import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -25,10 +23,10 @@ public class UserDao {
             int insertCount = userMapper.save(user);
 
             if (insertCount != 1) {
-                throw new DaoException(DaoErrorResult.INSERT_ERROR);
+                throw new InternalException("Fail to Insert");
             }
         } catch (DuplicateKeyException e) {
-            throw new UserException(UserErrorResult.DUPLICATED_USER_REGISTER);
+            throw new DuplicatedKeyException("Duplicate User loginId for Registration");
         }
     }
 }
