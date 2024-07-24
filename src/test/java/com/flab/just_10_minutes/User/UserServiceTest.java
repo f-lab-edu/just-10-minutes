@@ -70,37 +70,13 @@ public class UserServiceTest {
 
         doReturn(false).when(userDao).existsByLoginId(NOT_EXIST_ID);
         doNothing().when(userDao).save(any(User.class));
-        //TODO : 아무것도 리턴 안하면 모킹을 안하는지? 혹은 doNothing으로 명시 해주는지? 질문
+
         //when
         target.save(inputUser);
 
         //then
         verify(userDao, times(1)).existsByLoginId(NOT_EXIST_ID);
         verify(userDao, times(1)).save(any(User.class));
-    }
-
-    @Test
-    public void getUserProfile_false_반환_찾는_대상이_없음() {
-        //given
-        doReturn(false).when(userDao).existsByLoginId(NOT_EXIST_ID);
-        //when
-
-        boolean result = target.existsByLoginId(NOT_EXIST_ID);
-
-        //then
-        assertThat(result).isEqualTo(false);
-    }
-
-    @Test
-    public void getUserProfile_true_반환_찾는_대상이_있음() {
-        //given
-        doReturn(true).when(userDao).existsByLoginId(EXIST_ID);
-        //when
-
-        boolean result = target.existsByLoginId(EXIST_ID);
-
-        //then
-        assertThat(result).isEqualTo(true);
     }
 
     @Test

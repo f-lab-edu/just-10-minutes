@@ -15,14 +15,10 @@ public class UserService {
     private final UserDao userDao;
 
     public void save(final User user) {
-        if (existsByLoginId(user.getLoginId())) {
+        if (userDao.existsByLoginId(user.getLoginId())) {
             throw new BusinessException(DUPLICATED_REGISTER);
         }
         userDao.save(user);
-    }
-
-    public boolean existsByLoginId(final String loginId) {
-        return userDao.existsByLoginId(loginId);
     }
 
     public User getUserProfile(final String loginId) {
