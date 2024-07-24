@@ -1,9 +1,7 @@
 package com.flab.just_10_minutes.User;
 
 import com.flab.just_10_minutes.User.controller.UserController;
-import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.service.UserService;
-import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import com.flab.just_10_minutes.Util.Handler.GlobalExceptionHandler;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
@@ -21,13 +19,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.stream.Stream;
 
-import static com.flab.just_10_minutes.User.UserDtoTest.createTestUserDto;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static com.flab.just_10_minutes.User.UserDtoTestFixture.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class UserControllerTest {
+public class UserControllerParameterTest {
 
     @InjectMocks
     private UserController target;
@@ -37,11 +33,6 @@ public class UserControllerTest {
 
     private MockMvc mockMvc;
     private Gson gson;
-
-    private static final String VALID_LOGIN_ID = "testId";
-    private static final String VALID_PASSWORD = "testPassword";
-    private static final String VALID_PHONE = "010-1234-5678";
-    private static final String VALID_ADDRESS = "testAddress";
 
     @BeforeEach
     public void setUp() {
@@ -61,7 +52,7 @@ public class UserControllerTest {
         @MethodSource("invalidUserDtoParameter")
         void invalidCreate(String loginId, String password, String phone, String address, String message) throws Exception {
             //given
-            final String url = "/users/sign-up";
+            final String url = "/users/sign_up";
 
             //when
             final ResultActions resultActions = mockMvc.perform(
@@ -76,10 +67,10 @@ public class UserControllerTest {
 
         Stream<Arguments> invalidUserDtoParameter() throws Throwable {
             return Stream.of(
-                    Arguments.of(null, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS, "loginId"),
-                    Arguments.of(VALID_LOGIN_ID, null, VALID_PHONE, VALID_ADDRESS, "password"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, null, VALID_ADDRESS, "phone"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, VALID_PHONE, null, "email")
+                    Arguments.of(null, PASSWORD, PHONE, ADDRESS, "loginId"),
+                    Arguments.of(EXIST_ID, null, PHONE, ADDRESS, "password"),
+                    Arguments.of(EXIST_ID, PASSWORD, null, ADDRESS, "phone"),
+                    Arguments.of(EXIST_ID, PASSWORD, PHONE, null, "email")
             );
         }
     }
@@ -94,7 +85,7 @@ public class UserControllerTest {
         @MethodSource("invalidUserDtoParameter")
         void invalidCreate(String loginId, String password, String phone, String address, String message) throws Exception {
             //given
-            final String url = "/users/sign-up";
+            final String url = "/users/sign_up";
 
             //when
             final ResultActions resultActions = mockMvc.perform(
@@ -109,10 +100,10 @@ public class UserControllerTest {
 
         Stream<Arguments> invalidUserDtoParameter() throws Throwable {
             return Stream.of(
-                    Arguments.of("", VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS, "loginId"),
-                    Arguments.of(VALID_LOGIN_ID, "", VALID_PHONE, VALID_ADDRESS, "password"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "", VALID_ADDRESS, "phone"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, VALID_PHONE, "", "email")
+                    Arguments.of("", PASSWORD, PHONE, ADDRESS, "loginId"),
+                    Arguments.of(EXIST_ID, "", PHONE, ADDRESS, "password"),
+                    Arguments.of(EXIST_ID, PASSWORD, "", ADDRESS, "phone"),
+                    Arguments.of(EXIST_ID, PASSWORD, PHONE, "", "email")
             );
         }
     }
@@ -127,7 +118,7 @@ public class UserControllerTest {
         @MethodSource("invalidUserDtoParameter")
         void invalidLoginIdCreate(String loginId, String password, String phone, String address, String field,Integer fieldLength) throws Exception {
             //given
-            final String url = "/users/sign-up";
+            final String url = "/users/sign_up";
 
             //when
             final ResultActions resultActions = mockMvc.perform(
@@ -142,10 +133,10 @@ public class UserControllerTest {
 
         Stream<Arguments> invalidUserDtoParameter() throws Throwable {
             return Stream.of(
-                    Arguments.of("abcd", VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS, "loginId", "abcd".length()),
-                    Arguments.of("abcdefghijklm", VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS, "loginId", "abcdefghijklm".length()),
-                    Arguments.of(VALID_LOGIN_ID, "abcdefg", VALID_PHONE, VALID_ADDRESS, "password", "abcdefg".length()),
-                    Arguments.of(VALID_LOGIN_ID, "abcdefghijklmnop", VALID_PHONE, VALID_ADDRESS, "password", "abcdefghijklmnop".length())
+                    Arguments.of("abcd", PASSWORD, PHONE, ADDRESS, "loginId", "abcd".length()),
+                    Arguments.of("abcdefghijklm", PASSWORD, PHONE, ADDRESS, "loginId", "abcdefghijklm".length()),
+                    Arguments.of(EXIST_ID, "abcdefg", PHONE, ADDRESS, "password", "abcdefg".length()),
+                    Arguments.of(EXIST_ID, "abcdefghijklmnop", PHONE, ADDRESS, "password", "abcdefghijklmnop".length())
             );
         }
     }
@@ -160,7 +151,7 @@ public class UserControllerTest {
         @MethodSource("invalidUserDtoParameter")
         void invalidLoginIdCreate(String loginId, String password, String phone, String address, String message) throws Exception {
             //given
-            final String url = "/users/sign-up";
+            final String url = "/users/sign_up";
 
             //when
             final ResultActions resultActions = mockMvc.perform(
@@ -175,15 +166,15 @@ public class UserControllerTest {
 
         Stream<Arguments> invalidUserDtoParameter() throws Throwable {
             return Stream.of(
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "011-1234-5678", VALID_ADDRESS, "첫번째 자리가 010이 아닐 때"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "010/1234-5678", VALID_ADDRESS, "첫번째 대시가 - 이 아닐 때"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "010-12-5678", VALID_ADDRESS, "두번째 자리가 3자리 미만일 때"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "010-12345-5678", VALID_ADDRESS, "두번째 자리가 4자리 초과일 때"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "010-123a-5678", VALID_ADDRESS, "두번째 자리에 숫자가 아닌 값이 있을 때"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "010-1234/5678", VALID_ADDRESS, "두번째 대시가 - 이 아닐 때"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "010-1234-567", VALID_ADDRESS, "세번쨰 자리에 4자리 미만일 때"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "010-1234-56781", VALID_ADDRESS, "세번쨰 자리에 4자리 초과일 때"),
-                    Arguments.of(VALID_LOGIN_ID, VALID_PASSWORD, "010-1234-567a", VALID_ADDRESS, "세번쨰 자리에 숫자가 아닌 값이 있을 때")
+                    Arguments.of(EXIST_ID, PASSWORD, "011-1234-5678", ADDRESS, "첫번째 자리가 010이 아닐 때"),
+                    Arguments.of(EXIST_ID, PASSWORD, "010/1234-5678", ADDRESS, "첫번째 대시가 - 이 아닐 때"),
+                    Arguments.of(EXIST_ID, PASSWORD, "010-12-5678", ADDRESS, "두번째 자리가 3자리 미만일 때"),
+                    Arguments.of(EXIST_ID, PASSWORD, "010-12345-5678", ADDRESS, "두번째 자리가 4자리 초과일 때"),
+                    Arguments.of(EXIST_ID, PASSWORD, "010-123a-5678", ADDRESS, "두번째 자리에 숫자가 아닌 값이 있을 때"),
+                    Arguments.of(EXIST_ID, PASSWORD, "010-1234/5678", ADDRESS, "두번째 대시가 - 이 아닐 때"),
+                    Arguments.of(EXIST_ID, PASSWORD, "010-1234-567", ADDRESS, "세번쨰 자리에 4자리 미만일 때"),
+                    Arguments.of(EXIST_ID, PASSWORD, "010-1234-56781", ADDRESS, "세번쨰 자리에 4자리 초과일 때"),
+                    Arguments.of(EXIST_ID, PASSWORD, "010-1234-567a", ADDRESS, "세번쨰 자리에 숫자가 아닌 값이 있을 때")
             );
         }
     }
@@ -191,7 +182,7 @@ public class UserControllerTest {
     @Test
     public void signUp_실패_파라미터가_null() throws Exception {
         //given
-        final String url = "/users/sign-up";
+        final String url = "/users/sign_up";
 
         //when
         final ResultActions resultAction = mockMvc.perform(
@@ -202,43 +193,5 @@ public class UserControllerTest {
 
         //then
         resultAction.andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void signUp_실패_UserService에서_에러_Throw() throws Exception {
-        //given
-        final String url = "/users/sign_up";
-
-        doThrow(new BusinessException("Duplicate User Registration Request"))
-                .when(userService)
-                .save(any(User.class));
-
-        //when
-        final ResultActions resultAction = mockMvc.perform(
-                MockMvcRequestBuilders.post(url)
-                        .content(gson.toJson(createTestUserDto(VALID_LOGIN_ID, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS)))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        //then
-        resultAction.andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void signUp_성공() throws Exception {
-        //given
-        final String url = "/users/sign-up";
-
-        doNothing().when(userService).save(any(User.class));
-
-        //when
-        final ResultActions resultAction = mockMvc.perform(
-                MockMvcRequestBuilders.post(url)
-                        .content(gson.toJson(createTestUserDto(VALID_LOGIN_ID, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS)))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        //then
-        resultAction.andExpect(status().isCreated());
     }
 }

@@ -1,83 +1,67 @@
 package com.flab.just_10_minutes.User;
 
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.persistence.UserDao;
-import com.flab.just_10_minutes.User.persistence.UserMapper;
-import com.flab.just_10_minutes.Util.ErrorResult.DaoErrorResult;
-import com.flab.just_10_minutes.Util.ErrorResult.UserErrorResult;
-import com.flab.just_10_minutes.Util.Exception.DaoException;
-import com.flab.just_10_minutes.Util.Exception.UserException;
+import com.flab.just_10_minutes.User.infrastructure.UserDao;
+import com.flab.just_10_minutes.User.infrastructure.UserMapper;
+import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
+import com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException;
+import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DuplicateKeyException;
+import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Optional;
 
+import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
+import static com.flab.just_10_minutes.User.UserDtoTestFixture.NOT_EXIST_ID;
 import static com.flab.just_10_minutes.User.UserTestFixture.*;
-import static com.flab.just_10_minutes.User.UserTestFixture.EXIST_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@MybatisTest
+@MapperScan("com.flab.just_10_minutes.User.infrastructure")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ContextConfiguration(classes = {UserDao.class, UserMapper.class})
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class UserDaoTest {
 
-    @InjectMocks
+    @Autowired
     private UserDao target;
 
-    @Mock
-    private UserMapper userMapper;
-
     @Test
-    public void save_실패_결과가_1이_아님() {
+    public void save_실패_중복키() {
         //given
         User user = createUser();
 
-        doReturn(2).when(userMapper).save(user);
-
         //when
-        final DaoException result = assertThrows(DaoException.class, () -> target.save(user));
+        final DatabaseException result = assertThrows(DatabaseException.class, () -> target.save(user));
 
         //then
-        assertThat(result.getErrorResult()).isEqualTo(DaoErrorResult.INSERT_ERROR);
-    }
-
-    @Test
-    public void save_실패_중복되는_loginId() {
-        //given
-        User user = createUser();
-
-        doThrow(DuplicateKeyException.class).when(userMapper).save(user);
-
-        //when
-        final UserException result = assertThrows(UserException.class, () -> target.save(user));
-
-        //then
-        assertThat(result.getErrorResult()).isEqualTo(UserErrorResult.DUPLICATED_USER_REGISTER);
+        assertThat(result instanceof DuplicatedKeyException).isEqualTo(true);
     }
 
     @Test
     public void save_성공() {
         //given
-        User user = createUser();
-
-        doReturn(1).when(userMapper).save(any(User.class));
+        User user = createUser(NOT_EXIST_ID);
 
         //when
         target.save(user);
+        boolean result = target.existsByLoginId(NOT_EXIST_ID);
 
         //then
-        verify(userMapper, times(1)).save(any(User.class));
+        assertThat(result).isEqualTo(true);
     }
 
     @Test
     public void findByLoginId_null_반환_존재하지_않는_회원() {
         //given
-        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
-
         //when
         Optional<User> existUser = target.findByLoginId(NOT_EXIST_ID);
 
@@ -86,16 +70,52 @@ public class UserDaoTest {
     }
 
     @Test
-    public void findByLoginId는_User_객체_반환_존재하는_회원() {
+    public void findByLoginId_User_객체_반환_존재하는_회원() {
         //given
-        User user = createUser();
-
-        doReturn(user).when(userMapper).findByLoginId(EXIST_ID);
-
         //when
         Optional<User> existUser = target.findByLoginId(EXIST_ID);
 
         //then
         assertThat(existUser.isPresent()).isEqualTo(true);
+    }
+
+    @Test
+    public void existsById_false_반환_찾는_대상이_없음() {
+        //given
+        //when
+        boolean result = target.existsByLoginId(NOT_EXIST_ID);
+
+        //then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    public void existsById_true_반환_찾는_대상이_있음() {
+        //given
+        //when
+        boolean result = target.existsByLoginId(EXIST_ID);
+
+        //then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    public void fetch_실패_존재하지_않는_회원() {
+        //given
+        //when
+        final DatabaseException result = assertThrows(DatabaseException.class, () -> target.fetch(NOT_EXIST_ID));
+
+        //then
+        assertThat(result instanceof NotFoundException).isEqualTo(true);
+    }
+
+    @Test
+    public void fetch_성공() {
+        //given
+        //when
+        User existUser = target.fetch(EXIST_ID);
+
+        //then
+        assertThat(existUser != null).isEqualTo(true);
     }
 }

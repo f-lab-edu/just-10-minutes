@@ -1,10 +1,11 @@
 package com.flab.just_10_minutes.User;
 
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.persistence.UserDao;
+import com.flab.just_10_minutes.User.infrastructure.UserDao;
 import com.flab.just_10_minutes.User.service.UserService;
-import com.flab.just_10_minutes.Util.ErrorResult.UserErrorResult;
-import com.flab.just_10_minutes.Util.Exception.UserException;
+import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
+import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
+import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,7 +13,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
+import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
+import static com.flab.just_10_minutes.User.UserDtoTestFixture.NOT_EXIST_ID;
 import static com.flab.just_10_minutes.User.UserTestFixture.*;
+import static com.flab.just_10_minutes.Util.contants.ResponseMessage.DUPLICATED_REGISTER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,46 +47,19 @@ public class UserServiceTest {
         }
     }
 
-    @Test
-    public void validateExistedUser_false_반환_존재하지_않는_회원() {
-        //given
-        Optional<User> user = createOptionalUser(NOT_EXIST_ID);
-
-        doReturn(user).when(userDao).findByLoginId(NOT_EXIST_ID);
-
-        //when
-        Boolean result = target.validateExistedUser(NOT_EXIST_ID);
-
-        //then
-        assertThat(result).isEqualTo(false);
-    }
-
-    @Test
-    public void validateExistedUser_true_반환_존재하는_회원() {
-        //given
-        Optional<User> user = createOptionalUser(EXIST_ID);
-
-        doReturn(user).when(userDao).findByLoginId(EXIST_ID);
-
-        //when
-        Boolean result = target.validateExistedUser(EXIST_ID);
-
-        //then
-        assertThat(result).isEqualTo(true);
-    }
 
     @Test
     public void save_실패_이미_존재하는_회원() {
         //given
         Optional<User> user = createOptionalUser(EXIST_ID);
 
-        doReturn(user).when(userDao).findByLoginId(EXIST_ID);
+        doReturn(true).when(userDao).existsByLoginId(EXIST_ID);
 
         //when
-        final UserException result = assertThrows(UserException.class, () -> target.save(user.get()));
+        final BusinessException result = assertThrows(BusinessException.class, () -> target.save(user.get()));
 
         //then
-        assertThat(result.getErrorResult()).isEqualTo(UserErrorResult.DUPLICATED_USER_REGISTER);
+        assertThat(result.getMessage()).isEqualTo(DUPLICATED_REGISTER);
     }
 
     @Test
@@ -91,14 +68,63 @@ public class UserServiceTest {
         Optional<User> notExistUser = createOptionalUser(NOT_EXIST_ID);
         User inputUser = createUser(NOT_EXIST_ID);
 
-        doReturn(notExistUser).when(userDao).findByLoginId(NOT_EXIST_ID);
+        doReturn(false).when(userDao).existsByLoginId(NOT_EXIST_ID);
         doNothing().when(userDao).save(any(User.class));
         //TODO : 아무것도 리턴 안하면 모킹을 안하는지? 혹은 doNothing으로 명시 해주는지? 질문
         //when
         target.save(inputUser);
 
         //then
-        verify(userDao, times(1)).findByLoginId(NOT_EXIST_ID);
+        verify(userDao, times(1)).existsByLoginId(NOT_EXIST_ID);
         verify(userDao, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void getUserProfile_false_반환_찾는_대상이_없음() {
+        //given
+        doReturn(false).when(userDao).existsByLoginId(NOT_EXIST_ID);
+        //when
+
+        boolean result = target.existsByLoginId(NOT_EXIST_ID);
+
+        //then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    public void getUserProfile_true_반환_찾는_대상이_있음() {
+        //given
+        doReturn(true).when(userDao).existsByLoginId(EXIST_ID);
+        //when
+
+        boolean result = target.existsByLoginId(EXIST_ID);
+
+        //then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    public void getUserProfile_실패_찾는_대상이_없음() {
+        //given
+        doThrow(NotFoundException.class).when(userDao).fetch(NOT_EXIST_ID);
+
+        //when
+        final DatabaseException result = assertThrows(DatabaseException.class, () -> target.getUserProfile(NOT_EXIST_ID));
+
+        //then
+        assertThat(result instanceof NotFoundException).isEqualTo(true);
+    }
+
+    @Test
+    public void getUserProfile_성공() {
+        //given
+        User existUser = createUser(EXIST_ID);
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
+
+        //when
+        target.getUserProfile(EXIST_ID);
+
+        //then
+        verify(userDao, times(1)).fetch(EXIST_ID);
     }
 }
