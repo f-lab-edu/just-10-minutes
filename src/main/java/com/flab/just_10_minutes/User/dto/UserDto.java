@@ -13,15 +13,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserDto{
 
-    @NotEmpty
+    @NotEmpty(message = "로그인 아이디가 비었습니다.")
     @Size(min = 5, max = 12, message = "로그인 아이디는 5자리 이상 12자리 이하여야 합니다.")
     private String loginId;
-    @NotEmpty
+    @NotEmpty(message = "비밀번호가 비었습니다.")
     @Size(min = 8, max = 15, message = "비밀번호는 8자리 이상 15자리 이하여야 합니다.")
     private String password;
     @PhoneNum
     private String phone;
-    @NotEmpty
+    @NotEmpty(message = "주소가 비었습니다.")
     private String address;
     private User.ROLE role;
 

@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.User.mapper;
+package com.flab.just_10_minutes.User.infrastructure;
 
 import com.flab.just_10_minutes.User.domain.User;
 import org.apache.ibatis.annotations.Insert;
@@ -14,4 +14,7 @@ public interface UserMapper {
     @Insert("INSERT INTO users_table (login_id, password, phone, address, role)" +
             "VALUES (#{loginId}, #{password}, #{phone}, #{address}, #{role})")
     int save(final User user);
+
+    @Select("SELECT EXISTS(SELECT * FROM users_table WHERE login_id = #{loginId});")
+    boolean existsByLoginId(final String loginId);
 }

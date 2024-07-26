@@ -4,10 +4,6 @@ import com.flab.just_10_minutes.User.domain.User;
 
 public class UserTestFixture {
 
-    public static final String NOT_EXIST_ID = "notExistTestId";
-
-    public static final String EXIST_ID = "testId";
-
     public static User createUser() {
         return User.builder()
                 .id(1L)

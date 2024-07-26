@@ -1,8 +1,11 @@
 package com.flab.just_10_minutes.User;
 
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.mapper.UserMapper;
+import com.flab.just_10_minutes.User.infrastructure.UserDao;
 import com.flab.just_10_minutes.User.service.UserService;
+import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
+import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
+import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +13,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
+import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
+import static com.flab.just_10_minutes.User.UserDtoTestFixture.NOT_EXIST_ID;
 import static com.flab.just_10_minutes.User.UserTestFixture.*;
+import static com.flab.just_10_minutes.Util.contants.ResponseMessage.DUPLICATED_REGISTER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,85 +29,78 @@ public class UserServiceTest {
     private UserService target;
 
     @Mock
-    private UserMapper userMapper;
+    private UserDao userDao;
 
-    @Test
-    public void findByLoginId는_값이_없으면_null을_반환한다() {
-        //given
-        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
+    private Optional<User> createOptionalUser(String loginId) {
+        if (loginId == null) {
+            throw new RuntimeException("loginId must not be null");
+        }
 
-        //when
-        Optional<User> existUser = target.findByLoginId(NOT_EXIST_ID);
+        if (!EXIST_ID.equals(loginId) && !NOT_EXIST_ID.equals(loginId)) {
+            throw new RuntimeException("loginId must be EXIST_ID or NOT_EXIST_ID");
+        }
 
-        //then
-        assertThat(existUser.isPresent()).isEqualTo(false);
+        if (EXIST_ID.equals(loginId)) {
+            return Optional.ofNullable(createUser(loginId));
+        } else {
+            return Optional.ofNullable(null);
+        }
     }
 
-    @Test
-    public void findByLoginId는_값이_있으면_null_이_아니다() {
-        //given
-        User user = createUser();
-
-        doReturn(user).when(userMapper).findByLoginId(EXIST_ID);
-
-        //when
-        Optional<User> existUser = target.findByLoginId(EXIST_ID);
-
-        //then
-        assertThat(existUser.isPresent()).isEqualTo(true);
-    }
 
     @Test
-    public void validateExistedUser은_값이_null이면_false를_반환한다() {
+    public void save_실패_이미_존재하는_회원() {
         //given
-        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
+        Optional<User> user = createOptionalUser(EXIST_ID);
+
+        doReturn(true).when(userDao).existsByLoginId(EXIST_ID);
 
         //when
-        Boolean result = target.validateExistedUser(NOT_EXIST_ID);
+        final BusinessException result = assertThrows(BusinessException.class, () -> target.save(user.get()));
 
         //then
-        assertThat(result).isEqualTo(false);
-    }
-
-    @Test
-    public void validateExistedUser은_값이_존재하면_true를_반환한다() {
-        //given
-        User user = createUser();
-
-        doReturn(user).when(userMapper).findByLoginId(EXIST_ID);
-
-        //when
-        Boolean result = target.validateExistedUser(EXIST_ID);
-
-        //then
-        assertThat(result).isEqualTo(true);
-    }
-
-    @Test
-    public void save는_이미_존재하는_회원이_있다면_실패한다() {
-        //given
-        User existUser = createUser();
-
-        doReturn(existUser).when(userMapper).findByLoginId(EXIST_ID);
-
-        //when
-        //then
-        assertThrows(RuntimeException.class, () -> target.save(existUser));
+        assertThat(result.getMessage()).isEqualTo(DUPLICATED_REGISTER);
     }
 
     @Test
     public void save_성공() {
         //given
-        User notExistUser = createUser(NOT_EXIST_ID);
+        Optional<User> notExistUser = createOptionalUser(NOT_EXIST_ID);
+        User inputUser = createUser(NOT_EXIST_ID);
 
-        doReturn(null).when(userMapper).findByLoginId(NOT_EXIST_ID);
-        doReturn(1).when(userMapper).save(any(User.class));
+        doReturn(false).when(userDao).existsByLoginId(NOT_EXIST_ID);
+        doNothing().when(userDao).save(any(User.class));
 
         //when
-        target.save(notExistUser);
+        target.save(inputUser);
 
         //then
-        verify(userMapper, times(1)).findByLoginId(NOT_EXIST_ID);
-        verify(userMapper, times(1)).save(any(User.class));
+        verify(userDao, times(1)).existsByLoginId(NOT_EXIST_ID);
+        verify(userDao, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void getUserProfile_실패_찾는_대상이_없음() {
+        //given
+        doThrow(NotFoundException.class).when(userDao).fetch(NOT_EXIST_ID);
+
+        //when
+        final DatabaseException result = assertThrows(DatabaseException.class, () -> target.getUserProfile(NOT_EXIST_ID));
+
+        //then
+        assertThat(result instanceof NotFoundException).isEqualTo(true);
+    }
+
+    @Test
+    public void getUserProfile_성공() {
+        //given
+        User existUser = createUser(EXIST_ID);
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
+
+        //when
+        target.getUserProfile(EXIST_ID);
+
+        //then
+        verify(userDao, times(1)).fetch(EXIST_ID);
     }
 }
