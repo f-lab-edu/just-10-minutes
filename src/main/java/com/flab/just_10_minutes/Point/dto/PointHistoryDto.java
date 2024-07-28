@@ -10,22 +10,21 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class    PointHistoryDto {
+public class PointHistoryDto {
 
     @NotEmpty
     private String loginId;
-
     @NotNull
     private Long quantity;
-
     @NotEmpty
     private String reason;
 
     public static PointHistory toDomain(PointHistoryDto pointDto) {
         return PointHistory.builder()
                 .loginId(pointDto.getLoginId())
-                .quantity(Math.abs(pointDto.getQuantity()))
+                .quantity(pointDto.getQuantity())
                 .reason(pointDto.getReason())
+                .totalQuantity(0L)
                 .build();
     }
 }
