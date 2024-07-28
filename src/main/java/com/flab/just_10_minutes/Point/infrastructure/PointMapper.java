@@ -10,7 +10,7 @@ import java.util.List;
 public interface PointMapper {
 
     @Insert("INSERT INTO point_histories_table (login_id, quantity, reason, total_quantity) " +
-            "VALUES  (#{loginId}, #{quantity}, #{reason}, #{totalQuantity})")
+            "VALUES (#{loginId}, #{quantity}, #{reason}, #{totalQuantity})")
     int save(PointHistory pointHistory);
 
     @Select("SELECT login_id, quantity, reason, total_quantity " +
