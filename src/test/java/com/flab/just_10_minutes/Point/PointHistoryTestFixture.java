@@ -33,4 +33,13 @@ public class PointHistoryTestFixture {
                 .totalQuantity(0L)
                 .build();
     }
+
+    public static PointHistory createPointHistory(String loginId, Long quantity, String reason, Long totalPoint) {
+        return PointHistory.builder()
+                .loginId(loginId)
+                .quantity(quantity)
+                .reason(reason)
+                .totalQuantity(totalPoint)
+                .build();
+    }
 }
