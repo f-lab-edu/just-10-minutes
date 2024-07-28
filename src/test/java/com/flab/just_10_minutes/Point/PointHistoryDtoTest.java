@@ -1,13 +1,11 @@
 package com.flab.just_10_minutes.Point;
 
 import com.flab.just_10_minutes.Point.dto.PointHistoryDto;
-import com.flab.just_10_minutes.User.dto.UserDto;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
