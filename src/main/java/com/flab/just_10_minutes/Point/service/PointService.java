@@ -1,33 +1,53 @@
 package com.flab.just_10_minutes.Point.service;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
-import com.flab.just_10_minutes.Point.mapper.PointMapper;
-import com.flab.just_10_minutes.User.service.UserService;
+import com.flab.just_10_minutes.Point.dto.PointHistoryResponseDto;
+import com.flab.just_10_minutes.Point.dto.PointStatusDto;
+import com.flab.just_10_minutes.Point.infrastructure.PointDao;
+import com.flab.just_10_minutes.User.infrastructure.UserDao;
+import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.flab.just_10_minutes.Util.Exception.Business.BusinessException.INIT_POINT_COULD_NOT_MINUS;
+
 
 @Service
 @RequiredArgsConstructor
 public class PointService {
 
-    private final UserService userService;
-    private final PointMapper pointMapper;
+    private final UserDao userDao;
+    private final PointDao pointDao;
 
-    public void save(PointHistory pointHistory) {
-        userService.update(pointHistory.getLoginId(), pointHistory.getQuantity());
+    public PointHistory offerPoint(final PointHistory pointHistory) {
+        userDao.fetch(pointHistory.getLoginId());
 
-        int saveResult = pointMapper.save(pointHistory);
-        if (saveResult != 1) {
-            throw new RuntimeException("Fail insert. Please retry");
-        }
+        PointHistory newHistory = pointDao.calculateTotalQuantity(pointHistory).orElseThrow(() -> {throw new BusinessException(INIT_POINT_COULD_NOT_MINUS);});
+        pointDao.save(newHistory);
+
+        return pointDao.findTopByOrderByLoginIdDesc(pointHistory.getLoginId());
     }
 
-    public List<PointHistory> findByLoginId(final String loginId) {
-        List<PointHistory> result = pointMapper.findByLoginId(loginId);
+    public Long getTotalPoint(final String loginId) {
+        userDao.fetch(loginId);
 
-        return result == null ? new ArrayList<>() : result;
+        PointHistory latestHistory = pointDao.findTopByOrderByLoginIdDesc(loginId);
+
+        return latestHistory == null ? 0L : latestHistory.getTotalQuantity();
+    }
+
+    public PointStatusDto getPointHistories(final String loginId) {
+        userDao.fetch(loginId);
+
+        return PointStatusDto.builder()
+                    .totalQuantity(getTotalPoint(loginId))
+                    .histories(pointDao.findByLoginId(loginId)
+                                        .stream()
+                                        .map(v -> PointHistoryResponseDto.builder()
+                                                                        .quantity(v.getQuantity())
+                                                                        .reason(v.getReason())
+                                                                        .build())
+                                        .collect(Collectors.toList())).build();
     }
 }
