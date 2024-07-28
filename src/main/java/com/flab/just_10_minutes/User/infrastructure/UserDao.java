@@ -9,7 +9,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.Util.contants.ResponseMessage.*;
+import static com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException.DUPLICATED_KEY_LOGIN_ID;
+import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_INSERT;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.NOT_EXIST_USER;
 
 @Repository
 @RequiredArgsConstructor
@@ -38,9 +40,6 @@ public class UserDao {
     }
 
     public User fetch(final String loginId) {
-        if (!userMapper.existsByLoginId(loginId)) {
-            throw new NotFoundException(NOT_EXIST_USER);
-        }
-        return userMapper.findByLoginId(loginId);
+        return Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {throw new NotFoundException(NOT_EXIST_USER);});
     }
 }

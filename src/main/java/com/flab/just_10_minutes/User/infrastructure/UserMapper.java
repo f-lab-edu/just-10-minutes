@@ -11,8 +11,8 @@ public interface UserMapper {
     @Select("SELECT * FROM users_table WHERE login_id = #{loginId}")
     User findByLoginId(final String loginId);
 
-    @Insert("INSERT INTO users_table (login_id, password, phone, address, role, point)" +
-            "VALUES (#{loginId}, #{password}, #{phone}, #{address}, #{role}, #{point})")
+    @Insert("INSERT INTO users_table (login_id, password, phone, address, role)" +
+            "VALUES (#{loginId}, #{password}, #{phone}, #{address}, #{role})")
     int save(final User user);
 
     @Select("SELECT EXISTS(SELECT * FROM users_table WHERE login_id = #{loginId});")

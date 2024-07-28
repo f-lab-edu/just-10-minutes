@@ -16,7 +16,7 @@ import java.util.Optional;
 import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
 import static com.flab.just_10_minutes.User.UserDtoTestFixture.NOT_EXIST_ID;
 import static com.flab.just_10_minutes.User.UserTestFixture.*;
-import static com.flab.just_10_minutes.Util.contants.ResponseMessage.DUPLICATED_REGISTER;
+import static com.flab.just_10_minutes.Util.Exception.Business.BusinessException.DUPLICATED_REGISTER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

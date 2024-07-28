@@ -1,6 +1,6 @@
 package com.flab.just_10_minutes.User;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,22 +18,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @SpringBootTest
-public class IntegrationTest {
+public class UserIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    private Gson gson = new Gson();
+    private ObjectMapper mapper = new ObjectMapper();
+
+    static final String SIGN_UP_URL = "/users/sign-up";
+    private static final String PROFILE_URL = "/users/profile/{loginId}";
 
     @Test
     public void signUp_실패_이미_존재하는_회원() throws Exception {
         //given
-        final String url = "/users/sign_up";
+        final String url = SIGN_UP_URL;
 
         //when
         final ResultActions resultAction = mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
-                        .content(gson.toJson(createTestUserDto(EXIST_ID, PASSWORD, PHONE, ADDRESS)))
+                        .content(mapper.writeValueAsString(createTestUserDto(EXIST_ID, PASSWORD, PHONE, ADDRESS)))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -44,12 +47,12 @@ public class IntegrationTest {
     @Test
     public void signUp_성공() throws Exception {
         //given
-        final String url = "/users/sign_up";
+        final String url = SIGN_UP_URL;
 
         //when
         final ResultActions resultAction = mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
-                        .content(gson.toJson(createTestUserDto(NOT_EXIST_ID, PASSWORD, PHONE, ADDRESS)))
+                        .content(mapper.writeValueAsString(createTestUserDto(NOT_EXIST_ID, PASSWORD, PHONE, ADDRESS)))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -60,7 +63,7 @@ public class IntegrationTest {
     @Test
     public void showUserProfile_실패_존재하지_않는_회원() throws Exception {
         //given
-        final String url = "/users/profile/{loginId}";
+        final String url = PROFILE_URL;
 
         //when
         final ResultActions resultAction = mockMvc.perform(
@@ -68,13 +71,13 @@ public class IntegrationTest {
         );
 
         //then
-        resultAction.andExpect(status().isBadRequest());
+        resultAction.andExpect(status().isNotFound());
     }
 
     @Test
     public void showUserProfile_성공() throws Exception {
         //given
-        final String url = "/users/profile/{loginId}";
+        final String url = PROFILE_URL;
 
         //when
         final ResultActions resultAction = mockMvc.perform(

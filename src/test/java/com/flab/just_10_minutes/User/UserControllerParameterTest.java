@@ -1,9 +1,9 @@
 package com.flab.just_10_minutes.User;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.User.controller.UserController;
 import com.flab.just_10_minutes.User.service.UserService;
 import com.flab.just_10_minutes.Util.Handler.GlobalExceptionHandler;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.stream.Stream;
 
 import static com.flab.just_10_minutes.User.UserDtoTestFixture.*;
+import static com.flab.just_10_minutes.User.UserIntegrationTest.SIGN_UP_URL;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,11 +33,10 @@ public class UserControllerParameterTest {
     private UserService userService;
 
     private MockMvc mockMvc;
-    private Gson gson;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     public void setUp() {
-        gson = new Gson();
         mockMvc = MockMvcBuilders.standaloneSetup(target)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
@@ -52,12 +52,12 @@ public class UserControllerParameterTest {
         @MethodSource("invalidUserDtoParameter")
         void invalidCreate(String loginId, String password, String phone, String address, String message) throws Exception {
             //given
-            final String url = "/users/sign_up";
+            final String url = SIGN_UP_URL;
 
             //when
             final ResultActions resultActions = mockMvc.perform(
                     MockMvcRequestBuilders.post(url)
-                            .content(gson.toJson(createTestUserDto(loginId, password, phone, address)))
+                            .content(mapper.writeValueAsString(createTestUserDto(loginId, password, phone, address)))
                             .contentType(MediaType.APPLICATION_JSON)
             );
 
@@ -85,12 +85,12 @@ public class UserControllerParameterTest {
         @MethodSource("invalidUserDtoParameter")
         void invalidCreate(String loginId, String password, String phone, String address, String message) throws Exception {
             //given
-            final String url = "/users/sign_up";
+            final String url = SIGN_UP_URL;
 
             //when
             final ResultActions resultActions = mockMvc.perform(
                     MockMvcRequestBuilders.post(url)
-                            .content(gson.toJson(createTestUserDto(loginId, password, phone, address)))
+                            .content(mapper.writeValueAsString(createTestUserDto(loginId, password, phone, address)))
                             .contentType(MediaType.APPLICATION_JSON)
             );
 
@@ -118,12 +118,12 @@ public class UserControllerParameterTest {
         @MethodSource("invalidUserDtoParameter")
         void invalidLoginIdCreate(String loginId, String password, String phone, String address, String field,Integer fieldLength) throws Exception {
             //given
-            final String url = "/users/sign_up";
+            final String url = SIGN_UP_URL;
 
             //when
             final ResultActions resultActions = mockMvc.perform(
                     MockMvcRequestBuilders.post(url)
-                            .content(gson.toJson(createTestUserDto(loginId, password, phone, address)))
+                            .content(mapper.writeValueAsString(createTestUserDto(loginId, password, phone, address)))
                             .contentType(MediaType.APPLICATION_JSON)
             );
 
@@ -151,12 +151,12 @@ public class UserControllerParameterTest {
         @MethodSource("invalidUserDtoParameter")
         void invalidLoginIdCreate(String loginId, String password, String phone, String address, String message) throws Exception {
             //given
-            final String url = "/users/sign_up";
+            final String url = SIGN_UP_URL;
 
             //when
             final ResultActions resultActions = mockMvc.perform(
                     MockMvcRequestBuilders.post(url)
-                            .content(gson.toJson(createTestUserDto(loginId, password, phone, address)))
+                            .content(mapper.writeValueAsString(createTestUserDto(loginId, password, phone, address)))
                             .contentType(MediaType.APPLICATION_JSON)
             );
 
@@ -182,12 +182,12 @@ public class UserControllerParameterTest {
     @Test
     public void signUp_실패_파라미터가_null() throws Exception {
         //given
-        final String url = "/users/sign_up";
+        final String url = SIGN_UP_URL;
 
         //when
         final ResultActions resultAction = mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
-                        .content(gson.toJson(null))
+                        .content(mapper.writeValueAsString(null))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
