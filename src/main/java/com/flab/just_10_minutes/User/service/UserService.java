@@ -6,8 +6,6 @@ import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.flab.just_10_minutes.Util.Exception.Business.BusinessException.DUPLICATED_REGISTER;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -16,7 +14,7 @@ public class UserService {
 
     public void save(final User user) {
         if (userDao.existsByLoginId(user.getLoginId())) {
-            throw new BusinessException(DUPLICATED_REGISTER);
+            throw new BusinessException("Duplicate User Registration Request");
         }
         userDao.save(user);
     }

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class NotFoundException extends DatabaseException{
 
-    public static final String NOT_EXIST_USER= "Not Exist User";
+    public static final String NOT_FOUND_MSG = "Not Found";
 
     public NotFoundException(String message) {
         super(message, HttpStatus.NOT_FOUND);

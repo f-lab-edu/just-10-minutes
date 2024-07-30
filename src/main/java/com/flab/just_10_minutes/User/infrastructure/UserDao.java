@@ -9,9 +9,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException.DUPLICATED_KEY_LOGIN_ID;
-import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_INSERT;
-import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.NOT_EXIST_USER;
+import static com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException.DUPLICATED_KEY_MSG;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.NOT_FOUND_MSG;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,10 +27,10 @@ public class UserDao {
             int insertCount = userMapper.save(user);
 
             if (insertCount != 1) {
-                throw new InternalException(FAIL_TO_INSERT);
+                throw new InternalException("Fail to Insert");
             }
         } catch (DuplicateKeyException e) {
-            throw new DuplicatedKeyException(DUPLICATED_KEY_LOGIN_ID);
+            throw new DuplicatedKeyException(DUPLICATED_KEY_MSG);
         }
     }
 
@@ -40,6 +39,14 @@ public class UserDao {
     }
 
     public User fetch(final String loginId) {
-        return Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {throw new NotFoundException(NOT_EXIST_USER);});
+        return Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND_MSG);});
+    }
+
+    public void patchPoints(final String loginId, final Long updatePoints) {
+        int updateCount = userMapper.updatePoint(loginId, updatePoints);
+
+        if (updateCount != 1) {
+            throw new InternalException("Fail to Update");
+        }
     }
 }
