@@ -4,8 +4,11 @@ import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Point.dto.PointStatusDto;
 import com.flab.just_10_minutes.Point.infrastructure.PointDao;
 import com.flab.just_10_minutes.Point.service.PointService;
+import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
+import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
+import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +21,8 @@ import java.util.Optional;
 
 import static com.flab.just_10_minutes.Point.PointHistoryTestFixture.createPointHistory;
 import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.NOT_EXIST_ID;
+import static com.flab.just_10_minutes.User.UserTestFixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,9 +45,9 @@ class PointServiceTest {
     @Test
     public void offerPoint_실패_존재하지_않는_회원() {
         //given
-        PointHistory plusHistory = createPointHistory(NOT_EXIST_ID, 100L);
+        PointHistory plusHistory = createPointHistory(EXIST_ID, 100L);
 
-        doThrow(NotFoundException.class).when(userDao).fetch(NOT_EXIST_ID);
+        doThrow(NotFoundException.class).when(userDao).fetch(EXIST_ID);
 
         //when
         final DatabaseException result = assertThrows(DatabaseException.class, () -> target.offerPoint(plusHistory));
@@ -54,95 +56,122 @@ class PointServiceTest {
         assertThat(result instanceof NotFoundException).isEqualTo(true);
     }
 
-    @Test
-    public void offerPoint_포인트_추가_성공_포인트_기록_최초_저장() {
-        //given
-        PointHistory initHistory = createPointHistory(EXIST_ID, 100L);
-        PointHistory newHistory = initHistory.calculateTotalQuantity(null);
 
-        doReturn(null).when(userDao).fetch(EXIST_ID);
-        doReturn(Optional.of(newHistory)).when(pointDao).calculateTotalQuantity(initHistory);
+    @Test
+    public void offerPoint_실패_히스토리_저장_실패() {
+        //given
+        User existUser = createUser(EXIST_ID, 1000L);
+        PointHistory plusHistory = createPointHistory(EXIST_ID, 100L);
+
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
+        doThrow(InternalException.class).when(pointDao).save(any(PointHistory.class));
+
+        //when
+        final DatabaseException result = assertThrows(DatabaseException.class, () -> target.offerPoint(plusHistory));
+
+        //then
+        assertThat(result instanceof InternalException).isEqualTo(true);
+    }
+
+    @Test
+    public void offerPoint_실패_포인트_업데이트_실패() {
+        //given
+        User existUser = createUser(EXIST_ID, 1000L);
+        PointHistory plusHistory = createPointHistory(EXIST_ID, 100L);
+        PointHistory newHistory = plusHistory.increase(existUser.getPoints());
+
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(any(PointHistory.class));
-        doReturn(newHistory).when(pointDao).findTopByOrderByLoginIdDesc(EXIST_ID);
+        doThrow(InternalException.class).when(userDao).patchPoints(EXIST_ID, newHistory.getTotalQuantity());
+
+        //when
+        final DatabaseException result = assertThrows(DatabaseException.class, () -> target.offerPoint(plusHistory));
+
+        //then
+        assertThat(result instanceof InternalException).isEqualTo(true);
+    }
+
+    @Test
+    public void offerPoint_실패_기록이_없음() {
+        //given
+        User existUser = createUser(EXIST_ID, 1000L);
+        PointHistory plusHistory = createPointHistory(EXIST_ID, 100L);
+        PointHistory newHistory = plusHistory.increase(existUser.getPoints());
+
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
+        doNothing().when(pointDao).save(any(PointHistory.class));
+        doNothing().when(userDao).patchPoints(EXIST_ID, newHistory.getTotalQuantity());
+        doReturn(Optional.ofNullable(null)).when(pointDao).findFirst(EXIST_ID);
+
+        //when
+        final BusinessException result = assertThrows(BusinessException.class, () -> target.offerPoint(plusHistory));
+
+        //then
+        assertThat(result instanceof BusinessException).isEqualTo(true);
+    }
+    @Test
+    public void offerPoint_성공() {
+        //given
+        User existUser = createUser(EXIST_ID, 1000L);
+        PointHistory initHistory = createPointHistory(EXIST_ID, 100L);
+        PointHistory newHistory = initHistory.increase(existUser.getPoints());
+
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
+        doNothing().when(pointDao).save(newHistory);
+        doNothing().when(userDao).patchPoints(EXIST_ID, newHistory.getTotalQuantity());
+        doReturn(Optional.ofNullable(newHistory)).when(pointDao).findFirst(EXIST_ID);
 
         //when
         PointHistory saveHistory = target.offerPoint(initHistory);
 
         //then
-        verify(userDao, times(1)).fetch(EXIST_ID);
-        verify(pointDao, times(1)).calculateTotalQuantity(any(PointHistory.class));
         verify(pointDao, times(1)).save(any(PointHistory.class));
-        verify(pointDao, times(1)).findTopByOrderByLoginIdDesc(EXIST_ID);
+        verify(userDao, times(1)).patchPoints(EXIST_ID, newHistory.getTotalQuantity());
+        verify(pointDao, times(1)).findFirst(EXIST_ID);
         assertThat(newHistory).isEqualTo(saveHistory);
     }
 
     @Test
-    public void offerPoint_포인트_추가_성공_포인트_기록_최초_저장2() {
+    public void getTotalPoint_보유한_포인트가_없는_경우() {
         //given
-        PointHistory initHistory = createPointHistory(EXIST_ID, 100L).calculateTotalQuantity(null);
-        PointHistory newHistory = createPointHistory(EXIST_ID, 200L);
-        PointHistory latestHistory = newHistory.calculateTotalQuantity(initHistory);
-
-
-        doReturn(null).when(userDao).fetch(EXIST_ID);
-        doReturn(Optional.of(latestHistory)).when(pointDao).calculateTotalQuantity(newHistory);
-        doNothing().when(pointDao).save(any(PointHistory.class));
-        doReturn(latestHistory).when(pointDao).findTopByOrderByLoginIdDesc(EXIST_ID);
-
-        //when
-        PointHistory saveHistory = target.offerPoint(newHistory);
-
-        //then
-        verify(userDao, times(1)).fetch(EXIST_ID);
-        verify(pointDao, times(1)).calculateTotalQuantity(any(PointHistory.class));
-        verify(pointDao, times(1)).save(any(PointHistory.class));
-        verify(pointDao, times(1)).findTopByOrderByLoginIdDesc(EXIST_ID);
-        assertThat(latestHistory).isEqualTo(saveHistory);
-    }
-
-    @Test
-    public void getTotalPoint_최초_기록이_없는_경우() {
-        //given
-        doReturn(null).when(userDao).fetch(EXIST_ID);
-        doReturn(null).when(pointDao).findTopByOrderByLoginIdDesc(EXIST_ID);
+        User existUser = createUser(EXIST_ID, 0L);
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
 
         //when
         Long totalPoint = target.getTotalPoint(EXIST_ID);
 
         //then
         verify(userDao, times(1)).fetch(EXIST_ID);
-        verify(pointDao, times(1)).findTopByOrderByLoginIdDesc(EXIST_ID);
         assertThat(totalPoint).isEqualTo(0L);
     }
 
     @Test
-    public void getTotalPoint_기록이_있는_경우() {
+    public void getTotalPoint_보유한_포인트가_있는_경우() {
         //given
-        PointHistory latestHistory = createPointHistory(EXIST_ID, 200L, "test", 1000L);
-
-        doReturn(null).when(userDao).fetch(EXIST_ID);
-        doReturn(latestHistory).when(pointDao).findTopByOrderByLoginIdDesc(EXIST_ID);
+        User existUser = createUser(EXIST_ID, 1000L);
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
 
         //when
         Long totalPoint = target.getTotalPoint(EXIST_ID);
 
         //then
         verify(userDao, times(1)).fetch(EXIST_ID);
-        verify(pointDao, times(1)).findTopByOrderByLoginIdDesc(EXIST_ID);
         assertThat(totalPoint).isEqualTo(1000L);
     }
 
     @Test
-    public void getPointHistories_최초_기록이_없는_경우() {
+    public void getPointHistories_기록이_없는_경우() {
         //given
-        doReturn(null).when(pointDao).findTopByOrderByLoginIdDesc(EXIST_ID);
+        User existUser = createUser(EXIST_ID, 0L);
+
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doReturn(new ArrayList<>()).when(pointDao).findByLoginId(EXIST_ID);
 
         //when
         PointStatusDto pointHistories = target.getPointHistories(EXIST_ID);
 
         //then
-        verify(pointDao, times(1)).findTopByOrderByLoginIdDesc(EXIST_ID);
+        verify(userDao, times(1)).fetch(EXIST_ID);
         verify(pointDao, times(1)).findByLoginId(EXIST_ID);
         assertThat(pointHistories.getTotalQuantity()).isEqualTo(0L);
         assertThat(pointHistories.getHistories().size()).isEqualTo(0);
@@ -151,21 +180,26 @@ class PointServiceTest {
     @Test
     public void getPointHistories_기록이_있는_경우() {
         //setUp
+        User existUser = createUser(EXIST_ID, 0L);
+
         ArrayList<PointHistory> histories = new ArrayList<>();
-        PointHistory initHistory = createPointHistory(EXIST_ID, 100L).calculateTotalQuantity(null);
-        PointHistory secondHistory = createPointHistory(EXIST_ID, 200L).calculateTotalQuantity(initHistory);
+        PointHistory initHistory = createPointHistory(EXIST_ID, 100L).increase(existUser.getPoints());
+        existUser = createUser(EXIST_ID, initHistory.getTotalQuantity());
+
+        PointHistory secondHistory = createPointHistory(EXIST_ID, 200L).increase(existUser.getPoints());
+        existUser = createUser(EXIST_ID, secondHistory.getTotalQuantity());
         histories.add(initHistory);
         histories.add(secondHistory);
 
         //given
-        doReturn(secondHistory).when(pointDao).findTopByOrderByLoginIdDesc(EXIST_ID);
+        doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doReturn(histories).when(pointDao).findByLoginId(EXIST_ID);
 
         //when
         PointStatusDto pointHistories = target.getPointHistories(EXIST_ID);
 
         //then
-        verify(pointDao, times(1)).findTopByOrderByLoginIdDesc(EXIST_ID);
+        verify(userDao, times(1)).fetch(EXIST_ID);
         verify(pointDao, times(1)).findByLoginId(EXIST_ID);
         assertThat(pointHistories.getTotalQuantity()).isEqualTo(300L);
         assertThat(pointHistories.getHistories().size()).isEqualTo(2);

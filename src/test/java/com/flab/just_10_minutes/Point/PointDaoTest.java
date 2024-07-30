@@ -15,7 +15,6 @@ import java.util.Optional;
 
 import static com.flab.just_10_minutes.Point.PointHistoryTestFixture.createPointHistory;
 import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.NOT_EXIST_ID;
 import static com.flab.just_10_minutes.User.UserTestFixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,130 +45,7 @@ public class PointDaoTest {
 
     public void saveHistory(String loginId, Long quantity, String reason) {
         PointHistory initHistory = createPointHistory(loginId, quantity, reason, 0L);
-        target.save(target.calculateTotalQuantity(initHistory).get());
-    }
-
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    @DisplayName("calculateTotalQuantity 테스트 : 포인트 추가")
-    class PointHistoryDomainTestPLUS {
-
-        @Test
-        @DisplayName("최초 기록이 없는 경우")
-        public void initHistory() {
-            //setUp
-            saveUser(NOT_EXIST_ID);
-
-            //given
-            PointHistory initHistory = createPointHistory(NOT_EXIST_ID, 100L, "initOffer", 0L);
-            PointHistory expectedHistory = createPointHistory(NOT_EXIST_ID, 100L, "initOffer", 100L);
-
-            //when
-            Optional<PointHistory> pointHistory = target.calculateTotalQuantity(initHistory);
-
-            //then
-            assertThat(pointHistory.get()).isEqualTo(expectedHistory);
-        }
-
-        @Test
-        @DisplayName("기록이 있는 경우")
-        public void existHistory() {
-            //setUp
-            saveUser(NOT_EXIST_ID);
-            saveHistory(NOT_EXIST_ID, 100L, "initOffer");
-
-            //given
-            PointHistory newHistory = createPointHistory(NOT_EXIST_ID, 200L, "secondOffer", 0L);
-
-            PointHistory expectedHistory = createPointHistory(NOT_EXIST_ID, 200L, "secondOffer", 300L);
-
-            //when
-            Optional<PointHistory> pointHistory = target.calculateTotalQuantity(newHistory);
-
-            //then
-            assertThat(pointHistory.get()).isEqualTo(expectedHistory);
-        }
-
-    }
-
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    @DisplayName("calculateTotalQuantity 테스트 : 포인트 차감")
-    class PointHistoryDomainTestMINUS {
-
-        @Test
-        @DisplayName("최초 기록이 없는 경우")
-        public void initHistory() {
-            //setUp
-            saveUser(NOT_EXIST_ID);
-
-            //given
-            PointHistory initHistory = createPointHistory(NOT_EXIST_ID, -100L, "initOffer", 0L);
-
-            //when
-            Optional<PointHistory> pointHistory = target.calculateTotalQuantity(initHistory);
-
-            //then
-            assertThat(pointHistory.isPresent()).isEqualTo(false);
-        }
-
-        @Test
-        @DisplayName("기록된 포인트가 있고 차감할 포인트 < 보유한 포인트")
-        public void existHistory1() {
-            //setUp
-            saveUser(NOT_EXIST_ID);
-            saveHistory(NOT_EXIST_ID, 100L, "initOffer");
-
-            //given
-            PointHistory initHistory = createPointHistory(NOT_EXIST_ID, -200L, "secondOffer", 0L);
-
-            PointHistory expectedHistory = createPointHistory(NOT_EXIST_ID, -100L, "secondOffer", 0L);
-
-            //when
-            Optional<PointHistory> pointHistory = target.calculateTotalQuantity(initHistory);
-
-            //then
-            assertThat(pointHistory.get()).isEqualTo(expectedHistory);
-        }
-
-        @Test
-        @DisplayName("포인트 차감 기록된 포인트가 있고 차감할 포인트 == 보유한 포인트")
-        public void existHistory2() {
-            //setUp
-            saveUser(NOT_EXIST_ID);
-            saveHistory(NOT_EXIST_ID, 100L, "initOffer");
-
-            //given
-            PointHistory initHistory = createPointHistory(NOT_EXIST_ID, -100L, "secondOffer", 0L);
-
-            PointHistory expectedHistory = createPointHistory(NOT_EXIST_ID, -100L, "secondOffer", 0L);
-
-            //when
-            Optional<PointHistory> pointHistory = target.calculateTotalQuantity(initHistory);
-
-            //then
-            assertThat(pointHistory.get()).isEqualTo(expectedHistory);
-        }
-
-
-        @Test
-        @DisplayName("포인트 차감 기록된 포인트가 있고 차감할 포인트 < 보유한 포인트")
-        public void existHistory3() {
-            //setUp
-            saveUser(NOT_EXIST_ID);
-            saveHistory(NOT_EXIST_ID, 500L, "initOffer");
-
-            //given
-            PointHistory initHistory = createPointHistory(NOT_EXIST_ID, -100L, "secondOffer", 0L);
-
-            PointHistory expectedHistory = createPointHistory(NOT_EXIST_ID, -100L, "secondOffer", 400L);
-
-            //when
-            Optional<PointHistory> pointHistory = target.calculateTotalQuantity(initHistory);
-
-            //then
-            assertThat(pointHistory.get()).isEqualTo(expectedHistory);
-        }
+        target.save(initHistory);
     }
 
     @Test
@@ -179,7 +55,7 @@ public class PointDaoTest {
 
         //when
         target.save(pointHistory);
-        PointHistory latestHistory = target.findTopByOrderByLoginIdDesc(EXIST_ID);
+        PointHistory latestHistory = target.findFirst(EXIST_ID).get();
 
         //then
         assertThat(latestHistory.getLoginId()).isEqualTo(pointHistory.getLoginId());
@@ -188,25 +64,28 @@ public class PointDaoTest {
     }
 
     @Test
-    public void findTopByOrderByLoginIdDesc_null_반환_포인트_기록이_없음() {
+    public void findFirst_null_반환_포인트_기록이_없음() {
+        //setUp
+        saveUser(EXIST_ID);
         //given
         //when
-        PointHistory latestHistory = target.findTopByOrderByLoginIdDesc(EXIST_ID);
+        Optional<PointHistory> latestHistory = target.findFirst(EXIST_ID);
 
         //then
-        assertThat(latestHistory).isNull();
+        assertThat(latestHistory.isPresent()).isEqualTo(false);
     }
 
     @Test
-    public void findTopByOrderByLoginIdDesc_PointHistory_객체_중_가장_최근에_저장된_기록을_반환() {
-        //given
+    public void findFirst_PointHistory_객체_중_가장_최근에_저장된_기록을_반환() {
+        //setUp
+        saveUser(EXIST_ID);
         PointHistory initHistory = createPointHistory(EXIST_ID, 100L, "first");
-        PointHistory secondHistory = createPointHistory(EXIST_ID, 100L, "second").calculateTotalQuantity(initHistory);
+        PointHistory secondHistory = createPointHistory(EXIST_ID, 100L, "second");
         target.save(initHistory);
         target.save(secondHistory);
-
+        //given
         //when
-        PointHistory latestHistory = target.findTopByOrderByLoginIdDesc(EXIST_ID);
+        PointHistory latestHistory = target.findFirst(EXIST_ID).get();
 
         //then
         assertThat(latestHistory).isEqualTo(secondHistory);
@@ -227,7 +106,7 @@ public class PointDaoTest {
         //given
         //setup
         PointHistory initHistory = createPointHistory(EXIST_ID, 100L, "first");
-        PointHistory secondHistory = createPointHistory(EXIST_ID, 100L, "second").calculateTotalQuantity(initHistory);
+        PointHistory secondHistory = createPointHistory(EXIST_ID, 100L, "second");
         target.save(initHistory);
         target.save(secondHistory);
 

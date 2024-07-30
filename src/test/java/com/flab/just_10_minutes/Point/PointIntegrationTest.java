@@ -138,6 +138,7 @@ public class PointIntegrationTest {
     @Test
     public void showTotal_성공() throws Exception {
         //setUp
+        saveUser(EXIST_ID);
         saveHistory(EXIST_ID, 100L);
         saveHistory(EXIST_ID, 200L);
         //given
@@ -172,6 +173,7 @@ public class PointIntegrationTest {
     @Test
     public void showHistories_성공() throws Exception {
         //setUp
+        saveUser(EXIST_ID);
         saveHistory(EXIST_ID, 100L);
         saveHistory(EXIST_ID, -200L);
         saveHistory(EXIST_ID, 300L);
@@ -188,7 +190,7 @@ public class PointIntegrationTest {
 
         String content = resultAction.andReturn().getResponse().getContentAsString();
         PointStatusDto response = mapper.readValue(content, PointStatusDto.class);
-        assertThat(response.getTotalQuantity()).isEqualTo(300L);
+        assertThat(response.getTotalQuantity()).isEqualTo(200L);
         assertThat(response.getHistories().size()).isEqualTo(3);
     }
 }

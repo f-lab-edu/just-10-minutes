@@ -27,7 +27,7 @@ public class PointService {
 
         userDao.patchPoints(user.getLoginId(), newHistory.getTotalQuantity());
 
-        return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Error");});
+        return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Internal Error");});
     }
 
     public Long getTotalPoint(final String loginId) {
