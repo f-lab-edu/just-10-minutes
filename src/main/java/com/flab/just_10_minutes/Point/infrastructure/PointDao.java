@@ -2,13 +2,10 @@ package com.flab.just_10_minutes.Point.infrastructure;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
-
-import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_INSERT;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,20 +17,15 @@ public class PointDao {
         int insertCount = pointMapper.save(pointHistory);
 
         if (insertCount != 1) {
-            throw new InternalException(FAIL_TO_INSERT);
+            throw new InternalException("Fail to Insert");
         }
     }
 
-    public PointHistory findTopByOrderByLoginIdDesc(final String loginId) {
-        return pointMapper.findTopByOrderByLoginIdDesc(loginId);
+    public Optional<PointHistory> findFirst(final String loginId) {
+        return Optional.ofNullable(pointMapper.findTopByOrderByLoginIdDesc(loginId));
     }
 
     public List<PointHistory> findByLoginId(final String loginId) {
         return pointMapper.findByLoginId(loginId);
-    }
-
-    public Optional<PointHistory> calculateTotalQuantity(@NonNull PointHistory newHistory) {
-        PointHistory latestHistory = findTopByOrderByLoginIdDesc(newHistory.getLoginId());
-        return Optional.ofNullable(newHistory.calculateTotalQuantity(latestHistory));
     }
 }

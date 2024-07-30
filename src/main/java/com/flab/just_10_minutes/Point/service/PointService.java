@@ -4,13 +4,12 @@ import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Point.dto.PointHistoryResponseDto;
 import com.flab.just_10_minutes.Point.dto.PointStatusDto;
 import com.flab.just_10_minutes.Point.infrastructure.PointDao;
+import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
-
-import static com.flab.just_10_minutes.Util.Exception.Business.BusinessException.INIT_POINT_COULD_NOT_MINUS;
 
 
 @Service
@@ -21,27 +20,27 @@ public class PointService {
     private final PointDao pointDao;
 
     public PointHistory offerPoint(final PointHistory pointHistory) {
-        userDao.fetch(pointHistory.getLoginId());
+        User user = userDao.fetch(pointHistory.getLoginId());
 
-        PointHistory newHistory = pointDao.calculateTotalQuantity(pointHistory).orElseThrow(() -> {throw new BusinessException(INIT_POINT_COULD_NOT_MINUS);});
+        PointHistory newHistory = pointHistory.increase(user.getPoints());
         pointDao.save(newHistory);
 
-        return pointDao.findTopByOrderByLoginIdDesc(pointHistory.getLoginId());
+        userDao.patchPoints(user.getLoginId(), newHistory.getTotalQuantity());
+
+        return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Error");});
     }
 
     public Long getTotalPoint(final String loginId) {
-        userDao.fetch(loginId);
+        User user = userDao.fetch(loginId);
 
-        PointHistory latestHistory = pointDao.findTopByOrderByLoginIdDesc(loginId);
-
-        return latestHistory == null ? 0L : latestHistory.getTotalQuantity();
+        return user.getPoints();
     }
 
     public PointStatusDto getPointHistories(final String loginId) {
-        userDao.fetch(loginId);
+        User user = userDao.fetch(loginId);
 
         return PointStatusDto.builder()
-                    .totalQuantity(getTotalPoint(loginId))
+                    .totalQuantity(user.getPoints())
                     .histories(pointDao.findByLoginId(loginId)
                                         .stream()
                                         .map(v -> PointHistoryResponseDto.builder()
