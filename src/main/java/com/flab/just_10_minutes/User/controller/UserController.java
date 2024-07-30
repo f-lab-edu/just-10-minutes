@@ -17,7 +17,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/sign_up")
+    @PostMapping("/sign-up")
     public ResponseEntity<HttpStatus> signUp(@RequestBody @Valid UserDto userDto) {
         userService.save(UserDto.toDomain(userDto));
 

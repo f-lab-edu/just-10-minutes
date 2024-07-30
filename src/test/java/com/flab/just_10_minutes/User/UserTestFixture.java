@@ -12,6 +12,7 @@ public class UserTestFixture {
                 .phone("010-1234-5678")
                 .address("testAddress")
                 .role(User.ROLE.PUBLIC)
+                .points(0L)
                 .build();
     }
 
@@ -22,6 +23,18 @@ public class UserTestFixture {
                 .phone("010-1234-5678")
                 .address("testAddress")
                 .role(User.ROLE.PUBLIC)
+                .points(0L)
+                .build();
+    }
+
+    public static User createUser(String loginId, Long points) {
+        return User.builder()
+                .loginId(loginId)
+                .password("testPassword")
+                .phone("010-1234-5678")
+                .address("testAddress")
+                .role(User.ROLE.PUBLIC)
+                .points(points)
                 .build();
     }
 }

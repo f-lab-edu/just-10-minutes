@@ -2,9 +2,6 @@ package com.flab.just_10_minutes.Util.Handler;
 
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
-import com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException;
-import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
-import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,48 +39,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(final DatabaseException exception) {
         log.warn("DatabaseException occur : ", exception);
 
-        if (exception instanceof NotFoundException) {
-            return makeBadRequestResponseEntity(exception.getMessage());
-        } else if (exception instanceof DuplicatedKeyException) {
-            return makeConflictResponseEntity(exception.getMessage());
-        } else if (exception instanceof InternalException) {
-            return makeInternalErrorResponseEntity(exception.getMessage());
-        } else {
-            return makeNotFoundResponseEntity(exception.getMessage());
-        }
+        return makeResponseEntity(exception.getMessage(), exception.getHttpStatus());
     }
 
     @ExceptionHandler({BusinessException.class})
     public ResponseEntity<ErrorResponse> handleException(final BusinessException exception) {
         log.warn("BusinessException occur : ", exception);
 
-        return makeBadRequestResponseEntity(exception.getMessage());
+        return makeResponseEntity(exception.getMessage(), exception.getHttpStatus());
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.warn("Exception occur : ", exception);
-        return makeBadRequestResponseEntity(exception.getMessage());
+        return makeResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<ErrorResponse> makeBadRequestResponseEntity(final String message) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), message));
-    }
-
-    private ResponseEntity<ErrorResponse> makeConflictResponseEntity(final String message) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse(HttpStatus.CONFLICT.toString(), message));
-    }
-
-    private ResponseEntity<ErrorResponse> makeInternalErrorResponseEntity(final String message) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(), message));
-    }
-
-    private ResponseEntity<ErrorResponse> makeNotFoundResponseEntity(final String message) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(HttpStatus.NOT_FOUND.toString(), message));
+    private ResponseEntity<ErrorResponse> makeResponseEntity(final String message, final HttpStatus httpStatus) {
+        return ResponseEntity.status(httpStatus)
+                .body(new ErrorResponse(httpStatus.toString(), message));
     }
 
     @Getter
