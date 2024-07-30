@@ -1,6 +1,10 @@
 package com.flab.just_10_minutes.User;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.just_10_minutes.User.domain.User;
+import com.flab.just_10_minutes.User.infrastructure.UserDao;
+import com.flab.just_10_minutes.User.infrastructure.UserMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.flab.just_10_minutes.User.UserDtoTestFixture.*;
+import static com.flab.just_10_minutes.User.UserTestFixture.createUser;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -28,8 +33,25 @@ public class UserIntegrationTest {
     static final String SIGN_UP_URL = "/users/sign-up";
     private static final String PROFILE_URL = "/users/profile/{loginId}";
 
+    @Autowired
+    private UserMapper userMapper;
+
+    private UserDao target;
+
+    @BeforeEach
+    public void setUp() {
+        target = new UserDao(userMapper);
+    }
+
+    public void saveUser(String loginId) {
+        User user = createUser(loginId);
+        target.save(user);
+    }
+
     @Test
     public void signUp_실패_이미_존재하는_회원() throws Exception {
+        //setUp
+        saveUser(EXIST_ID);
         //given
         final String url = SIGN_UP_URL;
 
@@ -76,6 +98,8 @@ public class UserIntegrationTest {
 
     @Test
     public void showUserProfile_성공() throws Exception {
+        //setUp
+        saveUser(EXIST_ID);
         //given
         final String url = PROFILE_URL;
 
