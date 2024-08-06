@@ -24,4 +24,14 @@ public class UserTestFixture {
                 .role(User.ROLE.PUBLIC)
                 .build();
     }
+
+    public static User createSeller() {
+        return User.builder()
+                .loginId("sellerId")
+                .password("testPassword")
+                .phone("010-1234-5678")
+                .address("testAddress")
+                .role(User.ROLE.SELLER)
+                .build();
+    }
 }
