@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 public class PointService {
@@ -22,31 +21,26 @@ public class PointService {
     public PointHistory offerPoint(final PointHistory pointHistory) {
         User user = userDao.fetch(pointHistory.getLoginId());
 
-        PointHistory newHistory = pointHistory.increase(user.getPoints());
+        PointHistory newHistory = pointHistory.increase(user.getPoint());
         pointDao.save(newHistory);
 
         userDao.patchPoints(user.getLoginId(), newHistory.getTotalQuantity());
 
-        return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Internal Error");});
+        return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Internal Error : Fail to retrieve the latest point history for user login id : " + pointHistory.getLoginId());});
     }
 
     public Long getTotalPoint(final String loginId) {
         User user = userDao.fetch(loginId);
 
-        return user.getPoints();
+        return user.getPoint();
     }
 
     public PointStatusDto getPointHistories(final String loginId) {
         User user = userDao.fetch(loginId);
 
-        return PointStatusDto.builder()
-                    .totalQuantity(user.getPoints())
-                    .histories(pointDao.findByLoginId(loginId)
-                                        .stream()
-                                        .map(v -> PointHistoryResponseDto.builder()
-                                                                        .quantity(v.getQuantity())
-                                                                        .reason(v.getReason())
-                                                                        .build())
-                                        .collect(Collectors.toList())).build();
+        return PointStatusDto.from(user.getPoint(), pointDao.findByLoginId(loginId)
+                                                            .stream()
+                                                            .map(v -> PointHistoryResponseDto.from(v))
+                                                            .collect(Collectors.toList()));
     }
 }
