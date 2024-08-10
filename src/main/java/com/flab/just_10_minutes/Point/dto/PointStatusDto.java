@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -16,4 +14,11 @@ public class PointStatusDto {
 
     private Long totalQuantity;
     private List<PointHistoryResponseDto> histories;
+
+    public static PointStatusDto from(Long totalQuantity, List<PointHistoryResponseDto> dtos) {
+        return PointStatusDto.builder()
+                .totalQuantity(totalQuantity)
+                .histories(dtos)
+                .build();
+    }
 }
