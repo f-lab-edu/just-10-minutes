@@ -1,8 +1,6 @@
-package com.flab.just_10_minutes.Point;
+package com.flab.just_10_minutes.Point.infrastructure;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
-import com.flab.just_10_minutes.Point.infrastructure.PointDao;
-import com.flab.just_10_minutes.Point.infrastructure.PointMapper;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
 import com.flab.just_10_minutes.User.infrastructure.UserMapper;
@@ -13,9 +11,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import java.util.List;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.Point.PointHistoryTestFixture.createPointHistory;
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
-import static com.flab.just_10_minutes.User.UserTestFixture.createUser;
+import static com.flab.just_10_minutes.Point.fixture.PointHistoryTestFixture.createPointHistory;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.EXIST_ID;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createUser;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.NOT_FOUND;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MybatisTest

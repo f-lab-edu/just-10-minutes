@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.Point;
+package com.flab.just_10_minutes.Point.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.Point.domain.PointHistory;

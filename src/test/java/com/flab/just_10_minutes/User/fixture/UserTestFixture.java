@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.User;
+package com.flab.just_10_minutes.User.fixture;
 
 import com.flab.just_10_minutes.User.domain.User;
 
@@ -12,7 +12,7 @@ public class UserTestFixture {
                 .phone("010-1234-5678")
                 .address("testAddress")
                 .role(User.ROLE.PUBLIC)
-                .points(0L)
+                .point(0L)
                 .build();
     }
 
@@ -23,7 +23,7 @@ public class UserTestFixture {
                 .phone("010-1234-5678")
                 .address("testAddress")
                 .role(User.ROLE.PUBLIC)
-                .points(0L)
+                .point(0L)
                 .build();
     }
 
@@ -34,7 +34,7 @@ public class UserTestFixture {
                 .phone("010-1234-5678")
                 .address("testAddress")
                 .role(User.ROLE.PUBLIC)
-                .points(points)
+                .point(points)
                 .build();
     }
 }

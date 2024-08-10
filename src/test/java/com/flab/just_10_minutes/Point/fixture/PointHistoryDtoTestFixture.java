@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.Point;
+package com.flab.just_10_minutes.Point.fixture;
 
 import com.flab.just_10_minutes.Point.dto.PointHistoryDto;
 

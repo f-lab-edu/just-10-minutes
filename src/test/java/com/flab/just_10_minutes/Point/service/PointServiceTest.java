@@ -1,9 +1,8 @@
-package com.flab.just_10_minutes.Point;
+package com.flab.just_10_minutes.Point.service;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Point.dto.PointStatusDto;
 import com.flab.just_10_minutes.Point.infrastructure.PointDao;
-import com.flab.just_10_minutes.Point.service.PointService;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
@@ -19,9 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.Point.PointHistoryTestFixture.createPointHistory;
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
-import static com.flab.just_10_minutes.User.UserTestFixture.createUser;
+import static com.flab.just_10_minutes.Point.fixture.PointHistoryTestFixture.createPointHistory;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.EXIST_ID;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -78,7 +77,7 @@ class PointServiceTest {
         //given
         User existUser = createUser(EXIST_ID, 1000L);
         PointHistory plusHistory = createPointHistory(EXIST_ID, 100L);
-        PointHistory newHistory = plusHistory.increase(existUser.getPoints());
+        PointHistory newHistory = plusHistory.increase(existUser.getPoint());
 
         doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(any(PointHistory.class));
@@ -96,7 +95,7 @@ class PointServiceTest {
         //given
         User existUser = createUser(EXIST_ID, 1000L);
         PointHistory plusHistory = createPointHistory(EXIST_ID, 100L);
-        PointHistory newHistory = plusHistory.increase(existUser.getPoints());
+        PointHistory newHistory = plusHistory.increase(existUser.getPoint());
 
         doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(any(PointHistory.class));
@@ -114,7 +113,7 @@ class PointServiceTest {
         //given
         User existUser = createUser(EXIST_ID, 1000L);
         PointHistory initHistory = createPointHistory(EXIST_ID, 100L);
-        PointHistory newHistory = initHistory.increase(existUser.getPoints());
+        PointHistory newHistory = initHistory.increase(existUser.getPoint());
 
         doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(newHistory);
@@ -183,10 +182,10 @@ class PointServiceTest {
         User existUser = createUser(EXIST_ID, 0L);
 
         ArrayList<PointHistory> histories = new ArrayList<>();
-        PointHistory initHistory = createPointHistory(EXIST_ID, 100L).increase(existUser.getPoints());
+        PointHistory initHistory = createPointHistory(EXIST_ID, 100L).increase(existUser.getPoint());
         existUser = createUser(EXIST_ID, initHistory.getTotalQuantity());
 
-        PointHistory secondHistory = createPointHistory(EXIST_ID, 200L).increase(existUser.getPoints());
+        PointHistory secondHistory = createPointHistory(EXIST_ID, 200L).increase(existUser.getPoint());
         existUser = createUser(EXIST_ID, secondHistory.getTotalQuantity());
         histories.add(initHistory);
         histories.add(secondHistory);

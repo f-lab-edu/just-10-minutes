@@ -1,8 +1,6 @@
-package com.flab.just_10_minutes.User;
+package com.flab.just_10_minutes.User.infrastructure;
 
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.infrastructure.UserDao;
-import com.flab.just_10_minutes.User.infrastructure.UserMapper;
 import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
 import com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
@@ -13,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.NOT_EXIST_ID;
-import static com.flab.just_10_minutes.User.UserTestFixture.*;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.EXIST_ID;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.NOT_EXIST_ID;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,8 +38,10 @@ public class UserDaoTest {
 
     @Test
     public void save_실패_중복키() {
+        //setUp
+        saveUser(EXIST_ID);
         //given
-        User user = createUser();
+        User user = createUser(EXIST_ID);
 
         //when
         final DatabaseException result = assertThrows(DatabaseException.class, () -> target.save(user));
@@ -140,6 +140,6 @@ public class UserDaoTest {
         Optional<User> user = target.findByLoginId(EXIST_ID);
 
         //then
-        assertThat(user.get().getPoints()).isEqualTo(1000L);
+        assertThat(user.get().getPoint()).isEqualTo(1000L);
     }
 }

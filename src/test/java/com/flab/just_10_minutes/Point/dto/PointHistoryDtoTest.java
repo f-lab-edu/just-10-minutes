@@ -1,6 +1,5 @@
-package com.flab.just_10_minutes.Point;
+package com.flab.just_10_minutes.Point.dto;
 
-import com.flab.just_10_minutes.Point.dto.PointHistoryDto;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

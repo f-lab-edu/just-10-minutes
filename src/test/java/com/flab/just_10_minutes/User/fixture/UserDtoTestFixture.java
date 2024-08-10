@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.User;
+package com.flab.just_10_minutes.User.fixture;
 
 import com.flab.just_10_minutes.User.dto.UserDto;
 

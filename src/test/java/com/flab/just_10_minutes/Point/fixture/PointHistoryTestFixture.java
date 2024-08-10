@@ -1,9 +1,8 @@
-package com.flab.just_10_minutes.Point;
+package com.flab.just_10_minutes.Point.fixture;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
 
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
-
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.EXIST_ID;
 
 public class PointHistoryTestFixture {
 

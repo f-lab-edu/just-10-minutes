@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.User;
+package com.flab.just_10_minutes.User.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.User.domain.User;
@@ -15,10 +15,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.*;
-import static com.flab.just_10_minutes.User.UserTestFixture.createUser;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.*;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createUser;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @AutoConfigureMockMvc
 @Transactional
@@ -30,7 +29,7 @@ public class UserIntegrationTest {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    static final String SIGN_UP_URL = "/users/sign-up";
+    public static final String SIGN_UP_URL = "/users/sign-up";
     private static final String PROFILE_URL = "/users/profile/{loginId}";
 
     @Autowired

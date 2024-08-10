@@ -1,6 +1,7 @@
-package com.flab.just_10_minutes.User.controller;
+package com.flab.just_10_minutes.User.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.just_10_minutes.User.controller.UserController;
 import com.flab.just_10_minutes.User.service.UserService;
 import com.flab.just_10_minutes.Util.Handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.*;
