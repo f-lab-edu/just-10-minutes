@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_INSERT;
+
 @Repository
 @RequiredArgsConstructor
 public class PointDao {
@@ -17,7 +19,7 @@ public class PointDao {
         int insertCount = pointMapper.save(pointHistory);
 
         if (insertCount != 1) {
-            throw new InternalException("Fail to Insert");
+            throw new InternalException(FAIL_TO_INSERT);
         }
     }
 
