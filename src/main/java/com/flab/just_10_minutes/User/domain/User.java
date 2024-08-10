@@ -17,7 +17,7 @@ public class User {
     private String phone;
     private String address;
     private ROLE role;
-    private Long points;
+    private Long point;
 
     public enum ROLE {
         PUBLIC,

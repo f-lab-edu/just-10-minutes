@@ -14,9 +14,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.flab.just_10_minutes.Point.PointHistoryDtoTestFixture.REASON;
-import static com.flab.just_10_minutes.Point.PointHistoryDtoTestFixture.createTestPointHistoryDto;
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.*;
+import static com.flab.just_10_minutes.Point.fixture.PointHistoryDtoTestFixture.REASON;
+import static com.flab.just_10_minutes.Point.fixture.PointHistoryDtoTestFixture.createTestPointHistoryDto;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

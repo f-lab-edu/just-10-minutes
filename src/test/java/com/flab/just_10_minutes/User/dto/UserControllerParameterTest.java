@@ -1,7 +1,6 @@
-package com.flab.just_10_minutes.User;
+package com.flab.just_10_minutes.User.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.just_10_minutes.User.controller.UserController;
 import com.flab.just_10_minutes.User.service.UserService;
 import com.flab.just_10_minutes.Util.Handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.*;
@@ -19,8 +18,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.stream.Stream;
 
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.*;
-import static com.flab.just_10_minutes.User.UserIntegrationTest.SIGN_UP_URL;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.*;
+import static com.flab.just_10_minutes.User.integration.UserIntegrationTest.SIGN_UP_URL;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)

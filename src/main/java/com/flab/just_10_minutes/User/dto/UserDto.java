@@ -32,7 +32,7 @@ public class UserDto{
                 .phone(userDto.getPhone())
                 .address(userDto.getAddress())
                 .role(userDto.getRole())
-                .points(0L)
+                .point(0L)
                 .build();
     }
 }
