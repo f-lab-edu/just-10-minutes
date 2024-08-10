@@ -15,11 +15,11 @@ public class PointHistory {
     private String reason;
     private Long totalQuantity;
 
-    public PointHistory decrease(final Long userOwnPoints) {
-        if (Math.abs(this.quantity) > userOwnPoints) {
+    public PointHistory decrease(final Long userOwnPoint) {
+        if (Math.abs(this.quantity) > userOwnPoint) {
             return PointHistory.builder()
                     .loginId(this.loginId)
-                    .quantity(-userOwnPoints)
+                    .quantity(-userOwnPoint)
                     .reason(this.reason)
                     .totalQuantity(0L)
                     .build();
@@ -28,17 +28,17 @@ public class PointHistory {
                     .loginId(this.loginId)
                     .quantity(this.quantity)
                     .reason(this.reason)
-                    .totalQuantity(userOwnPoints - Math.abs(this.quantity))
+                    .totalQuantity(userOwnPoint - Math.abs(this.quantity))
                     .build();
         }
     }
 
-    public PointHistory increase(final Long userOwnPoints) {
+    public PointHistory increase(final Long userOwnPoint) {
         return  PointHistory.builder()
                 .loginId(this.loginId)
                 .quantity(this.quantity)
                 .reason(this.reason)
-                .totalQuantity(this.quantity + userOwnPoints)
+                .totalQuantity(this.quantity + userOwnPoint)
                 .build();
     }
 }
