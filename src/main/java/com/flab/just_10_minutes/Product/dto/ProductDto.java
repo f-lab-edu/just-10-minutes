@@ -1,6 +1,7 @@
 package com.flab.just_10_minutes.Product.dto;
 
 import com.flab.just_10_minutes.Product.domain.Product;
+import com.flab.just_10_minutes.User.domain.Customer;
 import com.flab.just_10_minutes.User.domain.User;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +29,7 @@ public class ProductDto {
         return Product.builder()
                 .title(productDto.getTitle())
                 .description(productDto.getDescription())
-                .seller(Product.Seller.toSeller(seller))
+                .seller(Customer.from(seller))
                 .originalPrice(productDto.getOriginalPrice())
                 .totalStock(productDto.getTotalStock())
                 .purchasedStock(0L)

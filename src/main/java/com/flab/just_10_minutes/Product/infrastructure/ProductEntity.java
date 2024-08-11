@@ -1,6 +1,7 @@
 package com.flab.just_10_minutes.Product.infrastructure;
 
 import com.flab.just_10_minutes.Product.domain.Product;
+import com.flab.just_10_minutes.User.domain.Customer;
 import com.flab.just_10_minutes.User.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,7 @@ public class ProductEntity {
     private Long totalStock;
     private Long purchasedStock;
 
-    public static ProductEntity toEntity(Product product) {
+    public static ProductEntity from(Product product) {
         return ProductEntity.builder()
                 .id(product.getId())
                 .title(product.getTitle())
@@ -38,7 +39,7 @@ public class ProductEntity {
                 .id(productEntity.getId())
                 .title(productEntity.getTitle())
                 .description(productEntity.getDescription())
-                .seller(Product.Seller.toSeller(seller))
+                .seller(Customer.from(seller))
                 .originalPrice(productEntity.getOriginalPrice())
                 .totalStock(productEntity.getTotalStock())
                 .purchasedStock(productEntity.getPurchasedStock())

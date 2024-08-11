@@ -15,7 +15,7 @@ public class ProductDao {
     private final UserMapper userMapper;
 
     public Product save(Product product) {
-        ProductEntity productEntity = ProductEntity.toEntity(product);
+        ProductEntity productEntity = ProductEntity.from(product);
 
         int saveResult = productMapper.save(productEntity);
         if (saveResult != 1) {
