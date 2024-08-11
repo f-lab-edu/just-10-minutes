@@ -2,15 +2,18 @@ package com.flab.just_10_minutes.Product;
 
 import com.flab.just_10_minutes.Product.domain.Product;
 import com.flab.just_10_minutes.Product.infrastructure.ProductDao;
-import com.flab.just_10_minutes.Product.service.ProductService;
+import com.flab.just_10_minutes.Product.infrastructure.ProductMapper;
+import com.flab.just_10_minutes.Product.service.StockManager;
+import com.flab.just_10_minutes.User.domain.Customer;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -19,23 +22,26 @@ import java.util.concurrent.Executors;
 import static com.flab.just_10_minutes.User.UserTestFixture.createSeller;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-public class ProductStockConcurrencyTest {
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class StockDecreaseConcurrencyTest {
 
     @Autowired
     private UserMapper userMapper;
 
     @Autowired
+    private ProductMapper productMapper;
+
     private ProductDao productDao;
 
-    @Autowired
-    private ProductService target;
+    private StockManager target;
 
     private Product product;
 
     @BeforeEach
     public void setUp() {
+        productDao = new ProductDao(productMapper, userMapper);
+        target = new StockManager(productDao);
         product = saveProductWithSeller();
     }
 
@@ -48,11 +54,11 @@ public class ProductStockConcurrencyTest {
     public Product saveProductWithSeller() {
         User user = createSeller();
         userMapper.save(user);
-        Product product = createProduct(Product.Seller.toSeller(user));
+        Product product = createProduct(Customer.from(user));
         return productDao.save(product);
     }
 
-    public static Product createProduct(Product.Seller seller) {
+    public static Product createProduct(Customer seller) {
         return Product.builder()
                 .title("testProduct")
                 .description("test")

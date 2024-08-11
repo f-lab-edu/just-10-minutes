@@ -6,7 +6,6 @@ import com.flab.just_10_minutes.Product.dto.ProductDto;
 import com.flab.just_10_minutes.Product.infrastructure.ProductDao;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
