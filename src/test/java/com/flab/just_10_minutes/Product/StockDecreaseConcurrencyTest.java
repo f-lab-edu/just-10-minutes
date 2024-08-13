@@ -3,7 +3,7 @@ package com.flab.just_10_minutes.Product;
 import com.flab.just_10_minutes.Product.domain.Product;
 import com.flab.just_10_minutes.Product.infrastructure.ProductDao;
 import com.flab.just_10_minutes.Product.infrastructure.ProductMapper;
-import com.flab.just_10_minutes.Product.service.StockManager;
+import com.flab.just_10_minutes.Product.service.StockService;
 import com.flab.just_10_minutes.User.domain.Customer;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserMapper;
@@ -32,14 +32,14 @@ public class StockDecreaseConcurrencyTest {
 
     private ProductDao productDao;
 
-    private StockManager target;
+    private StockService target;
 
     private Product product;
 
     @BeforeEach
     public void setUp() {
         productDao = new ProductDao(productMapper, userMapper);
-        target = new StockManager(productDao);
+        target = new StockService(productDao);
         product = saveProductWithSeller();
     }
 
