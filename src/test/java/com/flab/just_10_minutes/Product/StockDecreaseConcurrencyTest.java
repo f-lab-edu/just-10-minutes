@@ -10,16 +10,14 @@ import com.flab.just_10_minutes.User.infrastructure.UserMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.flab.just_10_minutes.User.UserTestFixture.createSeller;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSeller;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MybatisTest

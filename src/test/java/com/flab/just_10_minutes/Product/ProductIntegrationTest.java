@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.flab.just_10_minutes.User.UserTestFixture.createSeller;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSeller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

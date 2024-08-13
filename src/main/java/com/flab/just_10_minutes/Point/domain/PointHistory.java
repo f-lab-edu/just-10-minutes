@@ -23,14 +23,13 @@ public class PointHistory {
                     .reason(this.reason)
                     .totalQuantity(0L)
                     .build();
-        } else {
-            return PointHistory.builder()
-                    .loginId(this.loginId)
-                    .quantity(this.quantity)
-                    .reason(this.reason)
-                    .totalQuantity(userOwnPoint - Math.abs(this.quantity))
-                    .build();
         }
+        return PointHistory.builder()
+                .loginId(this.loginId)
+                .quantity(this.quantity)
+                .reason(this.reason)
+                .totalQuantity(userOwnPoint - Math.abs(this.quantity))
+                .build();
     }
 
     public PointHistory increase(final Long userOwnPoint) {

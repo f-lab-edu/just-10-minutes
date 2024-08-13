@@ -20,7 +20,6 @@ import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @AutoConfigureMockMvc
 @Transactional
 @SpringBootTest

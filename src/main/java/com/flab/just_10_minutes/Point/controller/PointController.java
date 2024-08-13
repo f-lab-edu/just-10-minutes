@@ -6,11 +6,8 @@ import com.flab.just_10_minutes.Point.dto.PointStatusDto;
 import com.flab.just_10_minutes.Point.service.PointService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

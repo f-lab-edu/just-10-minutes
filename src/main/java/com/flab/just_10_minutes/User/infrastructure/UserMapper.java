@@ -19,7 +19,7 @@ public interface UserMapper {
 
     @Select("SELECT EXISTS(SELECT * FROM users_table WHERE login_id = #{loginId});")
     boolean existsByLoginId(final String loginId);
-    
+
     @Update("UPDATE users_table SET point = #{updatePoints} WHERE login_id = #{loginId}")
     int updatePoint(final String loginId, final Long updatePoints);
 
