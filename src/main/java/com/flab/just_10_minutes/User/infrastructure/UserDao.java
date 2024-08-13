@@ -9,7 +9,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.Util.contants.ResponseMessage.*;
+import static com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException.DUPLICATED_KEY;
+import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_INSERT;
+import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_UPDATE;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.NOT_FOUND;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.USER;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,7 +33,7 @@ public class UserDao {
                 throw new InternalException(FAIL_TO_INSERT);
             }
         } catch (DuplicateKeyException e) {
-            throw new DuplicatedKeyException(DUPLICATED_KEY_LOGIN_ID);
+            throw new DuplicatedKeyException(DUPLICATED_KEY);
         }
     }
 
@@ -38,9 +42,14 @@ public class UserDao {
     }
 
     public User fetch(final String loginId) {
-        if (!userMapper.existsByLoginId(loginId)) {
-            throw new NotFoundException(NOT_EXIST_USER);
+        return Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);});
+    }
+
+    public void patchPoints(final String loginId, final Long updatePoints) {
+        int updateCount = userMapper.updatePoint(loginId, updatePoints);
+
+        if (updateCount != 1) {
+            throw new InternalException(FAIL_TO_UPDATE);
         }
-        return userMapper.findByLoginId(loginId);
     }
 }

@@ -1,8 +1,7 @@
-package com.flab.just_10_minutes.User;
+package com.flab.just_10_minutes.User.service;
 
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
-import com.flab.just_10_minutes.User.service.UserService;
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
@@ -13,10 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.EXIST_ID;
-import static com.flab.just_10_minutes.User.UserDtoTestFixture.NOT_EXIST_ID;
-import static com.flab.just_10_minutes.User.UserTestFixture.*;
-import static com.flab.just_10_minutes.Util.contants.ResponseMessage.DUPLICATED_REGISTER;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.EXIST_ID;
+import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.NOT_EXIST_ID;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,7 +57,7 @@ public class UserServiceTest {
         final BusinessException result = assertThrows(BusinessException.class, () -> target.save(user.get()));
 
         //then
-        assertThat(result.getMessage()).isEqualTo(DUPLICATED_REGISTER);
+        assertThat(result.getMessage()).isEqualTo("Duplicate User Registration Request");
     }
 
     @Test
