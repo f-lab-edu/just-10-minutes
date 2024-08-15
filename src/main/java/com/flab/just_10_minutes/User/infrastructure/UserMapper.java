@@ -1,6 +1,7 @@
 package com.flab.just_10_minutes.User.infrastructure;
 
 import com.flab.just_10_minutes.User.domain.User;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -21,4 +22,8 @@ public interface UserMapper {
 
     @Update("UPDATE users_table SET point = #{updatePoints} WHERE login_id = #{loginId}")
     int updatePoint(final String loginId, final Long updatePoints);
+
+    @Delete("DELETE FROM users_table WHERE login_id = #{loginId}")
+    public int delete(final String loginId);
+
 }

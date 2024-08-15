@@ -14,8 +14,6 @@ import java.util.Optional;
 import static com.flab.just_10_minutes.Point.fixture.PointHistoryTestFixture.createPointHistory;
 import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.EXIST_ID;
 import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createUser;
-import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.NOT_FOUND;
-import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MybatisTest
