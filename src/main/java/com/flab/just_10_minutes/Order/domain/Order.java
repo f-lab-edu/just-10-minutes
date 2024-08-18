@@ -29,7 +29,7 @@ public class Order {
         REFUNDED
     }
 
-    public static Order from(PaymentResult paymentResult, User seller, Long buyQuantity, User buyer, Long totalPrice) {
+    public static Order createCompleteOrder(PaymentResult paymentResult, User seller, Long buyQuantity, User buyer, Long totalPrice) {
         return Order.builder()
                 .id(paymentResult.getMerchantUid())
                 .seller(seller)

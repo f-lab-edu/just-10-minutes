@@ -40,7 +40,7 @@ public class OrderService {
 
         PaymentResult paymentResult = paymentGateWay.paymentTransaction(IamportPaymentRequestDto.from(totalPrice, buyer, orderDto.getRequestUsedPoint(), orderDto.getBillingRequestDto()));
 
-        Order order = Order.from(paymentResult, seller, orderDto.getRequestDecreasedStock(), buyer, totalPrice);
+        Order order = Order.createCompleteOrder(paymentResult, seller, orderDto.getRequestDecreasedStock(), buyer, totalPrice);
 
         orderDao.save(order);
         return showReceipt(order.getId());
