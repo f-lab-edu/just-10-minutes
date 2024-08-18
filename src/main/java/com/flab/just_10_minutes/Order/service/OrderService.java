@@ -2,17 +2,15 @@ package com.flab.just_10_minutes.Order.service;
 
 import com.flab.just_10_minutes.Order.domain.Order;
 import com.flab.just_10_minutes.Order.dto.OrderDto;
-import com.flab.just_10_minutes.Order.dto.OrderReceipt;
+import com.flab.just_10_minutes.Order.dto.OrderReceiptDto;
 import com.flab.just_10_minutes.Order.infrastructure.OrderDao;
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
-import com.flab.just_10_minutes.Payment.dto.PaymentDataDto;
-import com.flab.just_10_minutes.Payment.gateway.PaymentGateWay;
+import com.flab.just_10_minutes.Payment.dto.IamportPaymentRequestDto;
+import com.flab.just_10_minutes.Payment.gateway.PaymentService;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.math.BigDecimal;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,10 +18,10 @@ public class OrderService {
 
     private final UserDao userDao;
     private final OrderDao orderDao;
-    private final PaymentGateWay paymentGateWay;
+    private final PaymentService paymentGateWay;
     //TODO(due : 8/17): ProductDao
 
-    public OrderReceipt order(OrderDto orderDto) {
+    public OrderReceiptDto order(OrderDto orderDto) {
         User seller = userDao.fetch(orderDto.getSellerLoginId());
         User buyer = userDao.fetch(orderDto.getBuyerLoginId());
 
@@ -40,31 +38,15 @@ public class OrderService {
         * */
         Long totalPrice = orderDto.getRequestDecreasedStock() * productOriginalPrice;
 
-        PaymentResult paymentResult = paymentGateWay.paymentTransaction(PaymentDataDto.builder()
-                                                                                        .orderId(UUID.randomUUID().toString())
-                                                                                        .amount(BigDecimal.valueOf(totalPrice))
-                                                                                        .customerLoginId(buyer.getLoginId())
-                                                                                        .orderName(orderDto.getProductId().toString())
-                                                                                        .billingData(orderDto.getBillingData())
-                                                                                        .build());
+        PaymentResult paymentResult = paymentGateWay.paymentTransaction(IamportPaymentRequestDto.from(totalPrice, buyer, orderDto.getRequestUsedPoint(), orderDto.getBillingRequestDto()));
 
-        Order order = Order.builder()
-                            .orderId(paymentResult.getOrderId())
-                            .seller(seller)
-                            .buyer(buyer)
-                            .usedPoint(0L)
-                            .buyQuantity(orderDto.getRequestDecreasedStock())
-                            .totalPrice(totalPrice)
-                            .refundedPrice(0L)
-                            .paymentTxId(paymentResult.getPaymentTxId())
-                            .status(Order.OrderStatus.COMPLETED)
-                            .build();
+        Order order = Order.from(paymentResult, seller, orderDto.getRequestDecreasedStock(), buyer, totalPrice);
 
         orderDao.save(order);
-        return showReceipt(order.getOrderId());
+        return showReceipt(order.getId());
     }
 
-    public OrderReceipt showReceipt(final String orderId) {
+    public OrderReceiptDto showReceipt(final String orderId) {
         return orderDao.fetch(orderId);
     }
 }

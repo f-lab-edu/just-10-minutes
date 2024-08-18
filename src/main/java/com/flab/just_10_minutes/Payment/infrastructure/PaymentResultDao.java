@@ -2,9 +2,14 @@ package com.flab.just_10_minutes.Payment.infrastructure;
 
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
 import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
+import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
+
+import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_INSERT;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.IMP_UID;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.NOT_FOUND;
 
 @Repository
 @RequiredArgsConstructor
@@ -12,19 +17,21 @@ public class PaymentResultDao {
 
     private final PaymentResultMapper paymentResultMapper;
 
-    public void save(PaymentResult paymentResult) {
-        int saveResult = paymentResultMapper.save(paymentResult);
+    public void save(PaymentResult paymentResultDto) {
+        int saveResult = paymentResultMapper.save(PaymentResultEntity.from(paymentResultDto));
         if (saveResult != 1) {
-            throw new InternalException("Insert Fail");
+            throw new InternalException(FAIL_TO_INSERT);
         }
     }
 
-    public PaymentResult fetchByPaymentTxId(final String paymentTxId) {
-       return findByPaymentTxId(paymentTxId).orElseThrow(() -> {throw new RuntimeException("Not Exist");});
+    public PaymentResult fetchByImpUid(final String impUid) {
+        PaymentResultEntity paymentResultEntity = findByImpUid(impUid).orElseThrow(() -> {
+            throw new NotFoundException(NOT_FOUND, IMP_UID);
+        });
+        return PaymentResultEntity.to(paymentResultEntity);
     }
 
-    public Optional<PaymentResult> findByPaymentTxId(final String paymentTxId) {
-        Optional<PaymentResult> byPaymentTxId = Optional.ofNullable(paymentResultMapper.findByPaymentTxId(paymentTxId));
-        return byPaymentTxId;
+    public Optional<PaymentResultEntity> findByImpUid(final String impUid) {
+        return Optional.ofNullable(paymentResultMapper.findByImpUid(impUid));
     }
 }

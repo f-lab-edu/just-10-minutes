@@ -1,27 +1,34 @@
 package com.flab.just_10_minutes.Util.Config;
 
+import com.flab.just_10_minutes.Payment.dto.BillingRequestDto;
 import com.siot.IamportRestClient.IamportClient;
-import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Getter
 public class IamportConfig {
 
-    @Value("${payment.iamport.imp_key}")
-    private String impKey;
+    @Value("${payment.iamport.api_key}")
+    private String apiKey;
 
-    @Value("${payment.iamport.imp_secret}")
-    private String impSecret;
+    @Value("${payment.iamport.api_secret}")
+    private String apiSecret;
 
-    public static IamportClient iamportClient;
+    @Value("${payment.iamport.nice_pg}")
+    private String nicePg;
 
-    @PostConstruct
-    public void init() {
-        iamportClient = new IamportClient(impKey, impSecret);
+    @Bean
+    public IamportClient iamportClient() {
+        return new IamportClient(apiKey, apiSecret);
     }
 
-    public static final String NICE_PG = "nice_v2.iamport01m";
+    public String getPg(BillingRequestDto.PG pg) {
+        switch (pg) {
+            case NICE -> {return getNicePg();}
+            default -> {return getNicePg();}
+        }
+    }
 }

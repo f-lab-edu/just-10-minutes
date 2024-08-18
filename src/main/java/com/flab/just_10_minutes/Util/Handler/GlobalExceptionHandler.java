@@ -2,6 +2,7 @@ package com.flab.just_10_minutes.Util.Handler;
 
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
+import com.flab.just_10_minutes.Util.Exception.Iamport.IamportException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.warn("Exception occur : ", exception);
         return makeResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({IamportException.class})
+    public ResponseEntity<ErrorResponse> handleException(final IamportException exception) {
+        log.warn("IamportException occur : ", exception.getCause());
+        return makeResponseEntity(exception.getMessage(), exception.getHttpStatus());
     }
 
     private ResponseEntity<ErrorResponse> makeResponseEntity(final String message, final HttpStatus httpStatus) {

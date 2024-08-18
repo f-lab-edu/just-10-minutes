@@ -12,7 +12,7 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class OrderEntity {
 
-    private String orderId;
+    private String id;
     private String sellerLoginId;
     private String buyerLoginId;
     //TODO(due : 8/17): ProductId;
@@ -25,7 +25,7 @@ public class OrderEntity {
 
     public static OrderEntity toEntity(Order order) {
         return OrderEntity.builder()
-                .orderId(order.getOrderId())
+                .id(order.getId())
                 .sellerLoginId(order.getSeller().getLoginId())
                 .buyerLoginId(order.getBuyer().getLoginId())
                 .usedPoint(order.getUsedPoint())

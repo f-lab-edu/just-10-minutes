@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.Order.controller;
 
 import com.flab.just_10_minutes.Order.dto.OrderDto;
-import com.flab.just_10_minutes.Order.dto.OrderReceipt;
+import com.flab.just_10_minutes.Order.dto.OrderReceiptDto;
 import com.flab.just_10_minutes.Order.service.OrderService;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderReceipt> order(@RequestBody OrderDto orderDto) throws IamportResponseException, IOException {
+    public ResponseEntity<OrderReceiptDto> order(@RequestBody OrderDto orderDto) throws IamportResponseException, IOException {
         return ResponseEntity.ok(orderService.order(orderDto));
     }
 }

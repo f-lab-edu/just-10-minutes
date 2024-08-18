@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @EqualsAndHashCode
-public class OrderReceipt {
+public class OrderReceiptDto {
 
     private String orderId;
     private String sellerLoginId;
@@ -24,18 +24,9 @@ public class OrderReceipt {
     private String paymentTxId;
     private String status;
 
-//    @AllArgsConstructor
-//    @Getter
-//    @Builder
-//    @EqualsAndHashCode
-//    public static class ProductReceipt {
-//        private String title;
-//        private Long originalPrice;
-//    }
-
-    public static OrderReceipt from(OrderEntity orderEntity) {
-        return OrderReceipt.builder()
-                .orderId(orderEntity.getOrderId())
+    public static OrderReceiptDto from(OrderEntity orderEntity) {
+        return OrderReceiptDto.builder()
+                .orderId(orderEntity.getId())
                 .sellerLoginId(orderEntity.getSellerLoginId())
                 .buyerLoginId(orderEntity.getBuyerLoginId())
                 .usedPoint(orderEntity.getUsedPoint())

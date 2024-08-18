@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class DuplicatedKeyException extends DatabaseException{
+public class DuplicatedKeyException extends DatabaseException {
 
     public static final String DUPLICATED_KEY = "Duplicated Key Error";
 

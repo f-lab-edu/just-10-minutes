@@ -15,37 +15,37 @@ import java.util.Date;
 public class PaymentResult {
 
     private Long id;
-    private String paymentTxId;
-    private String orderId;
-    private String orderName;
+    private String impUid;
+    private String merchantUid;
+    private String name;
     private String buyerName;
     private BigDecimal amount;
     private String currency;
     private Date paidAt;
     private String payMethod;
-    private String status;
+    private Status status;
     private BigDecimal cancelAmount;
     private String cancelReason;
     private Date cancelledAt;
     private String failReason;
     private Date failedAt;
 
-    public static PaymentResult from(Payment iamportPayment) {
+    public static PaymentResult from(Payment payment) {
         return PaymentResult.builder()
-                .paymentTxId(iamportPayment.getImpUid())
-                .orderId(iamportPayment.getMerchantUid())
-                .orderName(iamportPayment.getName())
-                .buyerName(iamportPayment.getBuyerName())
-                .amount(iamportPayment.getAmount())
-                .currency(iamportPayment.getCurrency())
-                .paidAt(iamportPayment.getPaidAt())
-                .payMethod(iamportPayment.getPayMethod())
-                .status(iamportPayment.getStatus())
-                .cancelAmount(iamportPayment.getCancelAmount())
-                .cancelReason(iamportPayment.getCancelReason())
-                .cancelledAt(iamportPayment.getCancelledAt())
-                .failReason(iamportPayment.getFailReason())
-                .failedAt(iamportPayment.getFailedAt())
+                .impUid(payment.getImpUid())
+                .merchantUid(payment.getMerchantUid())
+                .name(payment.getName())
+                .buyerName(payment.getBuyerName())
+                .amount(payment.getAmount())
+                .currency(payment.getCurrency())
+                .paidAt(payment.getPaidAt())
+                .payMethod(payment.getPayMethod())
+                .status(Status.from(payment.getStatus()))
+                .cancelAmount(payment.getCancelAmount())
+                .cancelReason(payment.getCancelReason())
+                .cancelledAt(payment.getCancelledAt())
+                .failReason(payment.getFailReason())
+                .failedAt(payment.getFailedAt())
                 .build();
     }
 }
