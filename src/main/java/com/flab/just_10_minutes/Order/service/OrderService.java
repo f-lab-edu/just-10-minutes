@@ -12,6 +12,8 @@ import com.flab.just_10_minutes.User.infrastructure.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.flab.just_10_minutes.Util.Common.IDUtil.issueOrderId;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -38,7 +40,7 @@ public class OrderService {
         * */
         Long totalPrice = orderDto.getRequestDecreasedStock() * productOriginalPrice;
 
-        PaymentResult paymentResult = paymentGateWay.paymentTransaction(IamportPaymentRequestDto.from(totalPrice, buyer, orderDto.getRequestUsedPoint(), orderDto.getBillingRequestDto()));
+        PaymentResult paymentResult = paymentGateWay.paymentTransaction(IamportPaymentRequestDto.from(issueOrderId(), totalPrice, buyer, orderDto.getRequestUsedPoint(), orderDto.getBillingRequestDto()));
 
         Order order = Order.createCompleteOrder(paymentResult, seller, orderDto.getRequestDecreasedStock(), buyer, totalPrice);
 

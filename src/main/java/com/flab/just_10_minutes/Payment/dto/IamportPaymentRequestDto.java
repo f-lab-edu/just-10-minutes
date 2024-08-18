@@ -19,7 +19,7 @@ import static com.flab.just_10_minutes.Util.Common.IDUtil.issueOrderId;
 public class IamportPaymentRequestDto {
 
     @NotEmpty
-    private String orderId;
+    private String merchantUid;
     @NotNull
     private BigDecimal totalPrice;
     @NotNull
@@ -30,15 +30,15 @@ public class IamportPaymentRequestDto {
     private BillingRequestDto billingRequestDto;
 
     public static AgainPaymentData toAgainPaymentData(IamportPaymentRequestDto iamportPaymentRequestDto, final String customerUid) {
-        AgainPaymentData data = new AgainPaymentData(customerUid, iamportPaymentRequestDto.getOrderId(), iamportPaymentRequestDto.getTotalPrice());
+        AgainPaymentData data = new AgainPaymentData(customerUid, iamportPaymentRequestDto.getMerchantUid(), iamportPaymentRequestDto.getTotalPrice());
         data.setName(iamportPaymentRequestDto.getOrderName());
         data.setBuyerName(iamportPaymentRequestDto.getCustomerLoginId());
         return data;
     }
 
-    public static IamportPaymentRequestDto from (Long totalPrice, User buyer, Long productId, BillingRequestDto billingRequestDto) {
+    public static IamportPaymentRequestDto from (String orderId, Long totalPrice, User buyer, Long productId, BillingRequestDto billingRequestDto) {
         return IamportPaymentRequestDto.builder()
-                .orderId(issueOrderId())
+                .merchantUid(orderId)
                 .totalPrice(BigDecimal.valueOf(totalPrice))
                 .customerLoginId(buyer.getLoginId())
                 .orderName(productId.toString())
