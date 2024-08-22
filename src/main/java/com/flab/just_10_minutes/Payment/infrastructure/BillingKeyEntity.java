@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class CustomUidEntity {
+public class BillingKeyEntity {
 
     private String loginId;
-    private String customUid;
+    private String customerUid;
 
-    public static CustomUidEntity from(final String loginId, final String customUid) {
-        return CustomUidEntity.builder()
+    public static BillingKeyEntity from(final String loginId, final String customUid) {
+        return BillingKeyEntity.builder()
                                 .loginId(loginId)
-                                .customUid(customUid)
+                                .customerUid(customUid)
                                 .build();
     }
 }

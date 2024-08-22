@@ -11,10 +11,10 @@ import static com.flab.just_10_minutes.Util.Exception.Database.InternalException
 @RequiredArgsConstructor
 public class CustomerUidDao {
 
-    private final CustomUidMapper customUidMapper;
+    private final BillingKeyMapper customUidMapper;
 
     public void save(final String loginId, final String customerUid) {
-        int saveResult = customUidMapper.save(CustomUidEntity.from(loginId, customerUid));
+        int saveResult = customUidMapper.save(BillingKeyEntity.from(loginId, customerUid));
         if (saveResult != 1) {
             throw new InternalException(FAIL_TO_INSERT);
         }
