@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
+import static com.flab.just_10_minutes.Payment.domain.PaymentResultStatus.FAIL;
+import static com.flab.just_10_minutes.Payment.domain.PaymentResultStatus.PAID;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -25,9 +28,9 @@ public class PaymentService {
         String customerUid = fetchCustomerUid(iamportPaymentRequestDto);
         PaymentResult paymentResult = PaymentResult.from(iamportApiClient.againPayment(iamportPaymentRequestDto, customerUid));
 
-        if (paymentResult.getStatus().equals(PaymentResultStatus.PAID)) {
+        if (paymentResult.getStatus() == PAID) {
             paymentResultDao.save(paymentResult);
-        } else if (paymentResult.getStatus().equals(PaymentResultStatus.FAIL)) {
+        } else if (paymentResult.getStatus() == FAIL) {
             throw new BusinessException("Fail to Payment : " + paymentResult.getFailReason());
         }
 
