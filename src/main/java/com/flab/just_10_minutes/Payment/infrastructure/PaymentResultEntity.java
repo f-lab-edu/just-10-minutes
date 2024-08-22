@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.Payment.infrastructure;
 
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
-import com.flab.just_10_minutes.Payment.domain.Status;
+import com.flab.just_10_minutes.Payment.domain.PaymentResultStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,7 +60,7 @@ public class PaymentResultEntity {
                 .currency(paymentResultEntity.getCurrency())
                 .paidAt(paymentResultEntity.getPaidAt())
                 .payMethod(paymentResultEntity.getPayMethod())
-                .status(Status.from(paymentResultEntity.getStatus()))
+                .status(PaymentResultStatus.from(paymentResultEntity.getStatus()))
                 .cancelAmount(paymentResultEntity.getCancelAmount())
                 .cancelReason(paymentResultEntity.getCancelReason())
                 .cancelledAt(paymentResultEntity.getCancelledAt())

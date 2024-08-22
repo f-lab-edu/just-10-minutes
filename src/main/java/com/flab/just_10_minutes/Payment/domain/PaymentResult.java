@@ -23,7 +23,7 @@ public class PaymentResult {
     private String currency;
     private Date paidAt;
     private String payMethod;
-    private Status status;
+    private PaymentResultStatus status;
     private BigDecimal cancelAmount;
     private String cancelReason;
     private Date cancelledAt;
@@ -40,7 +40,7 @@ public class PaymentResult {
                 .currency(payment.getCurrency())
                 .paidAt(payment.getPaidAt())
                 .payMethod(payment.getPayMethod())
-                .status(Status.from(payment.getStatus()))
+                .status(PaymentResultStatus.from(payment.getStatus()))
                 .cancelAmount(payment.getCancelAmount())
                 .cancelReason(payment.getCancelReason())
                 .cancelledAt(payment.getCancelledAt())

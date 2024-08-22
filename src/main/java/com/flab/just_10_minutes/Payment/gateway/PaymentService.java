@@ -1,6 +1,6 @@
 package com.flab.just_10_minutes.Payment.gateway;
 
-import com.flab.just_10_minutes.Payment.domain.Status;
+import com.flab.just_10_minutes.Payment.domain.PaymentResultStatus;
 import com.flab.just_10_minutes.Payment.dto.BillingRequestDto;
 import com.flab.just_10_minutes.Payment.dto.PaymentRequestDto;
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
@@ -25,9 +25,9 @@ public class PaymentService {
         String customerUid = fetchCustomerUid(iamportPaymentRequestDto);
         PaymentResult paymentResult = PaymentResult.from(iamportApiClient.againPayment(iamportPaymentRequestDto, customerUid));
 
-        if (paymentResult.getStatus().equals(Status.PAID)) {
+        if (paymentResult.getStatus().equals(PaymentResultStatus.PAID)) {
             paymentResultDao.save(paymentResult);
-        } else if (paymentResult.getStatus().equals(Status.FAIL)) {
+        } else if (paymentResult.getStatus().equals(PaymentResultStatus.FAIL)) {
             throw new BusinessException("Fail to Payment : " + paymentResult.getFailReason());
         }
 
