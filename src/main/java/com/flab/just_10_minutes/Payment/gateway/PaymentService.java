@@ -2,10 +2,10 @@ package com.flab.just_10_minutes.Payment.gateway;
 
 import com.flab.just_10_minutes.Payment.domain.Status;
 import com.flab.just_10_minutes.Payment.dto.BillingRequestDto;
-import com.flab.just_10_minutes.Payment.dto.IamportPaymentRequestDto;
+import com.flab.just_10_minutes.Payment.dto.PaymentRequestDto;
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
 import com.flab.just_10_minutes.Payment.infrastructure.CustomerUidDao;
-import com.flab.just_10_minutes.Payment.infrastructure.IamportApiClient;
+import com.flab.just_10_minutes.Payment.infrastructure.Iamport.IamportApiClient;
 import com.flab.just_10_minutes.Payment.infrastructure.PaymentResultDao;
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import jakarta.validation.Valid;
@@ -21,9 +21,9 @@ public class PaymentService {
     private final PaymentResultDao paymentResultDao;
     private final IamportApiClient iamportApiClient;
 
-    public PaymentResult paymentTransaction(@Valid IamportPaymentRequestDto iamportPaymentRequestDto) {
+    public PaymentResult paymentTransaction(@Valid PaymentRequestDto iamportPaymentRequestDto) {
         String customerUid = fetchCustomerUid(iamportPaymentRequestDto);
-        PaymentResult paymentResult = PaymentResult.from(iamportApiClient.againPayment(IamportPaymentRequestDto.toAgainPaymentData(iamportPaymentRequestDto, customerUid)));
+        PaymentResult paymentResult = PaymentResult.from(iamportApiClient.againPayment(iamportPaymentRequestDto, customerUid));
 
         if (paymentResult.getStatus().equals(Status.PAID)) {
             paymentResultDao.save(paymentResult);
@@ -44,7 +44,7 @@ public class PaymentService {
         return customerUid;
     }
 
-    private String fetchCustomerUid(final IamportPaymentRequestDto paymentDataDto) {
+    private String fetchCustomerUid(final PaymentRequestDto paymentDataDto) {
         Optional<String> OptionalCustomerUid = customerUidDao.findByLoginId(paymentDataDto.getCustomerLoginId());
         return OptionalCustomerUid.orElse(issueCustomerUid(paymentDataDto.getCustomerLoginId(), paymentDataDto.getBillingRequestDto()));
     }

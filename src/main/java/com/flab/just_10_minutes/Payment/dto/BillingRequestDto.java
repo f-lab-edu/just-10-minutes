@@ -1,6 +1,6 @@
 package com.flab.just_10_minutes.Payment.dto;
 
-import com.siot.IamportRestClient.request.BillingCustomerData;
+import com.flab.just_10_minutes.Payment.infrastructure.Iamport.request.IamportBillingCustomerData;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
@@ -19,16 +19,16 @@ public class BillingRequestDto {
     @NotEmpty
     private String birth;
     @NotEmpty
-    private String pwd_2Digit;
+    private String pwd2Digit;
 
-    public static BillingCustomerData toBillingCustomerData(BillingRequestDto billingRequestDto, @NonNull String pg) {
-        BillingCustomerData data =  new BillingCustomerData(null,
-                billingRequestDto.getCardNumber(),
-                billingRequestDto.getExpiry(),
-                billingRequestDto.getBirth());
-        data.setPg(pg);
-        data.setPwd2Digit(billingRequestDto.getPwd_2Digit());
-        return data;
+    public static IamportBillingCustomerData toIamportBillingCustomerData(BillingRequestDto billingRequestDto, @NonNull String pg) {
+        return IamportBillingCustomerData.builder()
+                .pg(pg)
+                .cardNumber(billingRequestDto.getCardNumber())
+                .expiry(billingRequestDto.getExpiry())
+                .birth(billingRequestDto.getBirth())
+                .pwd2digit(billingRequestDto.getPwd2Digit())
+                .build();
     }
 
     public enum PG {

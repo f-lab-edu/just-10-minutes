@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class IamportException extends RuntimeException {
 
-    private static final String message = "Network Error";
+    private static final String message = "Payment Error Occurred";
 
     private final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-    public IamportException( Throwable cause) {
-        super(message, cause);
+    public IamportException(String cause) {
+        super(message, new Throwable(cause));
     }
 }

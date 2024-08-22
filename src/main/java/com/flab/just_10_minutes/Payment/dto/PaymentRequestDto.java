@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.Payment.dto;
 
+import com.flab.just_10_minutes.Payment.infrastructure.Iamport.request.IamportAgainPaymentData;
 import com.flab.just_10_minutes.User.domain.User;
-import com.siot.IamportRestClient.request.AgainPaymentData;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,13 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
-import static com.flab.just_10_minutes.Util.Common.IDUtil.issueOrderId;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
-public class IamportPaymentRequestDto {
+public class PaymentRequestDto {
 
     @NotEmpty
     private String merchantUid;
@@ -29,15 +27,18 @@ public class IamportPaymentRequestDto {
     @NotNull
     private BillingRequestDto billingRequestDto;
 
-    public static AgainPaymentData toAgainPaymentData(IamportPaymentRequestDto iamportPaymentRequestDto, final String customerUid) {
-        AgainPaymentData data = new AgainPaymentData(customerUid, iamportPaymentRequestDto.getMerchantUid(), iamportPaymentRequestDto.getTotalPrice());
-        data.setName(iamportPaymentRequestDto.getOrderName());
-        data.setBuyerName(iamportPaymentRequestDto.getCustomerLoginId());
-        return data;
+    public static IamportAgainPaymentData toAgainPaymentData(PaymentRequestDto paymentRequestDto, final String customerUid) {
+        return IamportAgainPaymentData.builder()
+                                .customerUid(customerUid)
+                                .merchantUid(paymentRequestDto.merchantUid)
+                                .amount(paymentRequestDto.getTotalPrice())
+                                .name(paymentRequestDto.getOrderName())
+                                .buyerName(paymentRequestDto.getCustomerLoginId())
+                                .build();
     }
 
-    public static IamportPaymentRequestDto from (String orderId, Long totalPrice, User buyer, Long productId, BillingRequestDto billingRequestDto) {
-        return IamportPaymentRequestDto.builder()
+    public static PaymentRequestDto from (String orderId, Long totalPrice, User buyer, Long productId, BillingRequestDto billingRequestDto) {
+        return PaymentRequestDto.builder()
                 .merchantUid(orderId)
                 .totalPrice(BigDecimal.valueOf(totalPrice))
                 .customerLoginId(buyer.getLoginId())

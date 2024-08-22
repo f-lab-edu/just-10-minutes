@@ -1,6 +1,6 @@
 package com.flab.just_10_minutes.Payment.domain;
 
-import com.siot.IamportRestClient.response.Payment;
+import com.flab.just_10_minutes.Payment.infrastructure.Iamport.response.IamportPayment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class PaymentResult {
     private String failReason;
     private Date failedAt;
 
-    public static PaymentResult from(Payment payment) {
+    public static PaymentResult from(IamportPayment payment) {
         return PaymentResult.builder()
                 .impUid(payment.getImpUid())
                 .merchantUid(payment.getMerchantUid())
