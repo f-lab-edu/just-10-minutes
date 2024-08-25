@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class DatabaseException extends RuntimeException{
+public class DatabaseException extends RuntimeException {
 
     private String message;
     private HttpStatus httpStatus;
