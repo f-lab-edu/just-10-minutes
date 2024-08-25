@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.Util.Iamport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.just_10_minutes.Payment.dto.BillingRequestDto;
+import com.flab.just_10_minutes.Payment.dto.BillingRequest;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.HttpClient;
@@ -13,10 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.support.RestClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+
 import java.time.Duration;
 
 @Configuration
@@ -61,7 +59,6 @@ public class IamportConfig {
                 .builder()
                 .baseUrl(url)
                 .requestFactory(factory)
-                .messageConverters(converters -> converters.add(new MappingJackson2HttpMessageConverter(new ObjectMapper())))
                 .requestInterceptor((req, body, execution) -> {
                     log.info("Request: {}", req);
                     return execution.execute(req, body);
@@ -77,7 +74,7 @@ public class IamportConfig {
 //                .build().createClient(IamportClient.class);
 //    }
 
-    public String getPg(BillingRequestDto.PG pg) {
+    public String getPg(BillingRequest.PG pg) {
         switch (pg) {
             case NICE -> {return getNicePg();}
             default -> {return getNicePg();}

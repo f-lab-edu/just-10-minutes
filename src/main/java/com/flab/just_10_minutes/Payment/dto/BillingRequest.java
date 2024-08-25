@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Builder
-public class BillingRequestDto {
+public class BillingRequest {
 
     @NotEmpty
     private PG pg;
@@ -21,13 +21,13 @@ public class BillingRequestDto {
     @NotEmpty
     private String pwd2Digit;
 
-    public static IamportBillingCustomerData toIamportBillingCustomerData(BillingRequestDto billingRequestDto, @NonNull String pg) {
+    public static IamportBillingCustomerData toIamportBillingCustomerData(BillingRequest billingRequest, @NonNull String pg) {
         return IamportBillingCustomerData.builder()
                 .pg(pg)
-                .cardNumber(billingRequestDto.getCardNumber())
-                .expiry(billingRequestDto.getExpiry())
-                .birth(billingRequestDto.getBirth())
-                .pwd2digit(billingRequestDto.getPwd2Digit())
+                .cardNumber(billingRequest.getCardNumber())
+                .expiry(billingRequest.getExpiry())
+                .birth(billingRequest.getBirth())
+                .pwd_2digit(billingRequest.getPwd2Digit())
                 .build();
     }
 

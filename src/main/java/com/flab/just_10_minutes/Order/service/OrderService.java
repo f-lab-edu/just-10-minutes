@@ -5,7 +5,7 @@ import com.flab.just_10_minutes.Order.dto.OrderDto;
 import com.flab.just_10_minutes.Order.dto.OrderReceiptDto;
 import com.flab.just_10_minutes.Order.infrastructure.OrderDao;
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
-import com.flab.just_10_minutes.Payment.dto.PaymentRequestDto;
+import com.flab.just_10_minutes.Payment.dto.PaymentRequest;
 import com.flab.just_10_minutes.Payment.gateway.PaymentService;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
@@ -20,7 +20,7 @@ public class OrderService {
 
     private final UserDao userDao;
     private final OrderDao orderDao;
-    private final PaymentService paymentGateWay;
+    private final PaymentService paymentService;
     //TODO(due : 8/17): ProductDao
 
     public OrderReceiptDto order(OrderDto orderDto) {
@@ -40,7 +40,7 @@ public class OrderService {
         * */
         Long totalPrice = orderDto.getRequestDecreasedStock() * productOriginalPrice;
 
-        PaymentResult paymentResult = paymentGateWay.paymentTransaction(PaymentRequestDto.from(issueOrderId(), totalPrice, buyer, orderDto.getRequestUsedPoint(), orderDto.getBillingRequestDto()));
+        PaymentResult paymentResult = paymentService.paymentTransaction(PaymentRequest.from(issueOrderId(), totalPrice, buyer, orderDto.getRequestUsedPoint(), orderDto.getBillingRequest()));
 
         Order order = Order.createCompleteOrder(paymentResult, seller, orderDto.getRequestDecreasedStock(), buyer, totalPrice);
 

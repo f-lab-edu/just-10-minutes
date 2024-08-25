@@ -1,15 +1,14 @@
 package com.flab.just_10_minutes.Payment.infrastructure.Iamport.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class IamportAccessToken {
 
-        @JsonProperty("access_token")
         private String accessToken;
-        @JsonProperty("expired_at")
         private int expiredAt;
-        @JsonProperty("now")
         private int now;
 }

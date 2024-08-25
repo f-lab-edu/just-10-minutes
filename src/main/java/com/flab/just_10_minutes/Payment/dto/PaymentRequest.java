@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Builder
-public class PaymentRequestDto {
+public class PaymentRequest {
 
     @NotEmpty
     private String merchantUid;
@@ -25,25 +25,25 @@ public class PaymentRequestDto {
     @NotNull
     private String orderName;
     @NotNull
-    private BillingRequestDto billingRequestDto;
+    private BillingRequest billingRequest;
 
-    public static IamportAgainPaymentData toAgainPaymentData(PaymentRequestDto paymentRequestDto, final String customerUid) {
+    public static IamportAgainPaymentData toAgainPaymentData(PaymentRequest paymentRequest, final String customerUid) {
         return IamportAgainPaymentData.builder()
                                 .customerUid(customerUid)
-                                .merchantUid(paymentRequestDto.merchantUid)
-                                .amount(paymentRequestDto.getTotalPrice())
-                                .name(paymentRequestDto.getOrderName())
-                                .buyerName(paymentRequestDto.getCustomerLoginId())
+                                .merchantUid(paymentRequest.merchantUid)
+                                .amount(paymentRequest.getTotalPrice())
+                                .name(paymentRequest.getOrderName())
+                                .buyerName(paymentRequest.getCustomerLoginId())
                                 .build();
     }
 
-    public static PaymentRequestDto from (String orderId, Long totalPrice, User buyer, Long productId, BillingRequestDto billingRequestDto) {
-        return PaymentRequestDto.builder()
+    public static PaymentRequest from (String orderId, Long totalPrice, User buyer, Long productId, BillingRequest billingRequest) {
+        return PaymentRequest.builder()
                 .merchantUid(orderId)
                 .totalPrice(BigDecimal.valueOf(totalPrice))
                 .customerLoginId(buyer.getLoginId())
                 .orderName(productId.toString())
-                .billingRequestDto(billingRequestDto)
+                .billingRequest(billingRequest)
                 .build();
     }
 }

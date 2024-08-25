@@ -9,18 +9,18 @@ import static com.flab.just_10_minutes.Util.Exception.Database.InternalException
 
 @Repository
 @RequiredArgsConstructor
-public class CustomerUidDao {
+public class BillingKeyDao {
 
-    private final BillingKeyMapper customUidMapper;
+    private final BillingKeyMapper billingKeyMapper;
 
     public void save(final String loginId, final String customerUid) {
-        int saveResult = customUidMapper.save(BillingKeyEntity.from(loginId, customerUid));
+        int saveResult = billingKeyMapper.save(BillingKeyEntity.from(loginId, customerUid));
         if (saveResult != 1) {
             throw new InternalException(FAIL_TO_INSERT);
         }
     }
 
     public Optional<String> findByLoginId(final String loginId) {
-        return Optional.ofNullable(customUidMapper.findByLoginId(loginId));
+        return Optional.ofNullable(billingKeyMapper.findByLoginId(loginId));
     }
 }

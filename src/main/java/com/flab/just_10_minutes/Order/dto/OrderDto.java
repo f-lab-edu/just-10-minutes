@@ -1,6 +1,6 @@
 package com.flab.just_10_minutes.Order.dto;
 
-import com.flab.just_10_minutes.Payment.dto.BillingRequestDto;
+import com.flab.just_10_minutes.Payment.dto.BillingRequest;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,5 +23,5 @@ public class OrderDto {
     @NotNull
     private Long requestUsedPoint;
     @NotNull
-    private BillingRequestDto billingRequestDto;
+    private BillingRequest billingRequest;
 }

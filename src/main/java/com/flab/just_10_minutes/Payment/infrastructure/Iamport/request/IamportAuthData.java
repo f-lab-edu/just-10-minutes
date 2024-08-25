@@ -1,15 +1,15 @@
 package com.flab.just_10_minutes.Payment.infrastructure.Iamport.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class IamportAuthData {
 
-    @JsonProperty("imp_key")
     private String impKey;
-    @JsonProperty("imp_secret")
     private String impSecret;
 }
