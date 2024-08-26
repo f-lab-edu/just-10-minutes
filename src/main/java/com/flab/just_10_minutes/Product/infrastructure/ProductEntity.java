@@ -3,15 +3,13 @@ package com.flab.just_10_minutes.Product.infrastructure;
 import com.flab.just_10_minutes.Product.domain.Product;
 import com.flab.just_10_minutes.User.domain.Customer;
 import com.flab.just_10_minutes.User.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
 @Builder
 @EqualsAndHashCode
+@ToString
 public class ProductEntity {
 
     private Long id;

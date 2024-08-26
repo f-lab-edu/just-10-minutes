@@ -15,9 +15,9 @@ public class OrderEntity {
     private String id;
     private String sellerLoginId;
     private String buyerLoginId;
-    //TODO(due : 8/17): ProductId;
-    private Long usedPoint;
+    private Long productId;
     private Long buyQuantity;
+    private Long usedPoint;
     private Long totalPrice;
     private Long refundedPrice;
     private String paymentTxId;
@@ -28,8 +28,9 @@ public class OrderEntity {
                 .id(order.getId())
                 .sellerLoginId(order.getSeller().getLoginId())
                 .buyerLoginId(order.getBuyer().getLoginId())
-                .usedPoint(order.getUsedPoint())
+                .productId(order.getProduct().getId())
                 .buyQuantity(order.getBuyQuantity())
+                .usedPoint(order.getUsedPoint())
                 .totalPrice(order.getTotalPrice())
                 .refundedPrice(order.getRefundedPrice())
                 .paymentTxId(order.getPaymentTxId())

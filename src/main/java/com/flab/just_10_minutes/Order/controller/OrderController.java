@@ -4,6 +4,7 @@ import com.flab.just_10_minutes.Order.dto.OrderDto;
 import com.flab.just_10_minutes.Order.dto.OrderReceiptDto;
 import com.flab.just_10_minutes.Order.service.OrderService;
 import com.siot.IamportRestClient.exception.IamportResponseException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderReceiptDto> order(@RequestBody OrderDto orderDto) throws IamportResponseException, IOException {
+    public ResponseEntity<OrderReceiptDto> order(@Valid @RequestBody OrderDto orderDto) throws IamportResponseException, IOException {
         return ResponseEntity.ok(orderService.order(orderDto));
     }
 }

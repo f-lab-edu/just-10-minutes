@@ -18,7 +18,7 @@ public class PointService {
     private final UserDao userDao;
     private final PointDao pointDao;
 
-    public PointHistory offerPoint(final PointHistory pointHistory) {
+    public PointHistory offerPoint(PointHistory pointHistory) {
         User user = userDao.fetch(pointHistory.getLoginId());
 
         PointHistory newHistory = pointHistory.increase(user.getPoint());
@@ -27,6 +27,17 @@ public class PointService {
         userDao.patchPoints(user.getLoginId(), newHistory.getTotalQuantity());
 
         return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Internal Error : Fail to retrieve the latest point history for user login id : " + pointHistory.getLoginId());});
+    }
+
+    public PointHistory subtractPoint(PointHistory pointHistory) {
+        User user = userDao.fetch(pointHistory.getLoginId());
+        if (pointHistory.getQuantity() < 0 && user.getPoint() <= 0L) {throw new BusinessException("Remaining User's Point Under 0");}
+
+        PointHistory newHistory = pointHistory.decrease(user.getPoint());
+        pointDao.save(newHistory);
+        userDao.patchPoints(user.getLoginId(), newHistory.getTotalQuantity());
+
+        return  pointDao.fetchFirst(user.getLoginId());
     }
 
     public Long getTotalPoint(final String loginId) {

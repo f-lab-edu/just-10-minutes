@@ -1,5 +1,6 @@
 package com.flab.just_10_minutes.Point.domain;
 
+import com.flab.just_10_minutes.User.domain.User;
 import lombok.*;
 
 @AllArgsConstructor
@@ -38,6 +39,14 @@ public class PointHistory {
                 .quantity(this.quantity)
                 .reason(this.reason)
                 .totalQuantity(this.quantity + userOwnPoint)
+                .build();
+    }
+
+    public static PointHistory from(User user, final Long requestDecreaseQuantity, String reason) {
+        return PointHistory.builder()
+                .loginId(user.getLoginId())
+                .quantity(requestDecreaseQuantity)
+                .reason(reason)
                 .build();
     }
 }

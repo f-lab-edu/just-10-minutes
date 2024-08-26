@@ -1,14 +1,12 @@
 package com.flab.just_10_minutes.User.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
 @Builder
 @EqualsAndHashCode
+@ToString
 public class User {
 
     private Long id;
