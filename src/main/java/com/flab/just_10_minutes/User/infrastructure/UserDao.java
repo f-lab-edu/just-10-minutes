@@ -45,7 +45,7 @@ public class UserDao {
         return Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);});
     }
 
-    public void patchPoints(final String loginId, final Long updatePoints) {
+    public void patchPoint(final String loginId, final Long updatePoints) {
         int updateCount = userMapper.updatePoint(loginId, updatePoints);
 
         if (updateCount != 1) {
