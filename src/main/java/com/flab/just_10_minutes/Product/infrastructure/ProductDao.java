@@ -3,9 +3,15 @@ package com.flab.just_10_minutes.Product.infrastructure;
 import com.flab.just_10_minutes.Product.domain.Product;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserMapper;
+import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
+import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
+
+import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_INSERT;
+import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_UPDATE;
+import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,7 +25,7 @@ public class ProductDao {
 
         int saveResult = productMapper.save(productEntity);
         if (saveResult != 1) {
-            throw new RuntimeException("Fail to Insert");
+            throw new InternalException(FAIL_TO_INSERT);
         }
 
         return fetch(productEntity.getId());
@@ -34,15 +40,15 @@ public class ProductDao {
     }
 
     public Product fetch(final Long id) {
-        ProductEntity productEntity = findById(id).orElseThrow(() -> {throw new RuntimeException("Not Exist Product");});
-        User seller = Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId())).orElseThrow(() -> {throw new RuntimeException("Not Exist User");});
+        ProductEntity productEntity = findById(id).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, PRODUCT);});
+        User seller = Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId())).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);});
 
         return ProductEntity.toDomain(productEntity, seller);
     }
 
     public Product fetchWithPessimisticLock(final Long id) {
-        ProductEntity productEntity = findByIdForUpdate(id).orElseThrow(() -> {throw new RuntimeException("Not Exist Product");});
-        User seller = Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId())).orElseThrow(() -> {throw new RuntimeException("Not Exist User");});
+        ProductEntity productEntity = findByIdForUpdate(id).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, PRODUCT);});
+        User seller = Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId())).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);});
 
         return ProductEntity.toDomain(productEntity, seller);
     }
@@ -51,7 +57,7 @@ public class ProductDao {
         int patchResult = productMapper.patchStock(id, updatedStock);
 
         if (patchResult != 1) {
-            throw new RuntimeException("Fail to Update");
+            throw new InternalException(FAIL_TO_UPDATE);
         }
         return fetch(id);
     }

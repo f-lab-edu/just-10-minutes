@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,7 +22,7 @@ import java.util.concurrent.Executors;
 import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSeller;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@MybatisTest
+@SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class StockDecreaseConcurrencyTest {
 
@@ -71,7 +73,7 @@ public class StockDecreaseConcurrencyTest {
     public void 재고_차감_성공() throws Exception {
         // given
         int numberOfThreads = 1000;
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
         //when

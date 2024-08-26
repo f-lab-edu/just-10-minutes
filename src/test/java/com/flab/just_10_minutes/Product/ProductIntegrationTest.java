@@ -72,7 +72,7 @@ public class ProductIntegrationTest {
         );
 
         //then
-        resultAction.andExpect(status().isBadRequest());
+        resultAction.andExpect(status().isNotFound());
     }
 
     @Test

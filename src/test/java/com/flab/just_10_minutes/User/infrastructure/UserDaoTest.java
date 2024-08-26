@@ -135,7 +135,7 @@ public class UserDaoTest {
         saveUser(EXIST_ID);
         //given
         //when
-        target.patchPoints(EXIST_ID, 1000L);
+        target.patchPoint(EXIST_ID, 1000L);
 
         Optional<User> user = target.findByLoginId(EXIST_ID);
 

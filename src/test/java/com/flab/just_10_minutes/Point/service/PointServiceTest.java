@@ -79,7 +79,7 @@ class PointServiceTest {
 
         doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(any(PointHistory.class));
-        doThrow(InternalException.class).when(userDao).patchPoints(EXIST_ID, newHistory.getTotalQuantity());
+        doThrow(InternalException.class).when(userDao).patchPoint(EXIST_ID, newHistory.getTotalQuantity());
 
         //when
         final DatabaseException result = assertThrows(DatabaseException.class, () -> target.offerPoint(plusHistory));
@@ -97,7 +97,7 @@ class PointServiceTest {
 
         doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(any(PointHistory.class));
-        doNothing().when(userDao).patchPoints(EXIST_ID, newHistory.getTotalQuantity());
+        doNothing().when(userDao).patchPoint(EXIST_ID, newHistory.getTotalQuantity());
         doReturn(Optional.ofNullable(null)).when(pointDao).findFirst(EXIST_ID);
 
         //when
@@ -115,7 +115,7 @@ class PointServiceTest {
 
         doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(newHistory);
-        doNothing().when(userDao).patchPoints(EXIST_ID, newHistory.getTotalQuantity());
+        doNothing().when(userDao).patchPoint(EXIST_ID, newHistory.getTotalQuantity());
         doReturn(Optional.ofNullable(newHistory)).when(pointDao).findFirst(EXIST_ID);
 
         //when
@@ -123,7 +123,7 @@ class PointServiceTest {
 
         //then
         verify(pointDao, times(1)).save(any(PointHistory.class));
-        verify(userDao, times(1)).patchPoints(EXIST_ID, newHistory.getTotalQuantity());
+        verify(userDao, times(1)).patchPoint(EXIST_ID, newHistory.getTotalQuantity());
         verify(pointDao, times(1)).findFirst(EXIST_ID);
         assertThat(newHistory).isEqualTo(saveHistory);
     }
