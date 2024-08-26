@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PointHistoryResponseDto {
 
-    private Long quantity;
+    private Long requestQuantity;
     private String reason;
 
     public static PointHistoryResponseDto from(PointHistory pointHistory) {
         return PointHistoryResponseDto.builder()
-                                    .quantity(pointHistory.getQuantity())
+                                    .requestQuantity(pointHistory.getRequestQuantity())
                                     .reason(pointHistory.getReason())
                                     .build();
     }

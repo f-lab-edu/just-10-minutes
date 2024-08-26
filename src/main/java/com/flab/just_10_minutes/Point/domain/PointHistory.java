@@ -12,40 +12,40 @@ import lombok.*;
 public class PointHistory {
 
     private String loginId;
-    private Long quantity;
+    private Long requestQuantity;
     private String reason;
     private Long totalQuantity;
 
     public PointHistory decrease(final Long userOwnPoint) {
-        if (Math.abs(this.quantity) > userOwnPoint) {
+        if (Math.abs(this.requestQuantity) > userOwnPoint) {
             return PointHistory.builder()
                     .loginId(this.loginId)
-                    .quantity(-userOwnPoint)
+                    .requestQuantity(-userOwnPoint)
                     .reason(this.reason)
                     .totalQuantity(0L)
                     .build();
         }
         return PointHistory.builder()
                 .loginId(this.loginId)
-                .quantity(this.quantity)
+                .requestQuantity(this.requestQuantity)
                 .reason(this.reason)
-                .totalQuantity(userOwnPoint - Math.abs(this.quantity))
+                .totalQuantity(userOwnPoint - Math.abs(this.requestQuantity))
                 .build();
     }
 
     public PointHistory increase(final Long userOwnPoint) {
         return  PointHistory.builder()
                 .loginId(this.loginId)
-                .quantity(this.quantity)
+                .requestQuantity(this.requestQuantity)
                 .reason(this.reason)
-                .totalQuantity(this.quantity + userOwnPoint)
+                .totalQuantity(this.requestQuantity + userOwnPoint)
                 .build();
     }
 
-    public static PointHistory from(User user, final Long requestDecreaseQuantity, String reason) {
+    public static PointHistory from(User user, final Long requestQuantity, String reason) {
         return PointHistory.builder()
                 .loginId(user.getLoginId())
-                .quantity(requestDecreaseQuantity)
+                .requestQuantity(requestQuantity)
                 .reason(reason)
                 .build();
     }

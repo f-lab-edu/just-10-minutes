@@ -9,7 +9,7 @@ public class PointHistoryTestFixture {
     public static PointHistory createPointHistory(Long quantity) {
         return PointHistory.builder()
                 .loginId(EXIST_ID)
-                .quantity(quantity)
+                .requestQuantity(quantity)
                 .reason("test")
                 .totalQuantity(0L)
                 .build();
@@ -18,7 +18,7 @@ public class PointHistoryTestFixture {
     public static PointHistory createPointHistory(String loginId, Long quantity) {
         return PointHistory.builder()
                 .loginId(loginId)
-                .quantity(quantity)
+                .requestQuantity(quantity)
                 .reason("test")
                 .totalQuantity(0L)
                 .build();
@@ -27,7 +27,7 @@ public class PointHistoryTestFixture {
     public static PointHistory createPointHistory(String loginId, Long quantity, String reason) {
         return PointHistory.builder()
                 .loginId(loginId)
-                .quantity(quantity)
+                .requestQuantity(quantity)
                 .reason(reason)
                 .totalQuantity(0L)
                 .build();
@@ -36,7 +36,7 @@ public class PointHistoryTestFixture {
     public static PointHistory createPointHistory(String loginId, Long quantity, String reason, Long totalPoint) {
         return PointHistory.builder()
                 .loginId(loginId)
-                .quantity(quantity)
+                .requestQuantity(quantity)
                 .reason(reason)
                 .totalQuantity(totalPoint)
                 .build();

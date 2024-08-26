@@ -7,7 +7,7 @@ public class PointHistoryDtoTestFixture {
     public static PointHistoryDto createTestPointHistoryDto(String loginId, Long quantity, String reason) {
         return PointHistoryDto.builder()
                 .loginId(loginId)
-                .quantity(quantity)
+                .requestQuantity(quantity)
                 .reason(reason)
                 .build();
     }

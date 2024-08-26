@@ -8,14 +8,12 @@ import com.flab.just_10_minutes.Payment.domain.PaymentResult;
 import com.flab.just_10_minutes.Payment.dto.PaymentRequest;
 import com.flab.just_10_minutes.Payment.gateway.PaymentService;
 import com.flab.just_10_minutes.Point.domain.PointHistory;
-import com.flab.just_10_minutes.Point.infrastructure.PointDao;
 import com.flab.just_10_minutes.Point.service.PointService;
 import com.flab.just_10_minutes.Product.domain.Product;
 import com.flab.just_10_minutes.Product.infrastructure.ProductDao;
 import com.flab.just_10_minutes.Product.service.StockService;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
-import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +45,7 @@ public class OrderService {
 
         PointHistory newHistory = subtractPoint(pointHistory);
 
-        long totalPrice = calculateTotalPrice(product, orderDto, newHistory.getQuantity());
+        long totalPrice = calculateTotalPrice(product, orderDto, newHistory.getRequestQuantity());
         PaymentResult paymentResult = paymentService.paymentTransaction(PaymentRequest.from(orderId,
                                                                                             totalPrice,
                                                                                             buyer,
@@ -67,7 +65,7 @@ public class OrderService {
     }
 
     private PointHistory subtractPoint(PointHistory pointHistory) {
-        Long requestDecrease = pointHistory.getQuantity();
+        Long requestDecrease = pointHistory.getRequestQuantity();
         if (requestDecrease < 0) {
             return pointService.subtractPoint(pointHistory);
         }

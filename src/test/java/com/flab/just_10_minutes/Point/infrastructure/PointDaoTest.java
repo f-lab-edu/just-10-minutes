@@ -57,7 +57,7 @@ public class PointDaoTest {
 
         //then
         assertThat(latestHistory.getLoginId()).isEqualTo(pointHistory.getLoginId());
-        assertThat(latestHistory.getQuantity()).isEqualTo(pointHistory.getQuantity());
+        assertThat(latestHistory.getRequestQuantity()).isEqualTo(pointHistory.getRequestQuantity());
         assertThat(latestHistory.getReason()).isEqualTo(pointHistory.getReason());
     }
 

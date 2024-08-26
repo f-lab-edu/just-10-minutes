@@ -15,14 +15,14 @@ public class PointHistoryDto {
     @NotEmpty
     private String loginId;
     @NotNull
-    private Long quantity;
+    private Long requestQuantity;
     @NotEmpty
     private String reason;
 
     public static PointHistory toDomain(PointHistoryDto pointDto) {
         return PointHistory.builder()
                 .loginId(pointDto.getLoginId())
-                .quantity(pointDto.getQuantity())
+                .requestQuantity(pointDto.getRequestQuantity())
                 .reason(pointDto.getReason())
                 .totalQuantity(0L)
                 .build();
