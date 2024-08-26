@@ -15,7 +15,7 @@ public class StockService {
 
     @Transactional
     public Product decreaseStock(final Long productId, final Long requestQuantity) {
-        Product product = productDao.fetchWithLock(productId);
+        Product product = productDao.fetchWithPessimisticLock(productId);
         Long updatedStock = Math.abs(requestQuantity) + product.getPurchasedStock();
 
         if (updatedStock > product.getTotalStock()) {

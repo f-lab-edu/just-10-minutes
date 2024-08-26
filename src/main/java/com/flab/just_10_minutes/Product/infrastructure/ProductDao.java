@@ -40,7 +40,7 @@ public class ProductDao {
         return ProductEntity.toDomain(productEntity, seller);
     }
 
-    public Product fetchWithLock(final Long id) {
+    public Product fetchWithPessimisticLock(final Long id) {
         ProductEntity productEntity = findByIdForUpdate(id).orElseThrow(() -> {throw new RuntimeException("Not Exist Product");});
         User seller = Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId())).orElseThrow(() -> {throw new RuntimeException("Not Exist User");});
 
