@@ -24,7 +24,7 @@ public class PointService {
         PointHistory newHistory = pointHistory.increase(user.getPoint());
         pointDao.save(newHistory);
 
-        userDao.patchPoints(user.getLoginId(), newHistory.getTotalQuantity());
+        userDao.patchPoint(user.getLoginId(), newHistory.getTotalQuantity());
 
         return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Internal Error : Fail to retrieve the latest point history for user login id : " + pointHistory.getLoginId());});
     }
@@ -35,7 +35,7 @@ public class PointService {
 
         PointHistory newHistory = pointHistory.decrease(user.getPoint());
         pointDao.save(newHistory);
-        userDao.patchPoints(user.getLoginId(), newHistory.getTotalQuantity());
+        userDao.patchPoint(user.getLoginId(), newHistory.getTotalQuantity());
 
         return  pointDao.fetchFirst(user.getLoginId());
     }
