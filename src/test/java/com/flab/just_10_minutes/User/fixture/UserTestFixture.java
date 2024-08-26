@@ -1,6 +1,7 @@
 package com.flab.just_10_minutes.User.fixture;
 
 import com.flab.just_10_minutes.User.domain.User;
+import com.flab.just_10_minutes.User.infrastructure.entity.UserEntity;
 
 public class UserTestFixture {
 
@@ -40,6 +41,16 @@ public class UserTestFixture {
 
     public static User createSeller() {
         return User.builder()
+                .loginId("sellerId")
+                .password("testPassword")
+                .phone("010-1234-5678")
+                .address("testAddress")
+                .role(User.ROLE.SELLER)
+                .build();
+    }
+
+    public static UserEntity createSellerEntity() {
+        return UserEntity.builder()
                 .loginId("sellerId")
                 .password("testPassword")
                 .phone("010-1234-5678")

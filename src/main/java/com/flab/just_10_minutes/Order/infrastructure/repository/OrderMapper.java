@@ -1,5 +1,6 @@
-package com.flab.just_10_minutes.Order.infrastructure;
+package com.flab.just_10_minutes.Order.infrastructure.repository;
 
+import com.flab.just_10_minutes.Order.infrastructure.entity.OrderEntity;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.Payment.infrastructure;
+package com.flab.just_10_minutes.Payment.infrastructure.entity;
 
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
 import com.flab.just_10_minutes.Payment.domain.PaymentResultStatus;

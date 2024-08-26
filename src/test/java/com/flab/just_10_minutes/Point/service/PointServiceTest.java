@@ -2,10 +2,9 @@ package com.flab.just_10_minutes.Point.service;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Point.dto.PointHistories;
-import com.flab.just_10_minutes.Point.infrastructure.PointDao;
+import com.flab.just_10_minutes.Point.infrastructure.repository.PointDao;
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.infrastructure.UserDao;
-import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserDao;
 import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
 import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
@@ -15,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static com.flab.just_10_minutes.Point.fixture.PointHistoryTestFixture.createPointHistory;
 import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.EXIST_ID;
@@ -98,14 +96,15 @@ class PointServiceTest {
         doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(any(PointHistory.class));
         doNothing().when(userDao).patchPoint(EXIST_ID, newHistory.getTotalQuantity());
-        doReturn(Optional.ofNullable(null)).when(pointDao).findFirst(EXIST_ID);
+        doThrow(NotFoundException.class).when(pointDao).fetchFirst(EXIST_ID);
 
         //when
-        final BusinessException result = assertThrows(BusinessException.class, () -> target.offerPoint(plusHistory));
+        final NotFoundException result = assertThrows(NotFoundException.class, () -> target.offerPoint(plusHistory));
 
         //then
-        assertThat(result instanceof BusinessException).isEqualTo(true);
+        assertThat(result instanceof NotFoundException).isEqualTo(true);
     }
+
     @Test
     public void offerPoint_성공() {
         //given
@@ -116,7 +115,7 @@ class PointServiceTest {
         doReturn(existUser).when(userDao).fetch(EXIST_ID);
         doNothing().when(pointDao).save(newHistory);
         doNothing().when(userDao).patchPoint(EXIST_ID, newHistory.getTotalQuantity());
-        doReturn(Optional.ofNullable(newHistory)).when(pointDao).findFirst(EXIST_ID);
+        doReturn(newHistory).when(pointDao).fetchFirst(EXIST_ID);
 
         //when
         PointHistory saveHistory = target.offerPoint(initHistory);
@@ -124,7 +123,7 @@ class PointServiceTest {
         //then
         verify(pointDao, times(1)).save(any(PointHistory.class));
         verify(userDao, times(1)).patchPoint(EXIST_ID, newHistory.getTotalQuantity());
-        verify(pointDao, times(1)).findFirst(EXIST_ID);
+        verify(pointDao, times(1)).fetchFirst(EXIST_ID);
         assertThat(newHistory).isEqualTo(saveHistory);
     }
 

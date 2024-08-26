@@ -1,5 +1,6 @@
-package com.flab.just_10_minutes.Product.infrastructure;
+package com.flab.just_10_minutes.Product.infrastructure.repository;
 
+import com.flab.just_10_minutes.Product.infrastructure.entity.ProductEntity;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

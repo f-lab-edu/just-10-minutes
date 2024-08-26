@@ -1,8 +1,10 @@
-package com.flab.just_10_minutes.Product.infrastructure;
+package com.flab.just_10_minutes.Product.infrastructure.repository;
 
 import com.flab.just_10_minutes.Product.domain.Product;
+import com.flab.just_10_minutes.Product.infrastructure.entity.ProductEntity;
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.infrastructure.UserMapper;
+import com.flab.just_10_minutes.User.infrastructure.entity.UserEntity;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
 import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -41,14 +43,16 @@ public class ProductDao {
 
     public Product fetch(final Long id) {
         ProductEntity productEntity = findById(id).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, PRODUCT);});
-        User seller = Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId())).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);});
+        User seller = UserEntity.to(Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId()))
+                                            .orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);}));
 
         return ProductEntity.toDomain(productEntity, seller);
     }
 
     public Product fetchWithPessimisticLock(final Long id) {
         ProductEntity productEntity = findByIdForUpdate(id).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, PRODUCT);});
-        User seller = Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId())).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);});
+        User seller = UserEntity.to(Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId()))
+                                            .orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);}));
 
         return ProductEntity.toDomain(productEntity, seller);
     }

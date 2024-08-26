@@ -1,6 +1,7 @@
-package com.flab.just_10_minutes.User.infrastructure;
+package com.flab.just_10_minutes.User.infrastructure.repository;
 
 import com.flab.just_10_minutes.User.domain.User;
+import com.flab.just_10_minutes.User.infrastructure.entity.UserEntity;
 import com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException;
 import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
@@ -21,13 +22,13 @@ public class UserDao {
 
     private final UserMapper userMapper;
 
-    public Optional<User> findByLoginId(final String loginId) {
+    public Optional<UserEntity> findByLoginId(final String loginId) {
         return Optional.ofNullable(userMapper.findByLoginId(loginId));
     }
 
     public void save(final User user) {
         try {
-            int insertCount = userMapper.save(user);
+            int insertCount = userMapper.save(UserEntity.from(user));
 
             if (insertCount != 1) {
                 throw new InternalException(FAIL_TO_INSERT);
@@ -42,7 +43,9 @@ public class UserDao {
     }
 
     public User fetch(final String loginId) {
-        return Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);});
+        return UserEntity.to(Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {
+            throw new NotFoundException(NOT_FOUND, USER);
+        }));
     }
 
     public void patchPoint(final String loginId, final Long updatePoints) {

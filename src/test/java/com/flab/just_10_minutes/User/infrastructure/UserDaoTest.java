@@ -1,6 +1,9 @@
 package com.flab.just_10_minutes.User.infrastructure;
 
 import com.flab.just_10_minutes.User.domain.User;
+import com.flab.just_10_minutes.User.infrastructure.entity.UserEntity;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserDao;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
 import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
 import com.flab.just_10_minutes.Util.Exception.Database.DuplicatedKeyException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
@@ -67,7 +70,7 @@ public class UserDaoTest {
     public void findByLoginId_null_반환_존재하지_않는_회원() {
         //given
         //when
-        Optional<User> existUser = target.findByLoginId(NOT_EXIST_ID);
+        Optional<UserEntity> existUser = target.findByLoginId(NOT_EXIST_ID);
 
         //then
         assertThat(existUser.isPresent()).isEqualTo(false);
@@ -79,7 +82,7 @@ public class UserDaoTest {
         saveUser(EXIST_ID);
         //given
         //when
-        Optional<User> existUser = target.findByLoginId(EXIST_ID);
+        Optional<UserEntity> existUser = target.findByLoginId(EXIST_ID);
 
         //then
         assertThat(existUser.isPresent()).isEqualTo(true);
@@ -137,9 +140,9 @@ public class UserDaoTest {
         //when
         target.patchPoint(EXIST_ID, 1000L);
 
-        Optional<User> user = target.findByLoginId(EXIST_ID);
+        Optional<UserEntity> existUser = target.findByLoginId(EXIST_ID);
 
         //then
-        assertThat(user.get().getPoint()).isEqualTo(1000L);
+        assertThat(existUser.get().getPoint()).isEqualTo(1000L);
     }
 }

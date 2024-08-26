@@ -3,9 +3,9 @@ package com.flab.just_10_minutes.Product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.Product.domain.Product;
 import com.flab.just_10_minutes.Product.dto.ProductDto;
-import com.flab.just_10_minutes.Product.infrastructure.ProductDao;
-import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.infrastructure.UserMapper;
+import com.flab.just_10_minutes.Product.infrastructure.repository.ProductDao;
+import com.flab.just_10_minutes.User.infrastructure.entity.UserEntity;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSeller;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSellerEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,7 +39,7 @@ public class ProductIntegrationTest {
     private static final String ENROLL_URL = "/products/enroll";
 
     public void saveSeller() {
-        User user = createSeller();
+        UserEntity user = createSellerEntity();
         userMapper.save(user);
     }
 

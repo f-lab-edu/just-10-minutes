@@ -1,5 +1,6 @@
-package com.flab.just_10_minutes.Payment.infrastructure;
+package com.flab.just_10_minutes.Payment.infrastructure.repository;
 
+import com.flab.just_10_minutes.Payment.infrastructure.entity.PaymentResultEntity;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

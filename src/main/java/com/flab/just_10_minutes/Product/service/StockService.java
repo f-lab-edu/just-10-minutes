@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.Product.service;
 
 import com.flab.just_10_minutes.Product.domain.Product;
-import com.flab.just_10_minutes.Product.infrastructure.ProductDao;
+import com.flab.just_10_minutes.Product.infrastructure.repository.ProductDao;
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

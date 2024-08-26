@@ -140,6 +140,7 @@ public class PointIntegrationTest {
         saveUser(EXIST_ID);
         saveHistory(EXIST_ID, 100L);
         saveHistory(EXIST_ID, 200L);
+
         //given
         final String url = TOTAL;
 

@@ -1,5 +1,6 @@
-package com.flab.just_10_minutes.Payment.infrastructure;
+package com.flab.just_10_minutes.Payment.infrastructure.repository;
 
+import com.flab.just_10_minutes.Payment.infrastructure.entity.BillingKeyEntity;
 import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

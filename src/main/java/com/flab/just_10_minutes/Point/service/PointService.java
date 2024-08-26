@@ -3,9 +3,9 @@ package com.flab.just_10_minutes.Point.service;
 import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Point.dto.PointHistoryResponse;
 import com.flab.just_10_minutes.Point.dto.PointHistories;
-import com.flab.just_10_minutes.Point.infrastructure.PointDao;
+import com.flab.just_10_minutes.Point.infrastructure.repository.PointDao;
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.infrastructure.UserDao;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserDao;
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class PointService {
 
         userDao.patchPoint(user.getLoginId(), newHistory.getTotalQuantity());
 
-        return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Fail to retrieve the latest point history for user login id : " + pointHistory.getLoginId());});
+        return pointDao.fetchFirst(pointHistory.getLoginId());
     }
 
     public PointHistory subtractPoint(PointHistory pointHistory) {

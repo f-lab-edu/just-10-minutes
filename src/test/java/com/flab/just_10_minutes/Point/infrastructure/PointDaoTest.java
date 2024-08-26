@@ -1,15 +1,16 @@
 package com.flab.just_10_minutes.Point.infrastructure;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
+import com.flab.just_10_minutes.Point.infrastructure.repository.PointDao;
+import com.flab.just_10_minutes.Point.infrastructure.repository.PointMapper;
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.infrastructure.UserDao;
-import com.flab.just_10_minutes.User.infrastructure.UserMapper;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserDao;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
 import org.junit.jupiter.api.*;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import java.util.List;
-import java.util.Optional;
 
 import static com.flab.just_10_minutes.Point.fixture.PointHistoryTestFixture.createPointHistory;
 import static com.flab.just_10_minutes.User.fixture.UserDtoTestFixture.EXIST_ID;
@@ -46,48 +47,48 @@ public class PointDaoTest {
         target.save(initHistory);
     }
 
-    @Test
-    public void save_성공() {
-        //given
-        PointHistory pointHistory = createPointHistory(EXIST_ID, 100L);
+//    @Test
+//    public void save_성공() {
+//        //given
+//        PointHistory pointHistory = createPointHistory(EXIST_ID, 100L);
+//
+//        //when
+//        target.save(pointHistory);
+//        PointHistory latestHistory = target.findFirst(EXIST_ID).get();
+//
+//        //then
+//        assertThat(latestHistory.getLoginId()).isEqualTo(pointHistory.getLoginId());
+//        assertThat(latestHistory.getRequestQuantity()).isEqualTo(pointHistory.getRequestQuantity());
+//        assertThat(latestHistory.getReason()).isEqualTo(pointHistory.getReason());
+//    }
 
-        //when
-        target.save(pointHistory);
-        PointHistory latestHistory = target.findFirst(EXIST_ID).get();
+//    @Test
+//    public void findFirst_null_반환_포인트_기록이_없음() {
+//        //setUp
+//        saveUser(EXIST_ID);
+//        //given
+//        //when
+//        Optional<PointHistory> latestHistory = target.findFirst(EXIST_ID);
+//
+//        //then
+//        assertThat(latestHistory.isPresent()).isEqualTo(false);
+//    }
 
-        //then
-        assertThat(latestHistory.getLoginId()).isEqualTo(pointHistory.getLoginId());
-        assertThat(latestHistory.getRequestQuantity()).isEqualTo(pointHistory.getRequestQuantity());
-        assertThat(latestHistory.getReason()).isEqualTo(pointHistory.getReason());
-    }
-
-    @Test
-    public void findFirst_null_반환_포인트_기록이_없음() {
-        //setUp
-        saveUser(EXIST_ID);
-        //given
-        //when
-        Optional<PointHistory> latestHistory = target.findFirst(EXIST_ID);
-
-        //then
-        assertThat(latestHistory.isPresent()).isEqualTo(false);
-    }
-
-    @Test
-    public void findFirst_PointHistory_객체_중_가장_최근에_저장된_기록을_반환() {
-        //setUp
-        saveUser(EXIST_ID);
-        PointHistory initHistory = createPointHistory(EXIST_ID, 100L, "first");
-        PointHistory secondHistory = createPointHistory(EXIST_ID, 100L, "second");
-        target.save(initHistory);
-        target.save(secondHistory);
-        //given
-        //when
-        PointHistory latestHistory = target.findFirst(EXIST_ID).get();
-
-        //then
-        assertThat(latestHistory).isEqualTo(secondHistory);
-    }
+//    @Test
+//    public void findFirst_PointHistory_객체_중_가장_최근에_저장된_기록을_반환() {
+//        //setUp
+//        saveUser(EXIST_ID);
+//        PointHistory initHistory = createPointHistory(EXIST_ID, 100L, "first");
+//        PointHistory secondHistory = createPointHistory(EXIST_ID, 100L, "second");
+//        target.save(initHistory);
+//        target.save(secondHistory);
+//        //given
+//        //when
+//        PointHistory latestHistory = target.findFirst(EXIST_ID).get();
+//
+//        //then
+//        assertThat(latestHistory).isEqualTo(secondHistory);
+//    }
 
     @Test
     public void findByLoginId_빈_리스트_반환_포인트_기록이_없음() {

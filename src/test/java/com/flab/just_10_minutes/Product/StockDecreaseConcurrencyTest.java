@@ -1,16 +1,16 @@
 package com.flab.just_10_minutes.Product;
 
 import com.flab.just_10_minutes.Product.domain.Product;
-import com.flab.just_10_minutes.Product.infrastructure.ProductDao;
-import com.flab.just_10_minutes.Product.infrastructure.ProductMapper;
+import com.flab.just_10_minutes.Product.infrastructure.repository.ProductDao;
+import com.flab.just_10_minutes.Product.infrastructure.repository.ProductMapper;
 import com.flab.just_10_minutes.Product.service.StockService;
 import com.flab.just_10_minutes.User.domain.Customer;
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.infrastructure.UserMapper;
+import com.flab.just_10_minutes.User.infrastructure.entity.UserEntity;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSeller;
+import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSellerEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -52,9 +53,9 @@ public class StockDecreaseConcurrencyTest {
     }
 
     public Product saveProductWithSeller() {
-        User user = createSeller();
+        UserEntity user = createSellerEntity();
         userMapper.save(user);
-        Product product = createProduct(Customer.from(user));
+        Product product = createProduct(Customer.from(UserEntity.to(user)));
         return productDao.save(product);
     }
 

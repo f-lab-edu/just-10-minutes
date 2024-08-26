@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.Order.infrastructure;
+package com.flab.just_10_minutes.Order.infrastructure.entity;
 
 import com.flab.just_10_minutes.Order.domain.Order;
 import lombok.AllArgsConstructor;

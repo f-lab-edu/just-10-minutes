@@ -1,6 +1,7 @@
-package com.flab.just_10_minutes.Payment.infrastructure;
+package com.flab.just_10_minutes.Payment.infrastructure.repository;
 
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
+import com.flab.just_10_minutes.Payment.infrastructure.entity.PaymentResultEntity;
 import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.RequiredArgsConstructor;

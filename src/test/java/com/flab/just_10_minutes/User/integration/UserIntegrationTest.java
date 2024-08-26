@@ -2,8 +2,8 @@ package com.flab.just_10_minutes.User.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.User.domain.User;
-import com.flab.just_10_minutes.User.infrastructure.UserDao;
-import com.flab.just_10_minutes.User.infrastructure.UserMapper;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserDao;
+import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

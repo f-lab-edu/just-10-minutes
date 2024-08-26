@@ -1,6 +1,6 @@
 package com.flab.just_10_minutes.Order.dto;
 
-import com.flab.just_10_minutes.Order.infrastructure.OrderEntity;
+import com.flab.just_10_minutes.Order.infrastructure.entity.OrderEntity;
 import lombok.*;
 
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.Product.infrastructure;
+package com.flab.just_10_minutes.Product.infrastructure.entity;
 
 import com.flab.just_10_minutes.Product.domain.Product;
 import com.flab.just_10_minutes.User.domain.Customer;

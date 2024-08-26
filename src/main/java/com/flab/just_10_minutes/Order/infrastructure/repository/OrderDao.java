@@ -1,7 +1,8 @@
-package com.flab.just_10_minutes.Order.infrastructure;
+package com.flab.just_10_minutes.Order.infrastructure.repository;
 
 import com.flab.just_10_minutes.Order.domain.Order;
 import com.flab.just_10_minutes.Order.dto.OrderReceiptDto;
+import com.flab.just_10_minutes.Order.infrastructure.entity.OrderEntity;
 import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.RequiredArgsConstructor;
