@@ -2,7 +2,6 @@ package com.flab.just_10_minutes.Payment.domain;
 
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.Getter;
-
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

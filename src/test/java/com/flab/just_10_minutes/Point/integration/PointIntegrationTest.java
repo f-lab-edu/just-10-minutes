@@ -2,7 +2,7 @@ package com.flab.just_10_minutes.Point.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.Point.domain.PointHistory;
-import com.flab.just_10_minutes.Point.dto.PointStatusDto;
+import com.flab.just_10_minutes.Point.dto.PointHistories;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,7 +188,7 @@ public class PointIntegrationTest {
         resultAction.andExpect(status().isOk());
 
         String content = resultAction.andReturn().getResponse().getContentAsString();
-        PointStatusDto response = mapper.readValue(content, PointStatusDto.class);
+        PointHistories response = mapper.readValue(content, PointHistories.class);
         assertThat(response.getTotalQuantity()).isEqualTo(200L);
         assertThat(response.getHistories().size()).isEqualTo(3);
     }

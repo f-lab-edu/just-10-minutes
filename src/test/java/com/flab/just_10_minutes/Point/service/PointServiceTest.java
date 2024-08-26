@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.Point.service;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
-import com.flab.just_10_minutes.Point.dto.PointStatusDto;
+import com.flab.just_10_minutes.Point.dto.PointHistories;
 import com.flab.just_10_minutes.Point.infrastructure.PointDao;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
@@ -165,7 +165,7 @@ class PointServiceTest {
         doReturn(new ArrayList<>()).when(pointDao).findByLoginId(EXIST_ID);
 
         //when
-        PointStatusDto pointHistories = target.getPointHistories(EXIST_ID);
+        PointHistories pointHistories = target.getPointHistories(EXIST_ID);
 
         //then
         verify(userDao, times(1)).fetch(EXIST_ID);
@@ -193,7 +193,7 @@ class PointServiceTest {
         doReturn(histories).when(pointDao).findByLoginId(EXIST_ID);
 
         //when
-        PointStatusDto pointHistories = target.getPointHistories(EXIST_ID);
+        PointHistories pointHistories = target.getPointHistories(EXIST_ID);
 
         //then
         verify(userDao, times(1)).fetch(EXIST_ID);

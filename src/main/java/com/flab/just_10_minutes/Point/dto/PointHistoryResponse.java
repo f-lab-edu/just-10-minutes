@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PointHistoryResponseDto {
+public class PointHistoryResponse {
 
     private Long requestQuantity;
     private String reason;
 
-    public static PointHistoryResponseDto from(PointHistory pointHistory) {
-        return PointHistoryResponseDto.builder()
+    public static PointHistoryResponse from(PointHistory pointHistory) {
+        return PointHistoryResponse.builder()
                                     .requestQuantity(pointHistory.getRequestQuantity())
                                     .reason(pointHistory.getReason())
                                     .build();

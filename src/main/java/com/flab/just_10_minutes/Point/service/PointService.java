@@ -1,8 +1,8 @@
 package com.flab.just_10_minutes.Point.service;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
-import com.flab.just_10_minutes.Point.dto.PointHistoryResponseDto;
-import com.flab.just_10_minutes.Point.dto.PointStatusDto;
+import com.flab.just_10_minutes.Point.dto.PointHistoryResponse;
+import com.flab.just_10_minutes.Point.dto.PointHistories;
 import com.flab.just_10_minutes.Point.infrastructure.PointDao;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.UserDao;
@@ -46,12 +46,12 @@ public class PointService {
         return user.getPoint();
     }
 
-    public PointStatusDto getPointHistories(final String loginId) {
+    public PointHistories getPointHistories(final String loginId) {
         User user = userDao.fetch(loginId);
 
-        return PointStatusDto.from(user.getPoint(), pointDao.findByLoginId(loginId)
+        return PointHistories.from(user.getPoint(), pointDao.findByLoginId(loginId)
                                                             .stream()
-                                                            .map(v -> PointHistoryResponseDto.from(v))
+                                                            .map(v -> PointHistoryResponse.from(v))
                                                             .collect(Collectors.toList()));
     }
 }

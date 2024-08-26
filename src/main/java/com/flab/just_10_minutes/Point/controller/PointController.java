@@ -2,7 +2,7 @@ package com.flab.just_10_minutes.Point.controller;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Point.dto.PointHistoryDto;
-import com.flab.just_10_minutes.Point.dto.PointStatusDto;
+import com.flab.just_10_minutes.Point.dto.PointHistories;
 import com.flab.just_10_minutes.Point.service.PointService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class PointController {
     }
 
     @GetMapping("/histories/{loginId}")
-    public ResponseEntity<PointStatusDto> showHistories(@PathVariable final String loginId) {
+    public ResponseEntity<PointHistories> showHistories(@PathVariable final String loginId) {
         return ResponseEntity.ok(pointService.getPointHistories(loginId));
     }
 }

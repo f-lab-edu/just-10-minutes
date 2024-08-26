@@ -10,13 +10,13 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-public class PointStatusDto {
+public class PointHistories {
 
     private Long totalQuantity;
-    private List<PointHistoryResponseDto> histories;
+    private List<PointHistoryResponse> histories;
 
-    public static PointStatusDto from(Long totalQuantity, List<PointHistoryResponseDto> dtos) {
-        return PointStatusDto.builder()
+    public static PointHistories from(Long totalQuantity, List<PointHistoryResponse> dtos) {
+        return PointHistories.builder()
                 .totalQuantity(totalQuantity)
                 .histories(dtos)
                 .build();
