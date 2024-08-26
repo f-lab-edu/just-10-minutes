@@ -2,9 +2,9 @@ package com.flab.just_10_minutes.Order.infrastructure;
 
 import com.flab.just_10_minutes.Order.domain.Order;
 import com.flab.just_10_minutes.Order.dto.OrderReceiptDto;
+import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import com.flab.just_10_minutes.Util.Exception.Database.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.InternalException;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 

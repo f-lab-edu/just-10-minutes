@@ -26,7 +26,7 @@ public class PointService {
 
         userDao.patchPoint(user.getLoginId(), newHistory.getTotalQuantity());
 
-        return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Internal Error : Fail to retrieve the latest point history for user login id : " + pointHistory.getLoginId());});
+        return pointDao.findFirst(pointHistory.getLoginId()).orElseThrow(() -> {throw new BusinessException("Fail to retrieve the latest point history for user login id : " + pointHistory.getLoginId());});
     }
 
     public PointHistory subtractPoint(PointHistory pointHistory) {

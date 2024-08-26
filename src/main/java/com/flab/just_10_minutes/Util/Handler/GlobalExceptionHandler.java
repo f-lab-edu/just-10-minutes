@@ -2,6 +2,7 @@ package com.flab.just_10_minutes.Util.Handler;
 
 import com.flab.just_10_minutes.Util.Exception.Business.BusinessException;
 import com.flab.just_10_minutes.Util.Exception.Database.DatabaseException;
+import com.flab.just_10_minutes.Util.Exception.Database.InternalException;
 import com.flab.just_10_minutes.Util.Exception.Iamport.IamportException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("Invalid DTO Parameter errors : {}", errorList);
 
         return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({InternalException.class})
+    public ResponseEntity<ErrorResponse> handleException(final InternalException exception) {
+        log.warn("InternalException occur : ", exception);
+
+        return makeResponseEntity("Unknown Error Occur", exception.getHttpStatus());
     }
 
     @ExceptionHandler({DatabaseException.class})
