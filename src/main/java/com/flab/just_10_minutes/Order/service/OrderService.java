@@ -77,7 +77,6 @@ public class OrderService {
     }
 
     public OrderReceiptDto showReceipt(final String orderId) {
-        OrderReceiptDto fetch = orderDao.fetch(orderId);
-        return fetch;
+        return orderDao.fetch(orderId);
     }
 }
