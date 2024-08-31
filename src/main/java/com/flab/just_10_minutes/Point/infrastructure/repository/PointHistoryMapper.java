@@ -24,5 +24,5 @@ public interface PointHistoryMapper {
     @Select("SELECT login_id, requested_quantity, reason, total_quantity " +
             "FROM point_histories " +
             "WHERE login_id = #{loginId}")
-    List<PointHistory> findByLoginId(final String loginId);
+    List<PointHistoryEntity> findByLoginId(final String loginId);
 }

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.flab.just_10_minutes.Util.Exception.Database.InternalException.FAIL_TO_INSERT;
 import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException.NOT_FOUND;
@@ -32,7 +33,9 @@ public class PointHistoryDao {
     }
 
     public List<PointHistory> findByLoginId(final String loginId) {
-        return pointHistoryMapper.findByLoginId(loginId);
+        return pointHistoryMapper.findByLoginId(loginId).stream()
+                                                        .map(e -> PointHistoryEntity.toDomain(e))
+                                                        .collect(Collectors.toList());
     }
 
     public PointHistory fetchFirst(final String loginId) {
