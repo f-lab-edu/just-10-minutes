@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 public class PointHistoryEntity {
 
     private String loginId;
-    private Long requestQuantity;
+    private Long requestedQuantity;
     private String reason;
     private Long totalQuantity;
 
     public static PointHistoryEntity from(PointHistory pointHistory) {
         return PointHistoryEntity.builder()
                                 .loginId(pointHistory.getLoginId())
-                                .requestQuantity(pointHistory.getRequestQuantity())
+                                .requestedQuantity(pointHistory.getRequestedQuantity())
                                 .reason(pointHistory.getReason())
                                 .totalQuantity(pointHistory.getTotalQuantity())
                                 .build();
@@ -29,7 +29,7 @@ public class PointHistoryEntity {
     public static PointHistory toDomain(PointHistoryEntity pointHistoryEntity) {
         return PointHistory.builder()
                 .loginId(pointHistoryEntity.getLoginId())
-                .requestQuantity(pointHistoryEntity.getRequestQuantity())
+                .requestedQuantity(pointHistoryEntity.getRequestedQuantity())
                 .reason(pointHistoryEntity.getReason())
                 .totalQuantity(pointHistoryEntity.getTotalQuantity())
                 .build();

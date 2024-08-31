@@ -1,13 +1,14 @@
 package com.flab.just_10_minutes.Product;
 
 import com.flab.just_10_minutes.Product.domain.Product;
+import com.flab.just_10_minutes.Product.infrastructure.entity.ProductEntity;
 import com.flab.just_10_minutes.Product.infrastructure.repository.ProductDao;
 import com.flab.just_10_minutes.Product.infrastructure.repository.ProductMapper;
 import com.flab.just_10_minutes.Product.service.StockService;
 import com.flab.just_10_minutes.User.domain.Customer;
-import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.entity.UserEntity;
 import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSeller;
 import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSellerEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class StockDecreaseConcurrencyTest {
@@ -55,7 +57,7 @@ public class StockDecreaseConcurrencyTest {
     public Product saveProductWithSeller() {
         UserEntity user = createSellerEntity();
         userMapper.save(user);
-        Product product = createProduct(Customer.from(UserEntity.to(user)));
+        Product product = createProduct(Customer.from(UserEntity.toDomain(user)));
         return productDao.save(product);
     }
 
@@ -70,11 +72,22 @@ public class StockDecreaseConcurrencyTest {
                 .build();
     }
 
+    public static ProductEntity createProductEntity(String sellerId) {
+        return ProductEntity.builder()
+                .title("testProduct")
+                .description("test")
+                .sellerId(sellerId)
+                .originalPrice(5000L)
+                .totalStock(100L)
+                .purchasedStock(0L)
+                .build();
+    }
+
     @Test
     public void 재고_차감_성공() throws Exception {
         // given
         int numberOfThreads = 1000;
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        ExecutorService executorService = Executors.newFixedThreadPool(1000);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
         //when
@@ -88,8 +101,7 @@ public class StockDecreaseConcurrencyTest {
             });
         }
 
-        latch.await();
-
+        latch.await(50, TimeUnit.SECONDS);
         Product fetchProduct = productDao.fetch(product.getId());
 
         //then

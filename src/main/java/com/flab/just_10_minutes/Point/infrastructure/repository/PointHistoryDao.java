@@ -15,12 +15,12 @@ import static com.flab.just_10_minutes.Util.Exception.Database.NotFoundException
 
 @Repository
 @RequiredArgsConstructor
-public class PointDao {
+public class PointHistoryDao {
 
-    private final PointMapper pointMapper;
+    private final PointHistoryMapper pointHistoryMapper;
 
     public void save(final PointHistory pointHistory) {
-        int insertCount = pointMapper.save(PointHistoryEntity.from(pointHistory));
+        int insertCount = pointHistoryMapper.save(PointHistoryEntity.from(pointHistory));
 
         if (insertCount != 1) {
             throw new InternalException(FAIL_TO_INSERT);
@@ -28,11 +28,11 @@ public class PointDao {
     }
 
     private Optional<PointHistoryEntity> findFirst(final String loginId) {
-        return Optional.ofNullable(pointMapper.findTopByOrderByLoginIdDesc(loginId));
+        return Optional.ofNullable(pointHistoryMapper.findTopByOrderByLoginIdDesc(loginId));
     }
 
     public List<PointHistory> findByLoginId(final String loginId) {
-        return pointMapper.findByLoginId(loginId);
+        return pointHistoryMapper.findByLoginId(loginId);
     }
 
     public PointHistory fetchFirst(final String loginId) {

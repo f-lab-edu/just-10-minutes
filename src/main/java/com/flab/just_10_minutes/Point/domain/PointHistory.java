@@ -12,44 +12,44 @@ import lombok.*;
 public class PointHistory {
 
     private String loginId;
-    private Long requestQuantity;
+    private Long requestedQuantity;
     private String reason;
     private Long totalQuantity;
 
     public PointHistory decrease(final Long requestedDecrease) {
-        if (Math.abs(this.requestQuantity) > requestedDecrease) {
+        if (Math.abs(this.requestedQuantity) > requestedDecrease) {
             return PointHistory.builder()
                     .loginId(this.loginId)
-                    .requestQuantity(-requestedDecrease)
+                    .requestedQuantity(-requestedDecrease)
                     .reason(this.reason)
                     .totalQuantity(0L)
                     .build();
         }
         return PointHistory.builder()
                 .loginId(this.loginId)
-                .requestQuantity(this.requestQuantity)
+                .requestedQuantity(this.requestedQuantity)
                 .reason(this.reason)
-                .totalQuantity(requestedDecrease - Math.abs(this.requestQuantity))
+                .totalQuantity(requestedDecrease - Math.abs(this.requestedQuantity))
                 .build();
     }
 
     public PointHistory increase(final Long requestedIncrease) {
         return  PointHistory.builder()
                 .loginId(this.loginId)
-                .requestQuantity(this.requestQuantity)
+                .requestedQuantity(this.requestedQuantity)
                 .reason(this.reason)
-                .totalQuantity(this.requestQuantity + requestedIncrease)
+                .totalQuantity(this.requestedQuantity + requestedIncrease)
                 .build();
     }
 
-    public boolean isRequestZero() {
-        return this.requestQuantity == 0L;
+    public Boolean isRequestedZero() {
+        return this.requestedQuantity == 0L;
     }
 
     public static PointHistory from(User user, final Long requestedQuantity, String reason) {
         return PointHistory.builder()
                 .loginId(user.getLoginId())
-                .requestQuantity(requestedQuantity)
+                .requestedQuantity(requestedQuantity)
                 .reason(reason)
                 .build();
     }

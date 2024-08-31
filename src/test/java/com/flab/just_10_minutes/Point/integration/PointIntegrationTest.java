@@ -1,5 +1,6 @@
 package com.flab.just_10_minutes.Point.integration;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Point.dto.PointHistories;
@@ -29,7 +30,7 @@ public class PointIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private static final String OFFER = "/points/offer";
     private static final String TOTAL = "/points/total/{loginId}";

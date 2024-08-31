@@ -17,7 +17,7 @@ public class PointHistoryResponse {
 
     public static PointHistoryResponse from(PointHistory pointHistory) {
         return PointHistoryResponse.builder()
-                                    .requestQuantity(pointHistory.getRequestQuantity())
+                                    .requestQuantity(pointHistory.getRequestedQuantity())
                                     .reason(pointHistory.getReason())
                                     .build();
     }

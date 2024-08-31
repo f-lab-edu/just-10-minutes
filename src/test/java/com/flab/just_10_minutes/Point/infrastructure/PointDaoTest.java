@@ -1,8 +1,8 @@
 package com.flab.just_10_minutes.Point.infrastructure;
 
 import com.flab.just_10_minutes.Point.domain.PointHistory;
-import com.flab.just_10_minutes.Point.infrastructure.repository.PointDao;
-import com.flab.just_10_minutes.Point.infrastructure.repository.PointMapper;
+import com.flab.just_10_minutes.Point.infrastructure.repository.PointHistoryDao;
+import com.flab.just_10_minutes.Point.infrastructure.repository.PointHistoryMapper;
 import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.repository.UserDao;
 import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
@@ -22,19 +22,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PointDaoTest {
 
     @Autowired
-    private PointMapper pointMapper;
+    private PointHistoryMapper pointHistoryMapper;
 
     @Autowired
     private UserMapper userMapper;
 
     private UserDao userDao;
 
-    private PointDao target;
+    private PointHistoryDao target;
 
     @BeforeEach
     public void setUp() {
         userDao = new UserDao(userMapper);
-        target = new PointDao(pointMapper);
+        target = new PointHistoryDao(pointHistoryMapper);
     }
 
     public void saveUser(String loginId) {

@@ -22,7 +22,7 @@ public class PointHistoryDto {
     public static PointHistory toDomain(PointHistoryDto pointDto) {
         return PointHistory.builder()
                 .loginId(pointDto.getLoginId())
-                .requestQuantity(pointDto.getRequestQuantity())
+                .requestedQuantity(pointDto.getRequestQuantity())
                 .reason(pointDto.getReason())
                 .totalQuantity(0L)
                 .build();

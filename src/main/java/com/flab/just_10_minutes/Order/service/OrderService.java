@@ -45,7 +45,7 @@ public class OrderService {
 
         PointHistory newHistory = pointService.subtractPoint(pointHistory);
 
-        long totalPrice = product.calculateTotalPrice(orderDto.getRequestDecreasedStock(), newHistory.getRequestQuantity());
+        long totalPrice = product.calculateTotalPrice(orderDto.getRequestDecreasedStock(), newHistory.getRequestedQuantity());
         PaymentResult paymentResult = paymentService.paymentTransaction(PaymentRequest.from(orderId,
                                                                                             totalPrice,
                                                                                             buyer,

@@ -44,7 +44,7 @@ public class Order {
                 .buyer(buyer)
                 .product(product)
                 .buyQuantity(buyQuantity)
-                .usedPoint(pointHistory.getRequestQuantity())
+                .usedPoint(pointHistory.getRequestedQuantity())
                 .totalPrice(totalPrice)
                 .refundedPrice(0L)
                 .paymentTxId(paymentResult.getImpUid())
