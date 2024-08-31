@@ -16,11 +16,11 @@ public class PointHistory {
     private String reason;
     private Long totalQuantity;
 
-    public PointHistory decrease(final Long requestDecrease) {
-        if (Math.abs(this.requestQuantity) > requestDecrease) {
+    public PointHistory decrease(final Long requestedDecrease) {
+        if (Math.abs(this.requestQuantity) > requestedDecrease) {
             return PointHistory.builder()
                     .loginId(this.loginId)
-                    .requestQuantity(-requestDecrease)
+                    .requestQuantity(-requestedDecrease)
                     .reason(this.reason)
                     .totalQuantity(0L)
                     .build();
@@ -29,16 +29,16 @@ public class PointHistory {
                 .loginId(this.loginId)
                 .requestQuantity(this.requestQuantity)
                 .reason(this.reason)
-                .totalQuantity(requestDecrease - Math.abs(this.requestQuantity))
+                .totalQuantity(requestedDecrease - Math.abs(this.requestQuantity))
                 .build();
     }
 
-    public PointHistory increase(final Long requestIncrease) {
+    public PointHistory increase(final Long requestedIncrease) {
         return  PointHistory.builder()
                 .loginId(this.loginId)
                 .requestQuantity(this.requestQuantity)
                 .reason(this.reason)
-                .totalQuantity(this.requestQuantity + requestIncrease)
+                .totalQuantity(this.requestQuantity + requestedIncrease)
                 .build();
     }
 
@@ -46,10 +46,10 @@ public class PointHistory {
         return this.requestQuantity == 0L;
     }
 
-    public static PointHistory from(User user, final Long requestQuantity, String reason) {
+    public static PointHistory from(User user, final Long requestedQuantity, String reason) {
         return PointHistory.builder()
                 .loginId(user.getLoginId())
-                .requestQuantity(requestQuantity)
+                .requestQuantity(requestedQuantity)
                 .reason(reason)
                 .build();
     }
