@@ -43,7 +43,7 @@ public class UserDao {
     }
 
     public User fetch(final String loginId) {
-        return UserEntity.to(Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {
+        return UserEntity.toDomain(Optional.ofNullable(userMapper.findByLoginId(loginId)).orElseThrow(() -> {
             throw new NotFoundException(NOT_FOUND, USER);
         }));
     }

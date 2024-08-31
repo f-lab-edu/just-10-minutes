@@ -23,7 +23,7 @@ public class OrderEntity {
     private String paymentTxId;
     private String status;
 
-    public static OrderEntity toEntity(Order order) {
+    public static OrderEntity from(Order order) {
         return OrderEntity.builder()
                 .id(order.getId())
                 .sellerLoginId(order.getSeller().getLoginId())

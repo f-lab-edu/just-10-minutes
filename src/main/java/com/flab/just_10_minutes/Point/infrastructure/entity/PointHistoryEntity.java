@@ -26,7 +26,7 @@ public class PointHistoryEntity {
                                 .build();
     }
 
-    public static PointHistory to(PointHistoryEntity pointHistoryEntity) {
+    public static PointHistory toDomain(PointHistoryEntity pointHistoryEntity) {
         return PointHistory.builder()
                 .loginId(pointHistoryEntity.getLoginId())
                 .requestQuantity(pointHistoryEntity.getRequestQuantity())

@@ -20,7 +20,7 @@ public class OrderDao {
     private final OrderMapper orderMapper;
 
     public void save(Order order) {
-        int saveResult = orderMapper.save(OrderEntity.toEntity(order));
+        int saveResult = orderMapper.save(OrderEntity.from(order));
         if (saveResult != 1) {
             throw new InternalException(FAIL_TO_INSERT);
         }

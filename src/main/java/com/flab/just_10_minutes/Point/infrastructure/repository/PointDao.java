@@ -39,6 +39,6 @@ public class PointDao {
         PointHistoryEntity pointHistoryEntity = findFirst(loginId).orElseThrow(() -> {
             throw new NotFoundException(NOT_FOUND, USER + "'s PointHistory");
         });
-        return PointHistoryEntity.to(pointHistoryEntity);
+        return PointHistoryEntity.toDomain(pointHistoryEntity);
     }
 }

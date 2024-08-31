@@ -43,7 +43,7 @@ public class ProductDao {
 
     public Product fetch(final Long id) {
         ProductEntity productEntity = findById(id).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, PRODUCT);});
-        User seller = UserEntity.to(Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId()))
+        User seller = UserEntity.toDomain(Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId()))
                                             .orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);}));
 
         return ProductEntity.toDomain(productEntity, seller);
@@ -51,7 +51,7 @@ public class ProductDao {
 
     public Product fetchWithPessimisticLock(final Long id) {
         ProductEntity productEntity = findByIdForUpdate(id).orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, PRODUCT);});
-        User seller = UserEntity.to(Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId()))
+        User seller = UserEntity.toDomain(Optional.ofNullable(userMapper.findByLoginId(productEntity.getSellerId()))
                                             .orElseThrow(() -> {throw new NotFoundException(NOT_FOUND, USER);}));
 
         return ProductEntity.toDomain(productEntity, seller);

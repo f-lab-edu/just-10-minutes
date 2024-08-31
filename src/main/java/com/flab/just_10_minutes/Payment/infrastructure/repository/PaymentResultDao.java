@@ -29,7 +29,7 @@ public class PaymentResultDao {
         PaymentResultEntity paymentResultEntity = findByImpUid(impUid).orElseThrow(() -> {
             throw new NotFoundException(NOT_FOUND, IMP_UID);
         });
-        return PaymentResultEntity.to(paymentResultEntity);
+        return PaymentResultEntity.toDomain(paymentResultEntity);
     }
 
     public Optional<PaymentResultEntity> findByImpUid(final String impUid) {

@@ -50,7 +50,7 @@ public class PaymentResultEntity {
                 .build();
     }
 
-    public static PaymentResult to(PaymentResultEntity paymentResultEntity) {
+    public static PaymentResult toDomain(PaymentResultEntity paymentResultEntity) {
         return PaymentResult.builder()
                 .impUid(paymentResultEntity.getImpUid())
                 .merchantUid(paymentResultEntity.getMerchantUid())

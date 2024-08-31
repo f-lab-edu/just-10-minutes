@@ -29,7 +29,7 @@ public class UserEntity {
                         .build();
     }
 
-    public static User to(UserEntity userEntity) {
+    public static User toDomain(UserEntity userEntity) {
         return User.builder()
                 .id(userEntity.getId())
                 .loginId(userEntity.getLoginId())
