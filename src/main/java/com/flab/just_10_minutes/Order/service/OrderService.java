@@ -43,9 +43,9 @@ public class OrderService {
                                                     orderDto.getRequestUsedPoint(),
                                             "Order:" + orderId);
 
-        PointHistory newHistory = subtractPoint(pointHistory);
+        PointHistory newHistory = pointService.subtractPoint(pointHistory);
 
-        long totalPrice = calculateTotalPrice(product, orderDto, newHistory.getRequestQuantity());
+        long totalPrice = product.calculateTotalPrice(orderDto.getRequestDecreasedStock(), newHistory.getRequestQuantity());
         PaymentResult paymentResult = paymentService.paymentTransaction(PaymentRequest.from(orderId,
                                                                                             totalPrice,
                                                                                             buyer,
@@ -62,18 +62,6 @@ public class OrderService {
 
         orderDao.save(order);
         return showReceipt(order.getId());
-    }
-
-    private PointHistory subtractPoint(PointHistory pointHistory) {
-        Long requestDecrease = pointHistory.getRequestQuantity();
-        if (requestDecrease < 0) {
-            return pointService.subtractPoint(pointHistory);
-        }
-        return pointHistory;
-    }
-
-    private Long calculateTotalPrice(Product product, OrderDto orderDto, Long usedPoint) {
-        return (product.getOriginalPrice() * orderDto.getRequestDecreasedStock()) - Math.abs(usedPoint);
     }
 
     public OrderReceiptDto showReceipt(final String orderId) {

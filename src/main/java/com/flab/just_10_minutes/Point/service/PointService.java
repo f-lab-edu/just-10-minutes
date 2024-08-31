@@ -30,8 +30,12 @@ public class PointService {
     }
 
     public PointHistory subtractPoint(PointHistory pointHistory) {
+        if (pointHistory.isRequestZero()) {
+            return pointHistory;
+        }
+
         User user = userDao.fetch(pointHistory.getLoginId());
-        if (pointHistory.getRequestQuantity() < 0 && user.getPoint() <= 0L) {throw new BusinessException("Remaining Point Under 0");}
+        if (user.getPoint() <= 0L) {throw new BusinessException("Remaining Point Under 0");}
 
         PointHistory newHistory = pointHistory.decrease(user.getPoint());
         pointDao.save(newHistory);

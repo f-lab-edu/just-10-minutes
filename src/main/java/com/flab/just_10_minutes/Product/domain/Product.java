@@ -18,4 +18,9 @@ public class Product {
     private Long originalPrice;
     private Long totalStock;
     private Long purchasedStock;
+
+    public Long calculateTotalPrice(Long requestDecreasedStock, Long usedPoint) {
+        return (this.originalPrice * requestDecreasedStock) - Math.abs(usedPoint);
+    }
+
 }

@@ -16,11 +16,11 @@ public class PointHistory {
     private String reason;
     private Long totalQuantity;
 
-    public PointHistory decrease(final Long userOwnPoint) {
-        if (Math.abs(this.requestQuantity) > userOwnPoint) {
+    public PointHistory decrease(final Long requestDecrease) {
+        if (Math.abs(this.requestQuantity) > requestDecrease) {
             return PointHistory.builder()
                     .loginId(this.loginId)
-                    .requestQuantity(-userOwnPoint)
+                    .requestQuantity(-requestDecrease)
                     .reason(this.reason)
                     .totalQuantity(0L)
                     .build();
@@ -29,17 +29,21 @@ public class PointHistory {
                 .loginId(this.loginId)
                 .requestQuantity(this.requestQuantity)
                 .reason(this.reason)
-                .totalQuantity(userOwnPoint - Math.abs(this.requestQuantity))
+                .totalQuantity(requestDecrease - Math.abs(this.requestQuantity))
                 .build();
     }
 
-    public PointHistory increase(final Long userOwnPoint) {
+    public PointHistory increase(final Long requestIncrease) {
         return  PointHistory.builder()
                 .loginId(this.loginId)
                 .requestQuantity(this.requestQuantity)
                 .reason(this.reason)
-                .totalQuantity(this.requestQuantity + userOwnPoint)
+                .totalQuantity(this.requestQuantity + requestIncrease)
                 .build();
+    }
+
+    public boolean isRequestZero() {
+        return this.requestQuantity == 0L;
     }
 
     public static PointHistory from(User user, final Long requestQuantity, String reason) {
