@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.Payment.gateway;
+package com.flab.just_10_minutes.Payment.service;
 
 import com.flab.just_10_minutes.Payment.dto.BillingRequest;
 import com.flab.just_10_minutes.Payment.dto.PaymentRequest;
