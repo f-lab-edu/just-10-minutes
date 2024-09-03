@@ -6,7 +6,7 @@ import com.flab.just_10_minutes.Order.dto.OrderReceiptDto;
 import com.flab.just_10_minutes.Order.infrastructure.repository.OrderDao;
 import com.flab.just_10_minutes.Payment.domain.PaymentResult;
 import com.flab.just_10_minutes.Payment.dto.PaymentRequest;
-import com.flab.just_10_minutes.Payment.gateway.PaymentService;
+import com.flab.just_10_minutes.Payment.service.PaymentService;
 import com.flab.just_10_minutes.Point.domain.PointHistory;
 import com.flab.just_10_minutes.Point.service.PointService;
 import com.flab.just_10_minutes.Product.domain.Product;
@@ -16,6 +16,7 @@ import com.flab.just_10_minutes.User.domain.User;
 import com.flab.just_10_minutes.User.infrastructure.repository.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.flab.just_10_minutes.Util.Common.IDUtil.issueOrderId;
 
@@ -31,6 +32,7 @@ public class OrderService {
     private final PaymentService paymentService;
     private final StockService stockService;
 
+    @Transactional
     public OrderReceiptDto order(OrderDto orderDto) {
         User seller = userDao.fetch(orderDto.getSellerLoginId());
         User buyer = userDao.fetch(orderDto.getBuyerLoginId());
