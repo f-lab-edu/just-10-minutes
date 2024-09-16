@@ -15,19 +15,14 @@ public class StockService {
 
     private final ProductDao productDao;
 
-    @Transactional(timeout = 100)
+    @Transactional
     public Product decreaseStock(final Long productId, final Long requestQuantity) {
-        log.info("[Thread id] " + Thread.currentThread().getId() + " Transaction Start");
         Product product = productDao.fetchWithPessimisticLock(productId);
-        log.info("[Product id] " + product.getId() + " Current Stock : " + product.getPurchasedStock());
         Long updatedStock = Math.abs(requestQuantity) + product.getPurchasedStock();
 
         if (updatedStock > product.getTotalStock()) {
-            throw new BusinessException("Exceed Total Stock");
+            throw new BusinessException("Total Stock Exceeded");
         }
-        Product newProduct = productDao.patchStock(productId, updatedStock);
-        log.info("[Product id]" + newProduct.getId() + " CurrentStock :" + newProduct.getPurchasedStock());
-        log.info("[Thread id] " + Thread.currentThread().getId() + " Transaction End");
-        return newProduct;
+        return productDao.patchStock(productId, updatedStock);
     }
 }

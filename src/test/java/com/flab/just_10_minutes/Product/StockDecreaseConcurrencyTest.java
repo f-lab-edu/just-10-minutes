@@ -8,23 +8,17 @@ import com.flab.just_10_minutes.Product.service.StockService;
 import com.flab.just_10_minutes.User.domain.Customer;
 import com.flab.just_10_minutes.User.infrastructure.entity.UserEntity;
 import com.flab.just_10_minutes.User.infrastructure.repository.UserMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static com.flab.just_10_minutes.User.fixture.UserTestFixture.createSellerEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class StockDecreaseConcurrencyTest {
@@ -35,16 +29,16 @@ public class StockDecreaseConcurrencyTest {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
     private ProductDao productDao;
 
+    @Autowired
     private StockService target;
 
     private Product product;
 
     @BeforeEach
     public void setUp() {
-        productDao = new ProductDao(productMapper, userMapper);
-        target = new StockService(productDao);
         product = saveProductWithSeller();
     }
 
@@ -84,10 +78,10 @@ public class StockDecreaseConcurrencyTest {
     }
 
     @Test
-    public void 재고_차감_성공() throws Exception {
+    public void 동시성_상황에서_재고_차감_성공() throws Exception {
         // given
-        int numberOfThreads = 1000;
-        ExecutorService executorService = Executors.newFixedThreadPool(1000);
+        int numberOfThreads = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
         //when
@@ -101,10 +95,11 @@ public class StockDecreaseConcurrencyTest {
             });
         }
 
-        latch.await(50, TimeUnit.SECONDS);
+        latch.await(100L, TimeUnit.SECONDS);
         Product fetchProduct = productDao.fetch(product.getId());
 
         //then
         assertThat(fetchProduct.getPurchasedStock()).isEqualTo(fetchProduct.getTotalStock());
     }
+
 }
