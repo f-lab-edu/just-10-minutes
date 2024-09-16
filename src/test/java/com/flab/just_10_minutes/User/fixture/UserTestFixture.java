@@ -56,6 +56,7 @@ public class UserTestFixture {
                 .phone("010-1234-5678")
                 .address("testAddress")
                 .role(User.ROLE.SELLER)
+                .point(0L)
                 .build();
     }
 }
