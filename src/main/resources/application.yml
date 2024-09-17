@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: "just-10-minutes"
+#Datasource
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+#Mybatis
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+#iamport
+payment:
+  iamport:
+    url: ${IAMPORT_URL}
+    api_key: ${IAMPORT_KEY}
+    api_secret: ${IAMPORT_SECRETE}
+    nice_pg: "nice_v2.iamport01m"
+  test:
+    card_number: ${CARD_NUMBER}
+    card_expiry: ${CARD_EXPIRY}
+    card_birth: ${CARD_BIRTH}
+    card_pwd2digit: ${CARD_PWD2DIGIT}
+
+
+#prometheus
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
