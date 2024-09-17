@@ -49,6 +49,10 @@ dependencies {
 
 	//wiremock
 	testImplementation 'org.wiremock:wiremock:3.9.1'
+
+	//monotoring
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("io.micrometer:micrometer-registry-prometheus")
 }
 
 tasks.named('test') {
