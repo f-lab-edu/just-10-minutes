@@ -33,6 +33,19 @@ public class IamportConfig {
     @Value("${payment.iamport.nice_pg}")
     private String nicePg;
 
+    @Value("${payment.test.card_number}")
+    private String cardNumber;
+
+    @Value("${payment.test.card_expiry}")
+    private String cardExpiry;
+
+    @Value("${payment.test.card_birth}")
+    private String cardBirth;
+
+    @Value("${payment.test.card_pwd2digit}")
+    private String cardPwd2Digit;
+
+
     @Bean
     public HttpClient httpClient() {
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();

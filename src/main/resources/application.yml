@@ -1,20 +1,35 @@
-spring.application.name=just-10-minutes
-
+spring:
+  application:
+    name: "just-10-minutes"
 #Datasource
-spring.datasource.hikari.jdbc-url=jdbc:mysql://localhost:3306/localDB?serverTimezone=UTC&characterEncoding=UTF-8
-spring.datasource.hikari.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.hikari.username=root
-spring.datasource.hikari.password=1q2w3e4r
-spring.datasource.hikari.maximum-pool-size=100
-spring.datasource.hikari.minimum-idle=10
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
-mybatis.configuration.map-underscore-to-camel-case=true
+#Mybatis
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
 
 #iamport
-payment.iamport.url=https://api.iamport.kr
-payment.iamport.api_key=1467178214104648
-payment.iamport.api_secret=M11mpNrYutDR7gnIv8Sg6bPJ3IIoLSnKs49Z80SZxdPJoNSgQUUIjFuVB2MAKU69zPpfP0kyCODCtLRf
-payment.iamport.nice_pg=nice_v2.iamport01m
+payment:
+  iamport:
+    url: ${IAMPORT_URL}
+    api_key: ${IAMPORT_KEY}
+    api_secret: ${IAMPORT_SECRETE}
+    nice_pg: "nice_v2.iamport01m"
+  test:
+    card_number: ${CARD_NUMBER}
+    card_expiry: ${CARD_EXPIRY}
+    card_birth: ${CARD_BIRTH}
+    card_pwd2digit: ${CARD_PWD2DIGIT}
+
 
 #prometheus
-management.endpoints.web.exposure.include=prometheus
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"

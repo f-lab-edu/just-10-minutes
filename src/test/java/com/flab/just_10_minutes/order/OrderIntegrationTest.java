@@ -10,6 +10,7 @@ import com.flab.just_10_minutes.user.domain.User;
 import com.flab.just_10_minutes.user.infrastructure.entity.UserEntity;
 import com.flab.just_10_minutes.user.infrastructure.repository.UserDao;
 import com.flab.just_10_minutes.user.infrastructure.repository.UserMapper;
+import com.flab.just_10_minutes.util.iamport.IamportConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,8 @@ public class OrderIntegrationTest {
     private UserMapper userMapper;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private IamportConfig iamportConfig;
 
     private UserDao target;
 
@@ -55,7 +58,7 @@ public class OrderIntegrationTest {
     }
 
     public void saveUser(String loginId) {
-        User user = createUser(loginId, 0L);
+        User user = createUser(loginId, 100L);
         target.save(user);
     }
 
@@ -83,10 +86,10 @@ public class OrderIntegrationTest {
                 .requestUsedPoint(-100L)
                 .billingRequest(BillingRequest.builder()
                         .pg(NICE)
-                        .cardNumber("")
-                        .expiry("")
-                        .birth("")
-                        .pwd2Digit("")
+                        .cardNumber(iamportConfig.getCardNumber())
+                        .expiry(iamportConfig.getCardExpiry())
+                        .birth(iamportConfig.getCardBirth())
+                        .pwd2Digit(iamportConfig.getCardPwd2Digit())
                         .build())
                 .build();
     }
