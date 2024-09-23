@@ -48,6 +48,6 @@ public class PaymentService {
 
     private String fetchCustomerUid(final PaymentRequest paymentDataDto) {
         Optional<String> OptionalCustomerUid = customerUidDao.findByLoginId(paymentDataDto.getCustomerLoginId());
-        return OptionalCustomerUid.orElse(issueCustomerUid(paymentDataDto.getCustomerLoginId(), paymentDataDto.getBillingRequest()));
+        return OptionalCustomerUid.orElseGet(() -> issueCustomerUid(paymentDataDto.getCustomerLoginId(), paymentDataDto.getBillingRequest()));
     }
 }

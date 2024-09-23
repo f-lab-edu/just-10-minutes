@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS orders (
 CREATE TABLE IF NOT EXISTS billing_keys (
     login_id VARCHAR(12) NOT NULL,
     customer_uid VARCHAR(50) NOT NULL,
-    PRIMARY KEY(login_id, customer_uid)
+    PRIMARY KEY(login_id)
 )ENGINE=InnoDB;
 
 
