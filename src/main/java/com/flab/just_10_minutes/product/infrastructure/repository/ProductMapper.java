@@ -19,7 +19,7 @@ public interface ProductMapper {
 
     @Update("UPDATE products SET purchased_stock = purchased_stock + #{requestQuantity} " +
             "WHERE id = #{id} " +
-            "AND purchased_stock + #{requestQuantity} >= total_stock")
+            "AND total_stock >= purchased_stock + #{requestQuantity}")
     public int patchStock(final Long id, final Long requestQuantity);
 
     @Delete("DELETE FROM products WHERE id = #{id}")
