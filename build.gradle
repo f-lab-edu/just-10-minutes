@@ -47,12 +47,16 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
-	//wiremock
-	testImplementation 'org.wiremock:wiremock:3.9.1'
-
 	//monotoring
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("io.micrometer:micrometer-registry-prometheus")
+	implementation "org.springframework.boot:spring-boot-starter-actuator"
+	implementation "io.micrometer:micrometer-registry-prometheus"
+
+	// spring-data-redis
+	implementation "org.springframework.boot:spring-boot-starter-data-redis"
+	//embedded-redis
+// https://mvnrepository.com/artifact/com.github.codemonstur/embedded-redis
+	testImplementation 'com.github.codemonstur:embedded-redis:1.0.0'
+
 }
 
 tasks.named('test') {

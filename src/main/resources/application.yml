@@ -1,12 +1,20 @@
 spring:
   application:
     name: "just-10-minutes"
-#Datasource
+  #Datasource
   datasource:
     url: ${DB_URL}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+#redis
+redis:
+  host: ${REDIS_URL}
+  port: ${REDIS_PORT}
+  command:
+    ttl: 3
+    processing-threshold : 3
 
 #Mybatis
 mybatis:
@@ -33,3 +41,5 @@ management:
     web:
       exposure:
         include: prometheus
+
+
