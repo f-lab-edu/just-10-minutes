@@ -17,12 +17,6 @@ public class StockService {
 
     @Transactional
     public Product decreaseStock(final Long productId, final Long requestQuantity) {
-        Product product = productDao.fetchWithPessimisticLock(productId);
-        Long updatedStock = Math.abs(requestQuantity) + product.getPurchasedStock();
-
-        if (updatedStock > product.getTotalStock()) {
-            throw new BusinessException("Total Stock Exceeded");
-        }
-        return productDao.patchStock(productId, updatedStock);
+        return productDao.patchStock(productId, requestQuantity);
     }
 }

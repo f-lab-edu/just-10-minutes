@@ -5,6 +5,7 @@ import com.flab.just_10_minutes.product.infrastructure.entity.ProductEntity;
 import com.flab.just_10_minutes.user.domain.User;
 import com.flab.just_10_minutes.user.infrastructure.entity.UserEntity;
 import com.flab.just_10_minutes.user.infrastructure.repository.UserMapper;
+import com.flab.just_10_minutes.util.exception.business.BusinessException;
 import com.flab.just_10_minutes.util.exception.database.InternalException;
 import com.flab.just_10_minutes.util.exception.database.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -57,11 +58,11 @@ public class ProductDao {
         return ProductEntity.toDomain(productEntity, seller);
     }
 
-    public Product patchStock(final Long id, final Long updatedStock) {
-        int patchResult = productMapper.patchStock(id, updatedStock);
+    public Product patchStock(final Long id, final Long requestQuantity) {
+        int patchResult = productMapper.patchStock(id, requestQuantity);
 
         if (patchResult != 1) {
-            throw new InternalException(FAIL_TO_UPDATE);
+            throw new BusinessException("Insufficient Stock Available");
         }
         return fetch(id);
     }

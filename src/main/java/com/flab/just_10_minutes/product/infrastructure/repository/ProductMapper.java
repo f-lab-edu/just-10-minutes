@@ -17,8 +17,10 @@ public interface ProductMapper {
     @Select("SELECT * FROM products WHERE id = #{id} FOR UPDATE")
     public ProductEntity findByIdForUpdate(final Long id);
 
-    @Update("UPDATE products SET purchased_stock = #{updatedStock} WHERE id = #{id}")
-    public int patchStock(final Long id, final Long updatedStock);
+    @Update("UPDATE products SET purchased_stock = purchased_stock + #{requestQuantity} " +
+            "WHERE id = #{id} " +
+            "AND purchased_stock + #{requestQuantity} >= total_stock")
+    public int patchStock(final Long id, final Long requestQuantity);
 
     @Delete("DELETE FROM products WHERE id = #{id}")
     public int delete(final Long id);
