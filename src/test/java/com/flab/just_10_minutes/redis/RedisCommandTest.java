@@ -2,17 +2,14 @@ package com.flab.just_10_minutes.redis;
 
 import com.flab.just_10_minutes.util.redis.RedisCommand;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
         "app.scheduling.enable=false",
         "redis.command.ttl=3",
@@ -28,7 +25,7 @@ public class RedisCommandTest {
 
     public static final String userPrefix = "user";
 
-    @Before
+    @BeforeEach
     public void deleteKey() {
         redisCommand.deleteKey("WAITING:" + productId);
         redisCommand.deleteKey("PROCESSING:" + productId);
@@ -169,5 +166,37 @@ public class RedisCommandTest {
 
         //then
         assertThat(waitingResult).isNull();
+    }
+
+    @Test
+    @DisplayName("ProcessingQueue에 ttl이 만료된 member는 삭제된다.")
+    public void removeExpiredProcessingMemberTest() {
+        //given
+        redisCommand.addProcessingQueue(productId, userPrefix + 1, 0);
+        redisCommand.addProcessingQueue(productId, userPrefix + 2, 0);
+        redisCommand.addProcessingQueue(productId, userPrefix + 3, 0);
+
+        //when
+        redisCommand.removeExpiredProcessingMember(productId);
+
+        //then
+        Long processingQueueSize = redisCommand.fetchProcessingQueueSize(productId);
+        assertThat(processingQueueSize).isEqualTo(0L);
+    }
+
+    @Test
+    @DisplayName("ProcessingQueue에 ttl이 만료되지 않은 member는 삭제되지 않는다..")
+    public void removeExpiredProcessingMemberTest2() {
+        //given
+        redisCommand.addProcessingQueue(productId, userPrefix + 1, 3);
+        redisCommand.addProcessingQueue(productId, userPrefix + 2, 3);
+        redisCommand.addProcessingQueue(productId, userPrefix + 3, 3);
+
+        //when
+        redisCommand.removeExpiredProcessingMember(productId);
+
+        //then
+        Long processingQueueSize = redisCommand.fetchProcessingQueueSize(productId);
+        assertThat(processingQueueSize).isEqualTo(3L);
     }
 }
