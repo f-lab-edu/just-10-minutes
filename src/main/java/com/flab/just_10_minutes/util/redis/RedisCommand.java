@@ -207,7 +207,7 @@ public class RedisCommand {
         return result;
     }
 
-        public void removeProcessingValue(String key, String member) {
+    public void removeProcessingValue(String key, String member) {
         redisTemplate.opsForZSet().remove(PROCESSING_KEY_PREFIX + key, member);
     }
 }

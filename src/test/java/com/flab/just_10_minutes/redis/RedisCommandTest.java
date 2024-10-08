@@ -199,4 +199,125 @@ public class RedisCommandTest {
         Long processingQueueSize = redisCommand.fetchProcessingQueueSize(productId);
         assertThat(processingQueueSize).isEqualTo(3L);
     }
+
+    @Test
+    @DisplayName("ProcessingQueue의 크기가 threshold보다 크면 false를 반환한다.")
+    public void transferWaitingToProcessingTest1() {
+        //given
+        redisCommand.addProcessingQueue(productId, userPrefix + 1);
+        redisCommand.addProcessingQueue(productId, userPrefix + 2);
+        redisCommand.addProcessingQueue(productId, userPrefix + 3);
+        redisCommand.addProcessingQueue(productId, userPrefix + 4);
+        redisCommand.addProcessingQueue(productId, userPrefix + 5);
+
+        //when
+        Boolean result = redisCommand.transferWaitingToProcessing(productId);
+
+        //then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("ProcessingQueue의 크기가 threshold와 같을 때 WaitingQueue의 가 비어있으면 false를 반환한다. " +
+                "이 때 WaitingQueue에서 ProcessingQueue의 변화는 없다.")
+    public void transferWaitingToProcessingTest2() {
+        //given
+        redisCommand.addProcessingQueue(productId, userPrefix + 1);
+        redisCommand.addProcessingQueue(productId, userPrefix + 2);
+        redisCommand.addProcessingQueue(productId, userPrefix + 3);
+
+        //when
+        Boolean result = redisCommand.transferWaitingToProcessing(productId);
+
+        //then
+        Long waitingQueueSize = redisCommand.fetchWaitingQueueSize(productId);
+        Long processingQueueSize = redisCommand.fetchProcessingQueueSize(productId);
+        assertThat(waitingQueueSize).isEqualTo(0L);
+        assertThat(processingQueueSize).isEqualTo(3L);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("ProcessingQueue의 크기가 threshold와 같을 때 WaitingQueue의 크기가 0보다 크면 false를 반환한다. " +
+                "이 때 WaitingQueue에서 ProcessingQueue의 변화는 없다.")
+    public void transferWaitingToProcessingTest3() {
+        //given
+        redisCommand.addProcessingQueue(productId, userPrefix + 1);
+        redisCommand.addProcessingQueue(productId, userPrefix + 2);
+        redisCommand.addProcessingQueue(productId, userPrefix + 3);
+
+        redisCommand.allocateWaitingQueue(productId, userPrefix + 4);
+
+
+        //when
+        Boolean result = redisCommand.transferWaitingToProcessing(productId);
+
+        //then
+        Long waitingQueueSize = redisCommand.fetchWaitingQueueSize(productId);
+        Long processingQueueSize = redisCommand.fetchProcessingQueueSize(productId);
+        assertThat(waitingQueueSize).isEqualTo(1L);
+        assertThat(processingQueueSize).isEqualTo(3L);
+        assertThat(result).isFalse();
+    }
+
+
+    @Test
+    @DisplayName("ProcessingQueue의 크기가 threshold보다 작아지면 true를 반환한다. " +
+                "이 때 hreshold - WaitingQueue.size 만큼 value를 WaitingQueue 에서 ProcessingQueue로 옮긴다.")
+    public void transferWaitingToProcessingTest4() {
+        //given
+        redisCommand.addProcessingQueue(productId, userPrefix + 1);
+        redisCommand.addProcessingQueue(productId, userPrefix + 2);
+        redisCommand.addProcessingQueue(productId, userPrefix + 3);
+
+        redisCommand.allocateWaitingQueue(productId, userPrefix + 4);
+
+        redisCommand.removeProcessingValue(productId, userPrefix + 1);
+
+        //when
+        Boolean result = redisCommand.transferWaitingToProcessing(productId);
+
+        //then
+        Long waitingQueueSize = redisCommand.fetchWaitingQueueSize(productId);
+        Long processingQueueSize = redisCommand.fetchProcessingQueueSize(productId);
+        assertThat(waitingQueueSize).isEqualTo(0L);
+        assertThat(processingQueueSize).isEqualTo(3L);
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("ProcessingQueue의 크기가 0보다 크면서 WaitingQueue가 비어있으면 false를 반환한다. " +
+                "이 때 WaitingQueue에서 ProcessingQueue의 변화는 없다.")
+    public void transferWaitingToProcessingTest5() {
+        //given
+        redisCommand.addProcessingQueue(productId, userPrefix + 1);
+        redisCommand.addProcessingQueue(productId, userPrefix + 2);
+
+        //when
+        Boolean result = redisCommand.transferWaitingToProcessing(productId);
+
+        //then
+        Long waitingQueueSize = redisCommand.fetchWaitingQueueSize(productId);
+        Long processingQueueSize = redisCommand.fetchProcessingQueueSize(productId);
+        assertThat(waitingQueueSize).isEqualTo(0L);
+        assertThat(processingQueueSize).isEqualTo(2L);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("ProcessingQueue와 WaitingQueue가 모두 비어있으면 false를 반환한다. " +
+                "이 때 WaitingQueue에서 ProcessingQueue의 변화는 없다.")
+    public void transferWaitingToProcessingTest6() {
+        //given
+
+        //when
+        Boolean result = redisCommand.transferWaitingToProcessing(productId);
+
+        //then
+        Long waitingQueueSize = redisCommand.fetchWaitingQueueSize(productId);
+        Long processingQueueSize = redisCommand.fetchProcessingQueueSize(productId);
+        assertThat(waitingQueueSize).isEqualTo(0L);
+        assertThat(processingQueueSize).isEqualTo(0L);
+        assertThat(result).isFalse();
+    }
 }
