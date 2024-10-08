@@ -40,7 +40,6 @@ public class RedisMultipleCommand {
 
     public static final String WAITING_KEY_PREFIX = "WAITING:";
     public static final String PROCESSING_KEY_PREFIX = "PROCESSING:";
-    public static final String FINISHING_KEY_PREFIX = "FINISHING:";
 
     /**
      * Redis 서버에 {@code key}와 매칭되는
@@ -70,7 +69,7 @@ public class RedisMultipleCommand {
      * <br>
      * < 0  일 때, Waiting Queue에 큐잉 되었음을 의미합니다.
      */
-    public Long allocateWaitingQueue(String key, String member) {
+    public Long allocateWaitingQueue(final String key, final String member) {
         String processingKey = PROCESSING_KEY_PREFIX + key;
         String waitingKey = WAITING_KEY_PREFIX + key;
 
@@ -117,7 +116,7 @@ public class RedisMultipleCommand {
         return redisTemplate.execute(redisScript, keys, args.toArray());
     }
 
-    public Boolean transferWaitingToProcessing (String key) {
+    public Boolean transferWaitingToProcessing (final String key) {
         Boolean result = false;
         Long processingQueueSize = redisTemplate.opsForZSet().zCard(PROCESSING_KEY_PREFIX + key);
         Long startIdx = 0L;
