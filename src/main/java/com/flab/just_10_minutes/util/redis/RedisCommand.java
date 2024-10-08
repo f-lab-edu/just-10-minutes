@@ -36,7 +36,7 @@ public class RedisCommand {
     public static final String PROCESSING_KEY_PREFIX = "PROCESSING:";
     public static final String FINISHING_KEY_PREFIX = "FINISHING:";
 
-    public void deleteKey (String key) {
+    public void deleteKey(String key) {
         redisTemplate.delete(key);
     }
 
@@ -52,6 +52,16 @@ public class RedisCommand {
         if (!redisTemplate.opsForZSet().add(PROCESSING_KEY_PREFIX + key,
                                                 member,
                                         fetchCurrentTimeMillis() + systemTTL)) {
+            return null;
+        }
+
+        return fetchProcessingRank(key, member);
+    }
+
+    public Long addProcessingQueue(final String key, final String member, final Integer ttlMinutes) {
+        if (!redisTemplate.opsForZSet().add(PROCESSING_KEY_PREFIX + key,
+                                                member,
+                                        fetchCurrentTimeMillis() + convertMinutesToMilliSeconds(ttlMinutes))) {
             return null;
         }
 
@@ -139,5 +149,13 @@ public class RedisCommand {
                                             String.valueOf(processingThreshold));
 
         return redisTemplate.execute(redisScript, keys, args.toArray());
+    }
+
+    public void removeExpiredProcessingMember(final String key) {
+        redisTemplate.opsForZSet().removeRangeByScore(PROCESSING_KEY_PREFIX + key, -Double.MAX_VALUE, fetchCurrentTimeMillis());
+    }
+
+    public Long fetchProcessingQueueSize(String key) {
+        return redisTemplate.opsForZSet().zCard(PROCESSING_KEY_PREFIX + key);
     }
 }
