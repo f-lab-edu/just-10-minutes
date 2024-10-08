@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
@@ -155,7 +156,58 @@ public class RedisCommand {
         redisTemplate.opsForZSet().removeRangeByScore(PROCESSING_KEY_PREFIX + key, -Double.MAX_VALUE, fetchCurrentTimeMillis());
     }
 
+    public Long fetchWaitingQueueSize(String key) {
+        return redisTemplate.opsForZSet().zCard(WAITING_KEY_PREFIX + key);
+    }
+
     public Long fetchProcessingQueueSize(String key) {
         return redisTemplate.opsForZSet().zCard(PROCESSING_KEY_PREFIX + key);
+    }
+
+    public Boolean transferWaitingToProcessing (String key) {
+        Boolean result = false;
+        Long processingQueueSize = fetchProcessingQueueSize(key);
+        Long startIdx = 0L;
+        Long endIdx = processingThreshold - processingQueueSize - 1;
+
+        if (endIdx < 0L) {
+            return result;
+        }
+
+        Set<String> waitingMembers = redisTemplate.opsForZSet().range(WAITING_KEY_PREFIX + key,
+                                                                        startIdx,
+                                                                        endIdx);
+
+        if (waitingMembers.size() == 0) {
+            return result;
+        }
+
+        result = redisTemplate.execute(new SessionCallback<>() {
+            @Override
+            public Boolean execute(RedisOperations operations) throws DataAccessException {
+                try {
+                    operations.multi();
+                    for (String member : waitingMembers) {
+                        redisTemplate.opsForZSet().remove(WAITING_KEY_PREFIX + key, member);
+                        redisTemplate.opsForZSet().add(PROCESSING_KEY_PREFIX + key, member, fetchCurrentTimeMillis() + systemTTL);
+                    }
+                    operations.exec();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    operations.discard();
+                }
+                return true;
+            }
+        });
+
+        if (!result) {
+            throw new RuntimeException("Failed to Waiting to Processing");
+        }
+
+        return result;
+    }
+
+        public void removeProcessingValue(String key, String member) {
+        redisTemplate.opsForZSet().remove(PROCESSING_KEY_PREFIX + key, member);
     }
 }
