@@ -5,10 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import static com.flab.just_10_minutes.util.common.TimeUtil.convertMinutesToMilliSeconds;
 import static com.flab.just_10_minutes.util.common.TimeUtil.fetchCurrentTimeMillis;
@@ -16,7 +21,7 @@ import static com.flab.just_10_minutes.util.common.TimeUtil.fetchCurrentTimeMill
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class RedisCommand {
+public class RedisMultipleCommand {
 
     private final StringRedisTemplate redisTemplate;
 
@@ -36,46 +41,6 @@ public class RedisCommand {
     public static final String WAITING_KEY_PREFIX = "WAITING:";
     public static final String PROCESSING_KEY_PREFIX = "PROCESSING:";
     public static final String FINISHING_KEY_PREFIX = "FINISHING:";
-
-    public void deleteKey(String key) {
-        redisTemplate.delete(key);
-    }
-
-    public Long fetchWaitingRank(String key, String member) {
-        Long rank = redisTemplate.opsForZSet().rank(WAITING_KEY_PREFIX + key, member);
-        if (rank == null) {
-            return 0L;
-        }
-        return rank + 1L;
-    }
-
-    public Long addProcessingQueue(final String key, final String member) {
-        if (!redisTemplate.opsForZSet().add(PROCESSING_KEY_PREFIX + key,
-                                                member,
-                                        fetchCurrentTimeMillis() + systemTTL)) {
-            return null;
-        }
-
-        return fetchProcessingRank(key, member);
-    }
-
-    public Long addProcessingQueue(final String key, final String member, final Integer ttlMinutes) {
-        if (!redisTemplate.opsForZSet().add(PROCESSING_KEY_PREFIX + key,
-                                                member,
-                                        fetchCurrentTimeMillis() + convertMinutesToMilliSeconds(ttlMinutes))) {
-            return null;
-        }
-
-        return fetchProcessingRank(key, member);
-    }
-
-    public Long fetchProcessingRank(String key, String member) {
-        Long rank = redisTemplate.opsForZSet().rank(PROCESSING_KEY_PREFIX + key, member);
-        if (rank == null) {
-            return 0L;
-        }
-        return rank + 1L;
-    }
 
     /**
      * Redis 서버에 {@code key}와 매칭되는
@@ -152,21 +117,9 @@ public class RedisCommand {
         return redisTemplate.execute(redisScript, keys, args.toArray());
     }
 
-    public void removeExpiredProcessingMember(final String key) {
-        redisTemplate.opsForZSet().removeRangeByScore(PROCESSING_KEY_PREFIX + key, -Double.MAX_VALUE, fetchCurrentTimeMillis());
-    }
-
-    public Long fetchWaitingQueueSize(String key) {
-        return redisTemplate.opsForZSet().zCard(WAITING_KEY_PREFIX + key);
-    }
-
-    public Long fetchProcessingQueueSize(String key) {
-        return redisTemplate.opsForZSet().zCard(PROCESSING_KEY_PREFIX + key);
-    }
-
     public Boolean transferWaitingToProcessing (String key) {
         Boolean result = false;
-        Long processingQueueSize = fetchProcessingQueueSize(key);
+        Long processingQueueSize = redisTemplate.opsForZSet().zCard(PROCESSING_KEY_PREFIX + key);
         Long startIdx = 0L;
         Long endIdx = processingThreshold - processingQueueSize - 1;
 
@@ -205,9 +158,5 @@ public class RedisCommand {
         }
 
         return result;
-    }
-
-    public void removeProcessingValue(String key, String member) {
-        redisTemplate.opsForZSet().remove(PROCESSING_KEY_PREFIX + key, member);
     }
 }
