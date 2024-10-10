@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.redis;
+package com.flab.just_10_minutes.redis.config;
 
 
 import io.micrometer.common.util.StringUtils;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 @Configuration
-public class EmbeddedRedisConfig {
+public class RedisServerConfiguration {
 
     @Value("${redis.port}")
     private int redisPort;
