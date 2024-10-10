@@ -1,19 +1,15 @@
-package com.flab.just_10_minutes.util.redis;
+package com.flab.just_10_minutes.util.redis.command;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.SessionCallback;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 import static com.flab.just_10_minutes.util.common.TimeUtil.convertMinutesToMilliSeconds;
 import static com.flab.just_10_minutes.util.common.TimeUtil.fetchCurrentTimeMillis;

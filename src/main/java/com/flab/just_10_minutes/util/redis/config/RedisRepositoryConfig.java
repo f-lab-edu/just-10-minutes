@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.util.redis;
+package com.flab.just_10_minutes.util.redis.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
