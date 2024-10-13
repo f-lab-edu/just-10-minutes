@@ -16,7 +16,11 @@ import com.flab.just_10_minutes.util.iamport.IamportConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
+
+import java.net.SocketTimeoutException;
+import java.util.Optional;
 
 import static com.flab.just_10_minutes.util.common.IDUtil.issueCustomUid;
 
@@ -63,15 +67,24 @@ public class IamportApiClient {
         IamportAgainPaymentData iamportAgainPaymentData = PaymentRequest.toAgainPaymentData(paymentRequest, customerUid);
         IamportAccessToken accessToken = issueToken();
 
-        IamportResponse<IamportPayment> response = restClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/subscribe/payments/again").build())
-                .header("Authorization", accessToken.getAccessToken())
-                .body(iamportAgainPaymentData)
-                .exchange((req, res) -> new ObjectMapper().readValue(res.getBody(), new TypeReference<IamportResponse<IamportPayment>>() {}));
+        IamportResponse<IamportPayment> response = internalAgainPayment(iamportAgainPaymentData, accessToken);
 
         if (response.getCode() == -1) {
             throw new IamportException(response.getMessage());
         }
         return response.getResponse();
+    }
+
+    private IamportResponse<IamportPayment> internalAgainPayment(IamportAgainPaymentData iamportAgainPaymentData, IamportAccessToken accessToken) {
+        try {
+            return restClient.post()
+                    .uri(uriBuilder -> uriBuilder.path("/subscribe/payments/again").build())
+                    .header("Authorization", accessToken.getAccessToken())
+                    .body(iamportAgainPaymentData)
+                    .exchange((req, res) -> new ObjectMapper().readValue(res.getBody(), new TypeReference<IamportResponse<IamportPayment>>() {
+                    }));
+        } catch (ResourceAccessException rae) {
+            throw new IamportException("Cause :" + rae.getCause().getMessage());
+        }
     }
 }
