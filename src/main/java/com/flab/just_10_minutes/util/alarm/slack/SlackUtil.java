@@ -33,14 +33,12 @@ public class SlackUtil {
 
     public static void sendMessage(String title, Map<String, String> data) {
         try {
-            slackClient.send(URL, payload(p ->
-                    p.text(title)
-                            .attachments(List.of(
-                                    Attachment.builder().color(Color.RED.getCode())
-                                            .fields(
-                                                    data.keySet().stream().map(key -> generateSlackField(key, data.get(key))).collect(Collectors.toList())
-                                            ).build())))
-            );
+            slackClient.send(URL, payload(p -> p.text(title)
+                                                    .attachments(List.of(Attachment.builder().color(Color.RED.getCode())
+                                                    .fields(data.keySet().stream()
+                                                                        .map(key -> generateSlackField(key, data.get(key)))
+                                                                        .collect(Collectors.toList())
+                                                            ).build()))));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
