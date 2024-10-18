@@ -48,11 +48,15 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	//wiremock
-	testImplementation 'org.wiremock:wiremock:3.9.1'
+	testImplementation 'com.squareup.okhttp3:mockwebserver'
 
 	//monotoring
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("io.micrometer:micrometer-registry-prometheus")
+
+	// https://mvnrepository.com/artifact/com.slack.api/slack-api-client
+	implementation 'com.slack.api:slack-api-client:1.43.1'
+
 }
 
 tasks.named('test') {
