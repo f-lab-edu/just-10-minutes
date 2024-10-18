@@ -19,9 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
-import java.net.SocketTimeoutException;
-import java.util.Optional;
-
 import static com.flab.just_10_minutes.util.common.IDUtil.issueCustomUid;
 
 @Component
@@ -86,5 +83,20 @@ public class IamportApiClient {
         } catch (ResourceAccessException rae) {
             throw new IamportException("Cause :" + rae.getCause().getMessage());
         }
+    }
+
+    public IamportPayment fetchPayment(final String impUid) {
+        IamportAccessToken accessToken = issueToken();
+
+        IamportResponse<IamportPayment> response = restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/payments/").path(impUid).build())
+                .header("Authorization", accessToken.getAccessToken())
+                .exchange((req, res) -> new ObjectMapper().readValue(res.getBody(), new TypeReference<IamportResponse<IamportPayment>>() {
+                }));
+        if (response.getCode() == -1 || response.getResponse() == null) {
+            throw new IamportException(response.getMessage());
+        }
+
+        return response.getResponse();
     }
 }
