@@ -60,7 +60,7 @@ public class PaymentService {
         return OptionalCustomerUid.orElseGet(() -> issueCustomerUid(paymentDataDto.getCustomerLoginId(), paymentDataDto.getBillingRequest()));
     }
 
-    public void validatePaidWebHook(final IamportWebhookDto iamportWebhookDto) {
+    public void validatePaidWebhook(final IamportWebhookDto iamportWebhookDto) {
         if (!iamportWebhookDto.getStatus().equals("paid")) {
             throw new BusinessException("error : not paid status");
         }
