@@ -24,6 +24,6 @@ public interface UserMapper {
     int updatePoint(final String loginId, final Long updatePoints);
 
     @Delete("DELETE FROM users WHERE login_id = #{loginId}")
-    public int delete(final String loginId);
+    int delete(final String loginId);
 
 }
