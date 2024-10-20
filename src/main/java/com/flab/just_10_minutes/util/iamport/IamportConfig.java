@@ -67,8 +67,8 @@ public class IamportConfig {
     @Bean
     public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory(HttpClient httpClient) {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        factory.setConnectionRequestTimeout(Duration.ofSeconds(5));
-        factory.setConnectTimeout(Duration.ofSeconds(3));
+        factory.setConnectionRequestTimeout(Duration.ofSeconds(30));
+        factory.setConnectTimeout(Duration.ofSeconds(30));
 
         return factory;
     }
