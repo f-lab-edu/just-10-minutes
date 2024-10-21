@@ -8,21 +8,18 @@ import com.flab.just_10_minutes.payment.infrastructure.entity.PaymentResultEntit
 import com.flab.just_10_minutes.payment.infrastructure.repository.BillingKeyDao;
 import com.flab.just_10_minutes.payment.infrastructure.Iamport.IamportApiClient;
 import com.flab.just_10_minutes.payment.infrastructure.repository.PaymentResultDao;
+import com.flab.just_10_minutes.util.alarm.slack.SlackClient;
 import com.flab.just_10_minutes.util.exception.business.BusinessException;
-import com.flab.just_10_minutes.util.exception.database.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.FAIL;
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.PAID;
-import static com.flab.just_10_minutes.util.alarm.slack.SlackUtil.sendMessage;
 
 @Slf4j
 @Service
@@ -31,7 +28,9 @@ public class PaymentService {
 
     private final BillingKeyDao billingKeyDao;
     private final PaymentResultDao paymentResultDao;
+
     private final IamportApiClient iamportApiClient;
+    private final SlackClient slackClient;
 
     public PaymentResult paymentTransaction(@Valid PaymentRequest paymentRequest) {
         String customerUid = fetchCustomerUid(paymentRequest);
@@ -79,7 +78,7 @@ public class PaymentService {
 
         if (existPaymentResult == null || existPaymentResult.getStatus() != PAID) {
             log.error("PortOne Webhook error occurred : Not Exist Payment Result or Order for the Provided ImpUid");
-            sendMessage("결제 이상 발생", Stream.of(new Object[][] {
+            slackClient.sendMessage("결제 이상 발생", Stream.of(new Object[][] {
                             {"결제 금액", existPaymentResult == null ? "null" : existPaymentResult.getAmount().toString()},
                             {"포트원 결제 금액", paymentResult == null ? "null" : paymentResult.getAmount().toString()},
                             {"주문 ID", existPaymentResult == null ? "null" : existPaymentResult.getMerchantUid()},
