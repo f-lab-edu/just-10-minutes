@@ -4,6 +4,7 @@ import com.flab.just_10_minutes.payment.dto.BillingRequest;
 import com.flab.just_10_minutes.payment.dto.IamportWebhookDto;
 import com.flab.just_10_minutes.payment.dto.PaymentRequest;
 import com.flab.just_10_minutes.payment.domain.PaymentResult;
+import com.flab.just_10_minutes.payment.infrastructure.entity.PaymentResultEntity;
 import com.flab.just_10_minutes.payment.infrastructure.repository.BillingKeyDao;
 import com.flab.just_10_minutes.payment.infrastructure.Iamport.IamportApiClient;
 import com.flab.just_10_minutes.payment.infrastructure.repository.PaymentResultDao;
@@ -61,32 +62,30 @@ public class PaymentService {
     }
 
     public void validatePaidWebhook(final IamportWebhookDto iamportWebhookDto) {
-        if (!iamportWebhookDto.getStatus().equals("paid")) {
-            throw new BusinessException("error : not paid status");
+        if (iamportWebhookDto.getStatus() != PAID) {
+            log.error("PortOne Webhook error occurred : Webhook Status not Equals to PAID");
+            return;
         }
 
         PaymentResult paymentResult = PaymentResult.from(iamportApiClient.fetchPayment(iamportWebhookDto.getImpUid()));
 
-        if (!iamportWebhookDto.getStatus().equals(paymentResult.getStatus().getLable())) {
-            throw new BusinessException("error : not equals status");
+        if (paymentResult.getStatus() != PAID) {
+            log.error("PortOne Webhook error occurred : Webhook Status not Equals to PortOne Server's Status");
+            return;
         }
 
-        PaymentResult existPaymentResult = null;
-        //결제 값 검증
-        try {
-            existPaymentResult = paymentResultDao.fetchWithOrderByImpUidAndStatus(iamportWebhookDto.getImpUid(), iamportWebhookDto.getStatus());
-            if (!existPaymentResult.getAmount().equals(paymentResult.getAmount())) {
-                throw new BusinessException("error: not equals amount");
-            }
-        } catch (NotFoundException | BusinessException e) {
-            log.error(e.getMessage());
+        Optional<PaymentResultEntity> optPaymentResult = paymentResultDao.findWithOrderByImpUidAndStatus(iamportWebhookDto.getImpUid(), iamportWebhookDto.getStatus().getLable());
+        PaymentResult existPaymentResult = optPaymentResult.map(PaymentResultEntity::toDomain).orElse(null);
+
+        if (existPaymentResult == null || existPaymentResult.getStatus() != PAID) {
+            log.error("PortOne Webhook error occurred : Not Exist Payment Result or Order for the Provided ImpUid");
             sendMessage("결제 이상 발생", Stream.of(new Object[][] {
-                                                    {"결제 금액", existPaymentResult == null ? "null" : existPaymentResult.getAmount().toString()},
-                                                    {"포트원 결제 금액", paymentResult == null ? "null" : paymentResult.getAmount().toString()},
-                                                    {"주문 ID", existPaymentResult == null ? "null" : existPaymentResult.getMerchantUid()},
-                                                    {"결제 ID", iamportWebhookDto.getImpUid()}
-                                                    })
-                                                    .collect(Collectors.toMap(item -> (String) item[0], item -> (String) item[1])));
+                            {"결제 금액", existPaymentResult == null ? "null" : existPaymentResult.getAmount().toString()},
+                            {"포트원 결제 금액", paymentResult == null ? "null" : paymentResult.getAmount().toString()},
+                            {"주문 ID", existPaymentResult == null ? "null" : existPaymentResult.getMerchantUid()},
+                            {"결제 ID", iamportWebhookDto.getImpUid()}
+                    })
+                    .collect(Collectors.toMap(item -> (String) item[0], item -> (String) item[1])));
         }
     }
 }
