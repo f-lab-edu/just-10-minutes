@@ -23,12 +23,12 @@ public class SlackClient {
 
     private static final Slack slackClient = Slack.getInstance();
 
-    public void sendMessage(String title, Map<String, String> data) {
+    public void sendMessage(SlackMessage slackMessage) {
         try {
-            slackClient.send(URL, payload(p -> p.text(title)
+            slackClient.send(URL, payload(p -> p.text(slackMessage.getTitle())
                                                     .attachments(List.of(Attachment.builder().color(Color.RED.getCode())
-                                                    .fields(data.keySet().stream()
-                                                                        .map(key -> generateSlackField(key, data.get(key)))
+                                                    .fields(slackMessage.getData().keySet().stream()
+                                                                        .map(key -> generateSlackField(key, slackMessage.getData().get(key)))
                                                                         .collect(Collectors.toList())
                                                             ).build()))));
         } catch (IOException e) {
@@ -36,7 +36,7 @@ public class SlackClient {
         }
     }
 
-    private static Field generateSlackField(String title, String value) {
+    private Field generateSlackField(String title, String value) {
         return Field.builder()
                 .title(title)
                 .value(value)

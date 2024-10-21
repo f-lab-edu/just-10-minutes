@@ -20,6 +20,8 @@ import java.util.stream.Stream;
 
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.FAIL;
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.PAID;
+import static com.flab.just_10_minutes.util.alarm.slack.SlackMessage.createDiffersStatus;
+import static com.flab.just_10_minutes.util.alarm.slack.SlackMessage.createImpUidMissingInternal;
 
 @Slf4j
 @Service
@@ -62,29 +64,28 @@ public class PaymentService {
 
     public void validatePaidWebhook(final IamportWebhookDto iamportWebhookDto) {
         if (iamportWebhookDto.getStatus() != PAID) {
-            log.error("PortOne Webhook error occurred : Webhook Status not Equals to PAID");
+            log.error("PortOne Webhook error occurred : Webhook Status is not equal to PAID");
             return;
         }
 
         PaymentResult paymentResult = PaymentResult.from(iamportApiClient.fetchPayment(iamportWebhookDto.getImpUid()));
 
         if (paymentResult.getStatus() != PAID) {
-            log.error("PortOne Webhook error occurred : Webhook Status not Equals to PortOne Server's Status");
+            log.error("PortOne Webhook error occurred : Webhook Status is not equal to PortOne Server's Status");
             return;
         }
 
         Optional<PaymentResultEntity> optPaymentResult = paymentResultDao.findWithOrderByImpUidAndStatus(iamportWebhookDto.getImpUid(), iamportWebhookDto.getStatus().getLable());
         PaymentResult existPaymentResult = optPaymentResult.map(PaymentResultEntity::toDomain).orElse(null);
 
-        if (existPaymentResult == null || existPaymentResult.getStatus() != PAID) {
-            log.error("PortOne Webhook error occurred : Not Exist Payment Result or Order for the Provided ImpUid");
-            slackClient.sendMessage("결제 이상 발생", Stream.of(new Object[][] {
-                            {"결제 금액", existPaymentResult == null ? "null" : existPaymentResult.getAmount().toString()},
-                            {"포트원 결제 금액", paymentResult == null ? "null" : paymentResult.getAmount().toString()},
-                            {"주문 ID", existPaymentResult == null ? "null" : existPaymentResult.getMerchantUid()},
-                            {"결제 ID", iamportWebhookDto.getImpUid()}
-                    })
-                    .collect(Collectors.toMap(item -> (String) item[0], item -> (String) item[1])));
+        if (existPaymentResult == null) {
+            log.error("PortOne Webhook error occurred : Provided ImpUid [" + paymentResult.getImpUid() + "] not found in Internal");
+            slackClient.sendMessage(createImpUidMissingInternal(iamportWebhookDto.getImpUid()));
+        }
+
+        if (existPaymentResult.getStatus() != PAID) {
+            log.error("PortOne Webhook error occurred : Provided ImpUid [" + paymentResult.getImpUid() + "]'s status differs from Internal");
+            slackClient.sendMessage(createDiffersStatus(iamportWebhookDto.getImpUid()));
         }
     }
 }
