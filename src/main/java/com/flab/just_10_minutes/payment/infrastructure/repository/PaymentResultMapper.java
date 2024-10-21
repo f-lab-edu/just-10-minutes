@@ -33,7 +33,6 @@ public interface PaymentResultMapper {
                     pr.failed_at  FROM payment_results pr
             INNER JOIN orders o ON pr.imp_uid = o.payment_tx_id
             WHERE pr.imp_uid = #{impUid}
-            AND pr.status = #{status}
             """)
    PaymentResultEntity findWithOrderByImpUidAndStatus(final String impUid, final String status);
 }

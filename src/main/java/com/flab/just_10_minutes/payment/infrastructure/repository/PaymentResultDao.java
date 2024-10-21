@@ -1,7 +1,6 @@
 package com.flab.just_10_minutes.payment.infrastructure.repository;
 
 import com.flab.just_10_minutes.payment.domain.PaymentResult;
-import com.flab.just_10_minutes.payment.dto.IamportWebhookDto;
 import com.flab.just_10_minutes.payment.infrastructure.entity.PaymentResultEntity;
 import com.flab.just_10_minutes.util.exception.database.InternalException;
 import com.flab.just_10_minutes.util.exception.database.NotFoundException;
@@ -36,12 +35,12 @@ public class PaymentResultDao {
         return PaymentResultEntity.toDomain(paymentResultEntity);
     }
 
-    public Optional<PaymentResultEntity> findWithOrderByImpUidAndStatus(final String impUid, final String status) {
+    public Optional<PaymentResultEntity> findWithOrderByImpUid(final String impUid, final String status) {
         return Optional.ofNullable(paymentResultMapper.findWithOrderByImpUidAndStatus(impUid, status));
     }
 
-    public PaymentResult fetchWithOrderByImpUidAndStatus(final String impUid, final String status) {
-        PaymentResultEntity paymentResultEntity = findWithOrderByImpUidAndStatus(impUid, status)
+    public PaymentResult fetchWithOrderByImpUid(final String impUid, final String status) {
+        PaymentResultEntity paymentResultEntity = findWithOrderByImpUid(impUid, status)
                                                     .orElseThrow(() -> new NotFoundException(NOT_FOUND, IMP_UID));
         return PaymentResultEntity.toDomain(paymentResultEntity);
     }

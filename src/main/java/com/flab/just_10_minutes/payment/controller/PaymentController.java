@@ -19,6 +19,6 @@ public class PaymentController {
 
     @PostMapping("/webhook/paid")
     public void checkWebHook(@RequestBody IamportWebhookDto iamportWebhookDto) {
-        paymentService.validatePaidWebHook(iamportWebhookDto);
+        paymentService.validatePaidWebhook(iamportWebhookDto);
     }
 }

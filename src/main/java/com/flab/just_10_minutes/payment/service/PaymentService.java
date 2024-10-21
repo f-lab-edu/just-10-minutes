@@ -15,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.FAIL;
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.PAID;
@@ -75,17 +73,18 @@ public class PaymentService {
             return;
         }
 
-        Optional<PaymentResultEntity> optPaymentResult = paymentResultDao.findWithOrderByImpUidAndStatus(iamportWebhookDto.getImpUid(), iamportWebhookDto.getStatus().getLable());
+        Optional<PaymentResultEntity> optPaymentResult = paymentResultDao.findWithOrderByImpUid(iamportWebhookDto.getImpUid(), iamportWebhookDto.getStatus().getLable());
         PaymentResult existPaymentResult = optPaymentResult.map(PaymentResultEntity::toDomain).orElse(null);
 
         if (existPaymentResult == null) {
             log.error("PortOne Webhook error occurred : Provided ImpUid [" + paymentResult.getImpUid() + "] not found in Internal");
             slackClient.sendMessage(createImpUidMissingInternal(iamportWebhookDto.getImpUid()));
+            return;
         }
 
         if (existPaymentResult.getStatus() != PAID) {
             log.error("PortOne Webhook error occurred : Provided ImpUid [" + paymentResult.getImpUid() + "]'s status differs from Internal");
-            slackClient.sendMessage(createDiffersStatus(iamportWebhookDto.getImpUid()));
+            slackClient.sendMessage(createDiffersStatus(iamportWebhookDto.getImpUid(), existPaymentResult.getStatus()));
         }
     }
 }
