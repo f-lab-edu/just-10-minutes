@@ -50,13 +50,15 @@ dependencies {
 	//wiremock
 	testImplementation 'com.squareup.okhttp3:mockwebserver'
 
-	//monotoring
+	//monitoring
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("io.micrometer:micrometer-registry-prometheus")
 
-	// https://mvnrepository.com/artifact/com.slack.api/slack-api-client
+	//slack
 	implementation 'com.slack.api:slack-api-client:1.43.1'
 
+	//fcm
+	implementation 'com.google.firebase:firebase-admin:8.1.0'
 }
 
 tasks.named('test') {

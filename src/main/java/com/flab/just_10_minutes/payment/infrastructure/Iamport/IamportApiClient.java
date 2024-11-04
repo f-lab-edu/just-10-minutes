@@ -27,17 +27,19 @@ import static com.flab.just_10_minutes.util.common.IDUtil.issueCustomUid;
 public class IamportApiClient {
 
     private final IamportConfig iamportConfig;
-    private final RestClient restClient;
     private final ObjectMapper objectMapper;
 
+    private final RestClient iamportRestClient;
+
+
     public IamportAccessToken issueToken() {
-        IamportResponse<IamportAccessToken> response = restClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/users/getToken").build())
-                .body(IamportAuthData.builder()
-                                    .impKey(iamportConfig.getApiKey())
-                                    .impSecret(iamportConfig.getApiSecret())
-                                    .build())
-                .exchange((req, res) -> objectMapper.readValue(res.getBody(), new TypeReference<IamportResponse<IamportAccessToken>>(){}));
+        IamportResponse<IamportAccessToken> response = iamportRestClient.post()
+                                                                        .uri(uriBuilder -> uriBuilder.path("/users/getToken").build())
+                                                                        .body(IamportAuthData.builder()
+                                                                                            .impKey(iamportConfig.getApiKey())
+                                                                                            .impSecret(iamportConfig.getApiSecret())
+                                                                                            .build())
+                                                                        .exchange((req, res) -> objectMapper.readValue(res.getBody(), new TypeReference<IamportResponse<IamportAccessToken>>(){}));
 
         if (response.getCode() == -1) {
             throw new IamportException(response.getMessage());
@@ -49,11 +51,11 @@ public class IamportApiClient {
         IamportAccessToken accessToken = issueToken();
         IamportBillingCustomerData billingCustomerData = BillingRequest.toIamportBillingCustomerData(billingRequest, iamportConfig.getPg(billingRequest.getPg()));
 
-        IamportResponse<IamportBillingCustomer> response = restClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/subscribe/customers/").path(issueCustomUid()).build())
-                .header("Authorization", accessToken.getAccessToken())
-                .body(billingCustomerData)
-                .exchange((req, res) -> objectMapper.readValue(res.getBody(), new TypeReference<IamportResponse<IamportBillingCustomer>>() {}));
+        IamportResponse<IamportBillingCustomer> response = iamportRestClient.post()
+                                                                            .uri(uriBuilder -> uriBuilder.path("/subscribe/customers/").path(issueCustomUid()).build())
+                                                                            .header("Authorization", accessToken.getAccessToken())
+                                                                            .body(billingCustomerData)
+                                                                            .exchange((req, res) -> objectMapper.readValue(res.getBody(), new TypeReference<IamportResponse<IamportBillingCustomer>>() {}));
 
         if (response.getCode() == -1) {
             throw new IamportException(response.getMessage());
@@ -75,12 +77,12 @@ public class IamportApiClient {
 
     private IamportResponse<IamportPayment> internalAgainPayment(IamportAgainPaymentData iamportAgainPaymentData, IamportAccessToken accessToken) {
         try {
-            return restClient.post()
-                    .uri(uriBuilder -> uriBuilder.path("/subscribe/payments/again").build())
-                    .header("Authorization", accessToken.getAccessToken())
-                    .body(iamportAgainPaymentData)
-                    .exchange((req, res) -> objectMapper.readValue(res.getBody(), new TypeReference<IamportResponse<IamportPayment>>() {
-                    }));
+            return iamportRestClient.post()
+                                    .uri(uriBuilder -> uriBuilder.path("/subscribe/payments/again").build())
+                                    .header("Authorization", accessToken.getAccessToken())
+                                    .body(iamportAgainPaymentData)
+                                    .exchange((req, res) -> objectMapper.readValue(res.getBody(), new TypeReference<IamportResponse<IamportPayment>>() {
+                                    }));
         } catch (ResourceAccessException rae) {
             throw new IamportException("Cause :" + rae.getCause().getMessage());
         }
@@ -89,11 +91,11 @@ public class IamportApiClient {
     public IamportPayment fetchPayment(final String impUid) {
         IamportAccessToken accessToken = issueToken();
 
-        IamportResponse<IamportPayment> response = restClient.get()
-                .uri(uriBuilder -> uriBuilder.path("/payments/").path(impUid).build())
-                .header("Authorization", accessToken.getAccessToken())
-                .exchange((req, res) -> objectMapper.readValue(res.getBody(), new TypeReference<IamportResponse<IamportPayment>>() {
-                }));
+        IamportResponse<IamportPayment> response = iamportRestClient.get()
+                                                                    .uri(uriBuilder -> uriBuilder.path("/payments/").path(impUid).build())
+                                                                    .header("Authorization", accessToken.getAccessToken())
+                                                                    .exchange((req, res) -> objectMapper.readValue(res.getBody(), new TypeReference<IamportResponse<IamportPayment>>() {
+                                                                    }));
         if (response.getCode() == -1 || response.getResponse() == null) {
             throw new IamportException(response.getMessage());
         }
