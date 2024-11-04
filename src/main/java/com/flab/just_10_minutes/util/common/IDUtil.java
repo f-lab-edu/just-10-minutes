@@ -12,6 +12,10 @@ public class IDUtil {
         return issueUUID().toString();
     }
 
+    public static String issueFcmMessageId() {
+        return issueUUID().toString();
+    }
+
     private static UUID issueUUID() {
         return UUID.randomUUID();
     }
