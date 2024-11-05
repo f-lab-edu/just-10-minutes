@@ -20,7 +20,7 @@ public class FcmTokenDao {
 
     public void save(FcmToken fcmToken) {
         int saveResult = fcmTokenMapper.upsert(FcmTokenEntity.from(fcmToken));
-        if (saveResult != 1) {
+        if (saveResult < 1 || saveResult > 2) {
             throw new InternalException(FAIL_TO_INSERT);
         }
     }
