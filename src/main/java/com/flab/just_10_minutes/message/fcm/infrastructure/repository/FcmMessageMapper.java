@@ -17,7 +17,7 @@ public interface FcmMessageMapper {
 
     @Update("""
             <script>
-            UPDATE fcm_message
+            UPDATE fcm_messages
             <set>
                 <if test='token != null'> token = #{token},</if>
                 <if test='campaignId != null'> campaign_id = #{campaignId},</if>
