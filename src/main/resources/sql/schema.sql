@@ -80,3 +80,31 @@ CREATE TABLE IF NOT EXISTS payment_results (
     failed_at DATE,
     PRIMARY KEY(id)
 )ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS fcm_tokens (
+	id INT auto_increment,
+    login_id VARCHAR(50),
+    token VARCHAR(255),
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    primary key(id),
+    UNIQUE KEY (login_id)
+)ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS fcm_messages (
+	id INT auto_increment,
+    message_id VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    campaign_id INT NOT NULL,
+    is_send boolean,
+    primary key(id),
+    UNIQUE KEY(message_id, id)
+)ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS fcm_campaigns (
+	id INT auto_increment,
+    title VARCHAR(200),
+    body VARCHAR(500),
+    img_url VARCHAR(200),
+    primary key(id)
+)ENGINE=InnoDB;
