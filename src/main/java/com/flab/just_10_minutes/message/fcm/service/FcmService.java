@@ -49,6 +49,9 @@ public class FcmService {
 
         fcmApiClient.sendMessage(fcmMessage, fcmCampaign);
 
-        fcmMessageDao.patch(FcmMessage.update(fcmSendRequest.getMessageId(), true));
+        fcmMessageDao.patch(FcmMessage.builder()
+                                    .build()
+                                    .withMessageId(fcmSendRequest.getMessageId())
+                                    .withIsSend(true));
     }
 }
