@@ -13,6 +13,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class FcmApiClient {
         FcmApiV1Response response =
                 fcmRestClient.post()
                 .uri(uriBuilder -> uriBuilder.path(fcmConfig.getMessagePostfix()).build())
-                .header("Authorization", " " + getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, " " + getAccessToken())
                 .body(FcmApiV1Request.from(fcmMessage, fcmCampaign))
                 .exchange((req, res) -> {
                     if (res.getStatusCode().value() > 200) {
