@@ -34,7 +34,7 @@ public class FcmApiClient {
         FcmApiV1Response response =
                 fcmRestClient.post()
                 .uri(uriBuilder -> uriBuilder.path(fcmConfig.getMessagePostfix()).build())
-                .header(HttpHeaders.AUTHORIZATION, " " + getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .body(FcmApiV1Request.from(fcmMessage, fcmCampaign))
                 .exchange((req, res) -> {
                     if (res.getStatusCode().value() > 200) {
@@ -52,7 +52,7 @@ public class FcmApiClient {
     private String getAccessToken() {
         try {
             GoogleCredentials credentials = GoogleCredentials
-                    .fromStream(new ClassPathResource(fcmConfig.getKeyPath()).getInputStream())
+                    .fromStream(fcmConfig.getCredentialsStream())
                     .createScoped(List.of(fcmConfig.getCredentialUrl()));
             credentials.refreshIfExpired();
 
