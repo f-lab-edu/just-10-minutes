@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.message.fcm.infrastructure.request;
+package com.flab.just_10_minutes.message.fcm.infrastructure.fcmAPiV1.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class FcmMessageV1Request {
+public class FcmApiV1Request {
 
     private boolean validateOnly;
     private Message message;
@@ -30,8 +30,8 @@ public class FcmMessageV1Request {
         private String image;
     }
 
-    public static FcmMessageV1Request from(FcmMessage fcmMessage, FcmCampaign fcmCampaign) {
-        return FcmMessageV1Request.builder()
+    public static FcmApiV1Request from(FcmMessage fcmMessage, FcmCampaign fcmCampaign) {
+        return FcmApiV1Request.builder()
                 .message(Message.builder()
                         .token(fcmMessage.getToken())
                         .notification(Notification.builder()

@@ -2,7 +2,6 @@ package com.flab.just_10_minutes.message.fcm.controller;
 
 import com.flab.just_10_minutes.message.fcm.dto.*;
 import com.flab.just_10_minutes.message.fcm.service.FcmService;
-import com.google.api.Http;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +29,8 @@ public class FcmController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping
-    public ResponseEntity<FcmMessageDto> saveMessage(@RequestBody FcmMessageRequest fcmMessageRequest) {
-        return ResponseEntity.ok(fcmService.saveMessage(fcmMessageRequest));
-    }
-
-    @PostMapping("/single-notifications")
-    public ResponseEntity<Http> sendMessage(@RequestBody FcmSendRequest fcmSendRequest) {
-        fcmService.sendNotification(fcmSendRequest);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/publish")
+    public void publishMessage(@RequestBody FcmMessageRequest fcmMessageRequest) {
+        fcmService.publishNotification(fcmMessageRequest);
     }
 }

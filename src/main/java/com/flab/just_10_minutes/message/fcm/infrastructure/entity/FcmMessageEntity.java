@@ -27,6 +27,7 @@ public class FcmMessageEntity {
 
     public static FcmMessage toDomain(FcmMessageEntity fcmMessageEntity) {
         return FcmMessage.builder()
+                        .messageId(fcmMessageEntity.getMessageId())
                         .token(fcmMessageEntity.getToken())
                         .campaignId(fcmMessageEntity.getCampaignId())
                         .isSend(fcmMessageEntity.getIsSend())
