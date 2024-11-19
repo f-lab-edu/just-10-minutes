@@ -38,11 +38,15 @@ public class FcmConfig {
     @Value("${message.fcm.key_path}")
     private String keyPath;
 
-    private InputStream credentialsStream;
+    private ClassPathResource credentialClassPath;
 
     @PostConstruct
     public void init() throws IOException {
-        credentialsStream = new ClassPathResource(keyPath).getInputStream();
+        credentialClassPath = new ClassPathResource(keyPath);
+    }
+
+    public InputStream getCredentialInputStream() throws IOException {
+        return credentialClassPath.getInputStream();
     }
 
     @Bean(name = "fcmHttpClient")

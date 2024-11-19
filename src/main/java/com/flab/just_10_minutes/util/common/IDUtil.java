@@ -12,7 +12,11 @@ public class IDUtil {
         return issueUUID().toString();
     }
 
-    public static String issueFcmMessageId() {
+    public static String issueEventId() {
+        return issueUUID().toString();
+    }
+
+    public static String issueNotificationId() {
         return issueUUID().toString();
     }
 
