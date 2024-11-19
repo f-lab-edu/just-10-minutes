@@ -17,7 +17,7 @@ public class AsyncConfig {
     public Executor eventHandlerTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(100);
+        executor.setMaxPoolSize(20);
         executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("EventHandler-");
         executor.initialize();
