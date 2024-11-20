@@ -6,7 +6,7 @@ import lombok.Getter;
 import static com.flab.just_10_minutes.util.exception.webhook.WebHookMessage.LOGGING_MESSAGE_PREFIX;
 
 @Getter
-public class WebhookException extends Exception {
+public class WebhookException extends RuntimeException {
 
   private SlackMessage slackMessage;
 
