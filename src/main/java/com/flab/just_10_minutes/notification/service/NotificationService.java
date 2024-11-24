@@ -8,7 +8,6 @@ import com.flab.just_10_minutes.notification.dto.FcmNotificationRequest;
 import com.flab.just_10_minutes.notification.dto.FcmTokenRequest;
 import com.flab.just_10_minutes.notification.infrastructure.repository.CampaignDao;
 import com.flab.just_10_minutes.notification.infrastructure.repository.FcmTokenDao;
-import com.flab.just_10_minutes.user.infrastructure.repository.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,6 @@ public class NotificationService {
 
         eventPublisher.publishEvent(FcmNotificationEvent.from(issueEventId(),
                                                                     fcmToken.getLoginId(),
-                                                                    fcmToken.getToken(),
                                                                     campaign.getId()
                                                                     ));
     }

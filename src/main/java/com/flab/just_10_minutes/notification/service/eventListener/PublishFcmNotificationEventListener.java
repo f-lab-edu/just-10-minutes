@@ -28,8 +28,8 @@ import static com.flab.just_10_minutes.util.executor.AsyncConfig.EVENT_HANDLER_T
 @RequiredArgsConstructor
 public class PublishFcmNotificationEventListener {
 
-    private final FcmNotificationDao notificationDao;
-    private final CampaignDao fcmCampaignDao;
+    private final FcmNotificationDao fcmNotificationDao;
+    private final CampaignDao campaignDao;
     private final FcmTokenDao fcmTokenDao;
     private final FcmApiClient fcmApiClient;
 
@@ -43,7 +43,7 @@ public class PublishFcmNotificationEventListener {
     )
     public void handleFcmNotificationEvent(FcmNotificationEvent event) {
         FcmToken fcmToken = fcmTokenDao.fetchByLoginId(event.getReceiverId());
-        Campaign campaign = fcmCampaignDao.fetchById(event.getCampaignId());
+        Campaign campaign = campaignDao.fetchById(event.getCampaignId());
         FcmNotification fcmNotification = FcmNotification.from(event, fcmToken);
 
         FcmApiV1Response fcmApiV1Response = fcmApiClient.sendMessage(fcmNotification, campaign);
@@ -63,7 +63,7 @@ public class PublishFcmNotificationEventListener {
              */
         switch (fcmApiV1Response.getCode() / 100) {
             case 2:
-                notificationDao.save(fcmNotification);
+                fcmNotificationDao.save(fcmNotification);
                 break;
             case 5:
                 throw new HttpServerErrorException(HttpStatus.valueOf(fcmApiV1Response.getCode()), fcmApiV1Response.getMessage());

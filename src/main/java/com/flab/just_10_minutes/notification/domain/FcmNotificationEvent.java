@@ -17,7 +17,7 @@ public class FcmNotificationEvent {
     private String receiverId;
     private Long campaignId;
 
-    public static FcmNotificationEvent from(final String eventId, final String receiverId, final String destination, final Long campaignId) {
+    public static FcmNotificationEvent from(final String eventId, final String receiverId, final Long campaignId) {
         return FcmNotificationEvent.builder()
                 .eventId(eventId)
                 .receiverId(receiverId)
