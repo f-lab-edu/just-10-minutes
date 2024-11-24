@@ -24,6 +24,7 @@ import java.util.List;
 public class FcmApiClient {
 
     private final FcmConfig fcmConfig;
+    private final ObjectMapper objectMapper;
     private final RestClient fcmRestClient;
 
     public FcmApiV1Response sendMessage(FcmNotification fcmNotification, Campaign fcmCampaign)  {
@@ -35,11 +36,11 @@ public class FcmApiClient {
                 .body(FcmApiV1Request.from(fcmNotification, fcmCampaign))
                 .exchange((req, res) -> {
                     if (res.getStatusCode().value() > 200) {
-                        FcmApiV1FailResponse failResponse = new ObjectMapper().readValue(res.getBody(), new TypeReference<FcmApiV1FailResponse>() {});
+                        FcmApiV1FailResponse failResponse = objectMapper.readValue(res.getBody(), new TypeReference<FcmApiV1FailResponse>() {});
                         return FcmApiV1Response.withFailure(failResponse);
                     }
 
-                    FcmApiV1SuccessResponse successResponse = new ObjectMapper().readValue(res.getBody(), new TypeReference<FcmApiV1SuccessResponse>() {});
+                    FcmApiV1SuccessResponse successResponse = objectMapper.readValue(res.getBody(), new TypeReference<FcmApiV1SuccessResponse>() {});
                     return FcmApiV1Response.withSuccess(successResponse);
                     }
                 );
