@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.notification.controller;
 
 import com.flab.just_10_minutes.notification.dto.CampaignRequest;
-import com.flab.just_10_minutes.notification.dto.NotificationRequest;
+import com.flab.just_10_minutes.notification.dto.FcmNotificationRequest;
 import com.flab.just_10_minutes.notification.dto.FcmTokenRequest;
 import com.flab.just_10_minutes.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +31,8 @@ public class NotificationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/publish")
-    public void publishMessage(@RequestBody NotificationRequest notificationRequest) {
-        notificationService.publishNotificationEvent(notificationRequest);
+    @PostMapping("/fcm-publish")
+    public void publishMessage(@RequestBody FcmNotificationRequest fcmNotificationRequest) {
+        notificationService.publishFcmNotificationEvent(fcmNotificationRequest);
     }
 }

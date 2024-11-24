@@ -3,7 +3,7 @@ package com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.notification.domain.Campaign;
-import com.flab.just_10_minutes.notification.domain.Notification;
+import com.flab.just_10_minutes.notification.domain.FcmNotification;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.request.FcmApiV1Request;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1Response;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1FailResponse;
@@ -26,13 +26,13 @@ public class FcmApiClient {
     private final FcmConfig fcmConfig;
     private final RestClient fcmRestClient;
 
-    public FcmApiV1Response sendMessage(Notification notification, Campaign fcmCampaign)  {
+    public FcmApiV1Response sendMessage(FcmNotification fcmNotification, Campaign fcmCampaign)  {
         //TODO fcm response 에 따라 처리
         FcmApiV1Response response =
                 fcmRestClient.post()
                 .uri(uriBuilder -> uriBuilder.path(fcmConfig.getMessagePostfix()).build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .body(FcmApiV1Request.from(notification, fcmCampaign))
+                .body(FcmApiV1Request.from(fcmNotification, fcmCampaign))
                 .exchange((req, res) -> {
                     if (res.getStatusCode().value() > 200) {
                         FcmApiV1FailResponse failResponse = new ObjectMapper().readValue(res.getBody(), new TypeReference<FcmApiV1FailResponse>() {});

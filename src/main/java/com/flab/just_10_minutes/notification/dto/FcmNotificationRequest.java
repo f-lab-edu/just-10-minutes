@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationRequest {
+public class FcmNotificationRequest {
 
     private String loginId;
     private Long campaignId;

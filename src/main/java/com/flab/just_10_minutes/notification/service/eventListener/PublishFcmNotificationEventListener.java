@@ -4,8 +4,8 @@ import com.flab.just_10_minutes.notification.domain.*;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.FcmApiClient;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1Response;
 import com.flab.just_10_minutes.notification.infrastructure.repository.CampaignDao;
-import com.flab.just_10_minutes.notification.infrastructure.repository.NotificationDao;
-import com.flab.just_10_minutes.notification.service.event.FcmChannelEvent;
+import com.flab.just_10_minutes.notification.infrastructure.repository.FcmNotificationDao;
+import com.flab.just_10_minutes.notification.infrastructure.repository.FcmTokenDao;
 import com.flab.just_10_minutes.util.exception.business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -19,21 +19,22 @@ import static com.flab.just_10_minutes.util.executor.AsyncConfig.EVENT_HANDLER_T
 
 @Component
 @RequiredArgsConstructor
-public class FcmChannelEventListener {
+public class PublishFcmNotificationEventListener {
 
-    private final NotificationDao notificationDao;
+    private final FcmNotificationDao notificationDao;
     private final CampaignDao fcmCampaignDao;
-
+    private final FcmTokenDao fcmTokenDao;
     private final FcmApiClient fcmApiClient;
 
     @Async(EVENT_HANDLER_TASK_EXECUTOR)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleFcmChannelEvent(FcmChannelEvent event) {
-        Notification notification = notificationDao.fetchByEventIdAndChannelType(event.getEventId(), event.getChannelType());
-        Campaign campaign = fcmCampaignDao.fetchById(notification.getCampaignId());
+    public void handleFcmChannelEvent(FcmNotificationEvent event) {
+        FcmToken fcmToken = fcmTokenDao.fetchByLoginId(event.getReceiverId());
+        Campaign campaign = fcmCampaignDao.fetchById(event.getCampaignId());
+        FcmNotification fcmNotification = FcmNotification.from(event, fcmToken);
 
-        FcmApiV1Response fcmApiV1Response = fcmApiClient.sendMessage(notification, campaign);
+        FcmApiV1Response fcmApiV1Response = fcmApiClient.sendMessage(fcmNotification, campaign);
         if (fcmApiV1Response.getCode() != 200) {
             /*TODO : error status에 따른 재시도 처리
 
@@ -47,6 +48,6 @@ public class FcmChannelEventListener {
             throw new BusinessException("Failed to reason : " + fcmApiV1Response.getMessage());
         }
 
-        notificationDao.patch(notification.update(true));
+        notificationDao.save(fcmNotification.update(true));
     }
 }
