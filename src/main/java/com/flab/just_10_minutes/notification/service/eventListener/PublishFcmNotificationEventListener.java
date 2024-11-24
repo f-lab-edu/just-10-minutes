@@ -8,6 +8,8 @@ import com.flab.just_10_minutes.notification.infrastructure.repository.FcmNotifi
 import com.flab.just_10_minutes.notification.infrastructure.repository.FcmTokenDao;
 import com.flab.just_10_minutes.util.exception.business.BusinessException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,6 +31,11 @@ public class PublishFcmNotificationEventListener {
     @Async(EVENT_HANDLER_TASK_EXECUTOR)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Retryable(
+            value = {BusinessException.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 1000, multiplier = 2)
+    )
     public void handleFcmChannelEvent(FcmNotificationEvent event) {
         FcmToken fcmToken = fcmTokenDao.fetchByLoginId(event.getReceiverId());
         Campaign campaign = fcmCampaignDao.fetchById(event.getCampaignId());
@@ -36,8 +43,8 @@ public class PublishFcmNotificationEventListener {
 
         FcmApiV1Response fcmApiV1Response = fcmApiClient.sendMessage(fcmNotification, campaign);
         if (fcmApiV1Response.getCode() != 200) {
-            /*TODO : error status에 따른 재시도 처리
 
+            /*
             401 : Google Credential error
             400 : invalid argument
             403 : permission denied
