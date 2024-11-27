@@ -9,18 +9,21 @@ import com.flab.just_10_minutes.payment.infrastructure.repository.PaymentResultD
 import com.flab.just_10_minutes.util.exception.business.BusinessException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.FAIL;
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.PAID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final BillingKeyDao customerUidDao;
+    private final BillingKeyDao billingKeyDao;
     private final PaymentResultDao paymentResultDao;
+
     private final IamportApiClient iamportApiClient;
 
     public PaymentResult paymentTransaction(@Valid PaymentRequest paymentRequest) {
@@ -42,12 +45,12 @@ public class PaymentService {
 
     private String issueCustomerUid(final String loginId, @Valid BillingRequest billingRequest) {
         String customerUid = iamportApiClient.issueCustomerUid(billingRequest);
-        customerUidDao.save(loginId, customerUid);
+        billingKeyDao.save(loginId, customerUid);
         return customerUid;
     }
 
-    private String fetchCustomerUid(final PaymentRequest paymentDataDto) {
-        Optional<String> OptionalCustomerUid = customerUidDao.findByLoginId(paymentDataDto.getCustomerLoginId());
+    private String fetchCustomerUid(PaymentRequest paymentDataDto) {
+        Optional<String> OptionalCustomerUid = billingKeyDao.findByLoginId(paymentDataDto.getCustomerLoginId());
         return OptionalCustomerUid.orElseGet(() -> issueCustomerUid(paymentDataDto.getCustomerLoginId(), paymentDataDto.getBillingRequest()));
     }
 }

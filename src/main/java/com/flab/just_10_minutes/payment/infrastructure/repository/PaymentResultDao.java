@@ -25,14 +25,23 @@ public class PaymentResultDao {
         }
     }
 
+    public Optional<PaymentResultEntity> findByImpUid(final String impUid) {
+        return Optional.ofNullable(paymentResultMapper.findByImpUid(impUid));
+    }
+
     public PaymentResult fetchByImpUid(final String impUid) {
-        PaymentResultEntity paymentResultEntity = findByImpUid(impUid).orElseThrow(() -> {
-            throw new NotFoundException(NOT_FOUND, IMP_UID);
-        });
+        PaymentResultEntity paymentResultEntity = findByImpUid(impUid)
+                                                    .orElseThrow(() -> new NotFoundException(NOT_FOUND, IMP_UID));
         return PaymentResultEntity.toDomain(paymentResultEntity);
     }
 
-    public Optional<PaymentResultEntity> findByImpUid(final String impUid) {
-        return Optional.ofNullable(paymentResultMapper.findByImpUid(impUid));
+    public Optional<PaymentResultEntity> findWithOrderByImpUid(final String impUid, final String status) {
+        return Optional.ofNullable(paymentResultMapper.findWithOrderByImpUidAndStatus(impUid, status));
+    }
+
+    public PaymentResult fetchWithOrderByImpUid(final String impUid, final String status) {
+        PaymentResultEntity paymentResultEntity = findWithOrderByImpUid(impUid, status)
+                                                    .orElseThrow(() -> new NotFoundException(NOT_FOUND, IMP_UID));
+        return PaymentResultEntity.toDomain(paymentResultEntity);
     }
 }

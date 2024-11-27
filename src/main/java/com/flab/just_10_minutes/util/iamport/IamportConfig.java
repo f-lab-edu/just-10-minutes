@@ -4,6 +4,7 @@ import com.flab.just_10_minutes.payment.dto.BillingRequest;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @Getter
@@ -54,6 +56,11 @@ public class IamportConfig {
 
         return HttpClients.custom()
                 .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(RequestConfig.custom()
+                                                    .setConnectionRequestTimeout(5, TimeUnit.SECONDS)
+                                                    .setResponseTimeout(3, TimeUnit.SECONDS)
+                                                    .build()
+                )
                 .build();
     }
 
@@ -61,7 +68,8 @@ public class IamportConfig {
     public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory(HttpClient httpClient) {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
         factory.setConnectionRequestTimeout(Duration.ofSeconds(30));
-        factory.setConnectTimeout(Duration.ofSeconds(10));
+        factory.setConnectTimeout(Duration.ofSeconds(30));
+
         return factory;
     }
 
@@ -78,13 +86,6 @@ public class IamportConfig {
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
-
-//    @Bean
-//    public IamportClient iamportClient(RestClient restClient) {
-//        return HttpServiceProxyFactory
-//                .builderFor(RestClientAdapter.create(restClient))
-//                .build().createClient(IamportClient.class);
-//    }
 
     public String getPg(BillingRequest.PG pg) {
         switch (pg) {
