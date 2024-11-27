@@ -48,10 +48,10 @@ public class PublishFcmNotificationEventListener {
 
         FcmApiV1Response fcmApiV1Response = fcmApiClient.sendMessage(fcmNotification, campaign);
 
-        handelFcmResponse(fcmApiV1Response, fcmNotification);
+        handleFcmResponse(fcmApiV1Response, fcmNotification);
     }
 
-    private void handelFcmResponse(FcmApiV1Response fcmApiV1Response, FcmNotification fcmNotification) {
+    private void handleFcmResponse(FcmApiV1Response fcmApiV1Response, FcmNotification fcmNotification) {
             /*
             401 : UNAUTHENTICATED(Google Credential error)
             400 : invalid argument
