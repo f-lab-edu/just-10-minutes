@@ -12,6 +12,8 @@ public class NotFoundException extends DatabaseException {
     public static final String IMP_UID = "ImpUid";
     public static final String ORDER = "Order";
     public static final String PRODUCT = "Product";
+    public static final String TOKEN = "Token";
+    public static final String CAMPAIGN = "Campaign";
 
 
     public NotFoundException(String message, String target) {

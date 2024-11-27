@@ -26,6 +26,13 @@ payment:
     card_birth: ${CARD_BIRTH}
     card_pwd2digit: ${CARD_PWD2DIGIT}
 
+#message
+message:
+  fcm:
+    base_url: ${FCM_API_BASE_URL}
+    message_postfix: ${FCM_API_MESSAGE_POSTFIX}
+    credential_url: ${FCM_GOOGLE_API_CREDENTIAL_URL}
+    key_path: ${FCM_KEY_PATH}
 
 #prometheus
 management:

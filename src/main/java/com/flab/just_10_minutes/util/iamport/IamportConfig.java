@@ -48,7 +48,7 @@ public class IamportConfig {
     private String cardPwd2Digit;
 
 
-    @Bean
+    @Bean(name = "iamportHttpClient")
     public HttpClient httpClient() {
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
         connectionManager.setMaxTotal(100);
@@ -64,21 +64,21 @@ public class IamportConfig {
                 .build();
     }
 
-    @Bean
-    public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory(HttpClient httpClient) {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
+    @Bean(name = "iamportHttpClientFactory")
+    public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory(HttpClient iamportHttpClient) {
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(iamportHttpClient);
         factory.setConnectionRequestTimeout(Duration.ofSeconds(30));
         factory.setConnectTimeout(Duration.ofSeconds(30));
 
         return factory;
     }
 
-    @Bean
-    public RestClient restClient(HttpComponentsClientHttpRequestFactory factory) {
+    @Bean(name = "iamportRestClient")
+    public RestClient restClient(HttpComponentsClientHttpRequestFactory iamportHttpClientFactory) {
         return RestClient
                 .builder()
                 .baseUrl(url)
-                .requestFactory(factory)
+                .requestFactory(iamportHttpClientFactory)
                 .requestInterceptor((req, body, execution) -> {
                     log.info("Request: {}", req);
                     return execution.execute(req, body);
