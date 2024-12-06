@@ -1,19 +1,26 @@
 spring:
   application:
     name: "just-10-minutes"
-#Datasource
   datasource:
     url: ${DB_URL}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  cloud:
+    aws:
+      region:
+        static: us-east-1
+      credentials:
+        access-key: ${AWS_ACCESS_KEY}
+        secret-key: ${AWS_SECRET_KEY}
+      sqs:
+        end-point:
+          uri: http://localhost:4566
 
-#Mybatis
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
-#iamport
 payment:
   iamport:
     url: ${IAMPORT_URL}
@@ -26,7 +33,6 @@ payment:
     card_birth: ${CARD_BIRTH}
     card_pwd2digit: ${CARD_PWD2DIGIT}
 
-#message
 message:
   fcm:
     base_url: ${FCM_API_BASE_URL}
@@ -41,17 +47,6 @@ management:
       exposure:
         include: prometheus
 
-#webhook
 webhook:
   slack:
     url: ${SLACK_WEBHOOK_URL}
-
-
-#aws
-cloud:
-  aws:
-    region:
-      static: us-east-1
-    credentials:
-        access-key: {AWS_ACCESS_KEY}
-        secret-key: {AWS_SECRET_KEY}
