@@ -3,15 +3,15 @@ package com.flab.just_10_minutes.order.infrastructure.repository;
 import com.flab.just_10_minutes.order.domain.Order;
 import com.flab.just_10_minutes.order.dto.OrderReceiptDto;
 import com.flab.just_10_minutes.order.infrastructure.entity.OrderEntity;
-import com.flab.just_10_minutes.util.exception.database.InternalException;
-import com.flab.just_10_minutes.util.exception.database.NotFoundException;
+import com.flab.just_10_minutes.common.exception.database.InternalException;
+import com.flab.just_10_minutes.common.exception.database.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.util.exception.database.InternalException.FAIL_TO_INSERT;
-import static com.flab.just_10_minutes.util.exception.database.NotFoundException.NOT_FOUND;
-import static com.flab.just_10_minutes.util.exception.database.NotFoundException.ORDER;
+import static com.flab.just_10_minutes.common.exception.database.InternalException.FAIL_TO_INSERT;
+import static com.flab.just_10_minutes.common.exception.database.NotFoundException.NOT_FOUND;
+import static com.flab.just_10_minutes.common.exception.database.NotFoundException.ORDER;
 
 @Repository
 @RequiredArgsConstructor

@@ -8,7 +8,7 @@ import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.request.Fcm
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1Response;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1FailResponse;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1SuccessResponse;
-import com.flab.just_10_minutes.util.message.fcm.FcmConfig;
+import com.flab.just_10_minutes.common.message.fcm.FcmConfig;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

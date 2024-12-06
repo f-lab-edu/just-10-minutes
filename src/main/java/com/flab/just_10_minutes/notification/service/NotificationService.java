@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.flab.just_10_minutes.util.common.IDUtil.issueEventId;
+import static com.flab.just_10_minutes.common.util.IDUtil.issueEventId;
 
 @Service
 @RequiredArgsConstructor

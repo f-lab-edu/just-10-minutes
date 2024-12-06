@@ -6,7 +6,7 @@ import com.flab.just_10_minutes.point.dto.PointHistories;
 import com.flab.just_10_minutes.point.infrastructure.repository.PointHistoryDao;
 import com.flab.just_10_minutes.user.domain.User;
 import com.flab.just_10_minutes.user.infrastructure.repository.UserDao;
-import com.flab.just_10_minutes.util.exception.business.BusinessException;
+import com.flab.just_10_minutes.common.exception.business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;

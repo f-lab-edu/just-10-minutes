@@ -45,3 +45,13 @@ management:
 webhook:
   slack:
     url: ${SLACK_WEBHOOK_URL}
+
+
+#aws
+cloud:
+  aws:
+    region:
+      static: us-east-1
+    credentials:
+        access-key: {AWS_ACCESS_KEY}
+        secret-key: {AWS_SECRET_KEY}
