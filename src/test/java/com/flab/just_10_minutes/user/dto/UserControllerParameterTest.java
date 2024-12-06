@@ -3,7 +3,7 @@ package com.flab.just_10_minutes.user.dto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.just_10_minutes.user.controller.UserController;
 import com.flab.just_10_minutes.user.service.UserService;
-import com.flab.just_10_minutes.common.handler.GlobalExceptionHandler;
+import com.flab.just_10_minutes.common.exception.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

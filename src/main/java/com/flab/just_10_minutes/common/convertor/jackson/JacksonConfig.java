@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.common.jackson;
+package com.flab.just_10_minutes.common.convertor.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;

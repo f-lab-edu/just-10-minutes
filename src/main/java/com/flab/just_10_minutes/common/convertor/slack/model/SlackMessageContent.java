@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.common.alarm.slack;
+package com.flab.just_10_minutes.common.convertor.slack.model;
 
 import lombok.Getter;
 import java.util.HashMap;

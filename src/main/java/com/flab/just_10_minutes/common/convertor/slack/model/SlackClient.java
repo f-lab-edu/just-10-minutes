@@ -1,6 +1,6 @@
-package com.flab.just_10_minutes.common.alarm.slack;
+package com.flab.just_10_minutes.common.convertor.slack.model;
 
-import com.flab.just_10_minutes.common.alarm.color.Color;
+import com.flab.just_10_minutes.common.convertor.slack.color.Color;
 import com.slack.api.Slack;
 import com.slack.api.model.Attachment;
 import com.slack.api.model.Field;

@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.common.iamport;
+package com.flab.just_10_minutes.common.infra.iamport;
 
 import com.flab.just_10_minutes.payment.dto.BillingRequest;
 import lombok.Getter;

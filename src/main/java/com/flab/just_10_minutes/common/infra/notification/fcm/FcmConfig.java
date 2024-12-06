@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.common.message.fcm;
+package com.flab.just_10_minutes.common.infra.notification.fcm;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;

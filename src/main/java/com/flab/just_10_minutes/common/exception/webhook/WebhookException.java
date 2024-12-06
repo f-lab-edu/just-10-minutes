@@ -1,6 +1,6 @@
 package com.flab.just_10_minutes.common.exception.webhook;
 
-import com.flab.just_10_minutes.common.alarm.slack.SlackMessage;
+import com.flab.just_10_minutes.common.convertor.slack.model.SlackMessage;
 import lombok.Getter;
 
 import static com.flab.just_10_minutes.common.exception.webhook.WebHookMessage.LOGGING_MESSAGE_PREFIX;

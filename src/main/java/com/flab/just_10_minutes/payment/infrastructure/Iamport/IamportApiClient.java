@@ -12,7 +12,7 @@ import com.flab.just_10_minutes.payment.infrastructure.Iamport.response.IamportB
 import com.flab.just_10_minutes.payment.infrastructure.Iamport.response.IamportResponse;
 import com.flab.just_10_minutes.payment.infrastructure.Iamport.response.IamportPayment;
 import com.flab.just_10_minutes.common.exception.iamport.IamportException;
-import com.flab.just_10_minutes.common.iamport.IamportConfig;
+import com.flab.just_10_minutes.common.infra.iamport.IamportConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.common.handler;
+package com.flab.just_10_minutes.common.exception.handler;
 
 import com.flab.just_10_minutes.common.exception.business.BusinessException;
 import com.flab.just_10_minutes.common.exception.database.DatabaseException;

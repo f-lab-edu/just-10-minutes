@@ -10,7 +10,7 @@ import com.flab.just_10_minutes.user.domain.User;
 import com.flab.just_10_minutes.user.infrastructure.entity.UserEntity;
 import com.flab.just_10_minutes.user.infrastructure.repository.UserDao;
 import com.flab.just_10_minutes.user.infrastructure.repository.UserMapper;
-import com.flab.just_10_minutes.common.iamport.IamportConfig;
+import com.flab.just_10_minutes.common.infra.iamport.IamportConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

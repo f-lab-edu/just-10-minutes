@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.common.alarm.color;
+package com.flab.just_10_minutes.common.convertor.slack.color;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
