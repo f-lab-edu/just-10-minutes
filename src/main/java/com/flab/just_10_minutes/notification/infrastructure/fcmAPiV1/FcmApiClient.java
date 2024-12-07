@@ -2,8 +2,7 @@ package com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.just_10_minutes.notification.domain.Campaign;
-import com.flab.just_10_minutes.notification.domain.FcmNotification;
+import com.flab.just_10_minutes.common.exception.infra.fcm.FcmCredentialException;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.request.FcmApiV1Request;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1Response;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1FailResponse;
@@ -14,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 import java.io.IOException;
 import java.util.List;
@@ -27,24 +27,33 @@ public class FcmApiClient {
     private final ObjectMapper objectMapper;
     private final RestClient fcmRestClient;
 
-    public FcmApiV1Response sendMessage(FcmNotification fcmNotification, Campaign fcmCampaign)  {
+    public FcmApiV1Response sendMessage(FcmApiV1Request fcmApiV1Request)  {
         //TODO fcm response 에 따라 처리
-        FcmApiV1Response response =
-                fcmRestClient.post()
-                .uri(uriBuilder -> uriBuilder.path(fcmConfig.getMessagePostfix()).build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .body(FcmApiV1Request.from(fcmNotification, fcmCampaign))
-                .exchange((req, res) -> {
-                    if (res.getStatusCode().value() > 200) {
-                        FcmApiV1FailResponse failResponse = objectMapper.readValue(res.getBody(), new TypeReference<FcmApiV1FailResponse>() {});
-                        return FcmApiV1Response.withFailure(failResponse);
-                    }
+        try {
+            FcmApiV1Response response =
+                    fcmRestClient.post()
+                            .uri(uriBuilder -> uriBuilder.path(fcmConfig.getMessagePostfix()).build())
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                            .body(fcmApiV1Request)
+                            .exchange((req, res) -> {
+                                        if (res.getStatusCode().value() > 200) {
+                                            FcmApiV1FailResponse failResponse = objectMapper.readValue(res.getBody(), new TypeReference<FcmApiV1FailResponse>() {
+                                            });
+                                            return FcmApiV1Response.withFailure(failResponse);
+                                        }
 
-                    FcmApiV1SuccessResponse successResponse = objectMapper.readValue(res.getBody(), new TypeReference<FcmApiV1SuccessResponse>() {});
-                    return FcmApiV1Response.withSuccess(successResponse);
-                    }
-                );
-        return response;
+                                        FcmApiV1SuccessResponse successResponse = objectMapper.readValue(res.getBody(), new TypeReference<FcmApiV1SuccessResponse>() {
+                                        });
+                                        return FcmApiV1Response.withSuccess(successResponse);
+                                    }
+                            );
+            return response;
+        } catch (FcmCredentialException fe) {
+            return FcmApiV1Response.withFailure(FcmApiV1FailResponse.fromInvalidCredential(fe));
+        }
+        catch (ResourceAccessException rae) {
+            return FcmApiV1Response.withFailure(FcmApiV1FailResponse.fromReadTimeout());
+        }
     }
 
     private String getAccessToken() {
@@ -54,8 +63,8 @@ public class FcmApiClient {
             credentials.refreshIfExpired();
 
             return credentials.getAccessToken().getTokenValue();
-        } catch (IOException e) {
-            throw new RuntimeException();
+        } catch (IOException | IllegalArgumentException e) {
+            throw new FcmCredentialException(e.getMessage());
         }
     }
 }

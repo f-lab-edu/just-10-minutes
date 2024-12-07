@@ -1,58 +1,57 @@
 package com.flab.just_10_minutes.notification.service.eventListener;
 
-import com.flab.just_10_minutes.notification.domain.*;
+import com.flab.just_10_minutes.common.exception.business.BusinessException;
+import com.flab.just_10_minutes.common.exception.database.InternalException;
+import com.flab.just_10_minutes.notification.domain.Campaign;
+import com.flab.just_10_minutes.notification.domain.FcmNotification;
+import com.flab.just_10_minutes.notification.domain.FcmNotificationEvent;
+import com.flab.just_10_minutes.notification.domain.FcmToken;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.FcmApiClient;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.request.FcmApiV1Request;
 import com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response.FcmApiV1Response;
 import com.flab.just_10_minutes.notification.infrastructure.repository.CampaignDao;
 import com.flab.just_10_minutes.notification.infrastructure.repository.FcmNotificationDao;
 import com.flab.just_10_minutes.notification.infrastructure.repository.FcmTokenDao;
-import com.flab.just_10_minutes.common.exception.business.BusinessException;
+import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.client.HttpServerErrorException;
-
-import static com.flab.just_10_minutes.common.executor.AsyncConfig.EVENT_HANDLER_TASK_EXECUTOR;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PublishFcmNotificationEventListener {
+public class PublishFcmNotificationSqsListener {
 
     private final FcmNotificationDao fcmNotificationDao;
     private final CampaignDao campaignDao;
     private final FcmTokenDao fcmTokenDao;
     private final FcmApiClient fcmApiClient;
 
-    @Async(EVENT_HANDLER_TASK_EXECUTOR)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @SqsListener(
+            value = "${spring.cloud.aws.sqs.queue-name.notification-event}",
+            factory = "sqsMessageListenerContainerFactory",
+            messageVisibilitySeconds = "1"
+    )
     @Retryable(
             value = {HttpServerErrorException.class},
             maxAttempts = 3,
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
-    public void handleFcmNotificationEvent(FcmNotificationEvent event) {
+    public void handleNotificationEvent(FcmNotificationEvent event) {
         FcmToken fcmToken = fcmTokenDao.fetchByLoginId(event.getReceiverId());
         Campaign campaign = campaignDao.fetchById(event.getCampaignId());
-        FcmNotification fcmNotification = FcmNotification.from(event, fcmToken);
 
         FcmApiV1Request fcmApiV1Request = FcmApiV1Request.from(FcmNotification.from(event, fcmToken), campaign);
         FcmApiV1Response fcmApiV1Response = fcmApiClient.sendMessage(fcmApiV1Request);
-        handleFcmResponse(fcmApiV1Response, fcmNotification);
+        handleFcmResponse(fcmApiV1Response, fcmApiV1Request);
     }
 
-    private void handleFcmResponse(FcmApiV1Response fcmApiV1Response, FcmNotification fcmNotification) {
+    private void handleFcmResponse(FcmApiV1Response fcmApiV1Response, FcmApiV1Request fcmApiV1Request) {
             /*
             401 : UNAUTHENTICATED(Google Credential error)
             400 : invalid argument
@@ -63,13 +62,19 @@ public class PublishFcmNotificationEventListener {
             500 : internal
              */
         switch (fcmApiV1Response.getCode() / 100) {
-            case 2:
-                fcmNotificationDao.save(fcmNotification);
+            case 4:
+                //TODO: 429일 때는 실패 처리가 아닌 재전송 필요
+                if (fcmApiV1Response.getCode() == 404) {
+                    try {
+                        fcmTokenDao.delete(fcmApiV1Request.getMessage().getToken());
+                    } catch (InternalException ie) {
+                        log.info("Fail to delete FCM token: {}", fcmApiV1Request.getMessage().getToken());
+                    }
+                }
+                log.error("Invalid Argument Error Occurred from FCM. error code : {}, message: {}, request: {}", fcmApiV1Response.getCode(), fcmApiV1Request.getMessage(), fcmApiV1Request.toString());
                 break;
             case 5:
                 throw new HttpServerErrorException(HttpStatus.valueOf(fcmApiV1Response.getCode()), fcmApiV1Response.getMessage());
-            default:
-                throw new BusinessException("Failed to send FCM notification. Cause: " + fcmApiV1Response.getMessage());
         }
     }
 
