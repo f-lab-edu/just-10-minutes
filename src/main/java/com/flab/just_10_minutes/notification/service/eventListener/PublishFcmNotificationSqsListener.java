@@ -35,7 +35,7 @@ public class PublishFcmNotificationSqsListener {
     @SqsListener(
             value = "${spring.cloud.aws.sqs.queue-name.notification-event}",
             factory = "sqsMessageListenerContainerFactory",
-            messageVisibilitySeconds = "1"
+            messageVisibilitySeconds = "15"
     )
     @Retryable(
             value = {HttpServerErrorException.class},
