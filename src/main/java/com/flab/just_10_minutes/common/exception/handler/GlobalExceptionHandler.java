@@ -3,7 +3,7 @@ package com.flab.just_10_minutes.common.exception.handler;
 import com.flab.just_10_minutes.common.exception.business.BusinessException;
 import com.flab.just_10_minutes.common.exception.database.DatabaseException;
 import com.flab.just_10_minutes.common.exception.database.InternalException;
-import com.flab.just_10_minutes.common.exception.iamport.IamportException;
+import com.flab.just_10_minutes.common.exception.infra.iamport.IamportException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

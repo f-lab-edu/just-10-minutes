@@ -1,9 +1,9 @@
-package com.flab.just_10_minutes.common.exception.webhook;
+package com.flab.just_10_minutes.common.exception.infra.webhook;
 
 import com.flab.just_10_minutes.common.convertor.slack.model.SlackMessage;
 import lombok.Getter;
 
-import static com.flab.just_10_minutes.common.exception.webhook.WebHookMessage.LOGGING_MESSAGE_PREFIX;
+import static com.flab.just_10_minutes.common.exception.infra.webhook.WebHookMessage.LOGGING_MESSAGE_PREFIX;
 
 @Getter
 public class WebhookException extends RuntimeException {

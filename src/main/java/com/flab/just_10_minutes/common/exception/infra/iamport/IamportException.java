@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.common.exception.iamport;
+package com.flab.just_10_minutes.common.exception.infra.iamport;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

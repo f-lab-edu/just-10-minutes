@@ -1,4 +1,4 @@
-package com.flab.just_10_minutes.common.exception.webhook;
+package com.flab.just_10_minutes.common.exception.infra.webhook;
 
 public class WebHookMessage {
 
