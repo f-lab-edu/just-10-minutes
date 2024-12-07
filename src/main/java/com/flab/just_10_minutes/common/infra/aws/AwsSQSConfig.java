@@ -23,8 +23,8 @@ public class AwsSQSConfig {
     @Value("${spring.cloud.aws.credentials.secret-key}")
     private String awsSecretKey;
 
-    @Value("${spring.cloud.aws.sqs.end-point.uri}")
-    private String sqsEndPointUri;
+    @Value("${spring.cloud.aws.sqs.endpoint}")
+    private String sqsEndPoint;
 
     @Bean
     public AwsCredentials awsCredentials() {
@@ -44,8 +44,7 @@ public class AwsSQSConfig {
     @Bean
     public SqsAsyncClient sqsAsyncClient() {
         return SqsAsyncClient.builder()
-                //TODO(~12/8): AWS SQS 생성 후 url 교체
-                .endpointOverride(URI.create(sqsEndPointUri))
+                .endpointOverride(URI.create(sqsEndPoint))
                 .credentialsProvider(this::awsCredentials)
                 .region(Region.of(awsRegionStatic))
                 .build();
@@ -56,7 +55,6 @@ public class AwsSQSConfig {
         return SqsMessageListenerContainerFactory.builder()
                 .sqsAsyncClient(sqsAsyncClient())
                 .configure(builder -> {
-                    //TODO(~12/8): 큐 이름이 없을 때 자동 생성 안되는 전략이 안먹히는 원인 찾기
                     builder.queueNotFoundStrategy(QueueNotFoundStrategy.FAIL);
                 })
                 .build();
