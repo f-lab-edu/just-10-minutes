@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
+import static com.flab.just_10_minutes.common.exception.database.InternalException.FAIL_TO_DELETE;
 import static com.flab.just_10_minutes.common.exception.database.InternalException.FAIL_TO_INSERT;
 import static com.flab.just_10_minutes.common.exception.database.NotFoundException.NOT_FOUND;
 import static com.flab.just_10_minutes.common.exception.database.NotFoundException.TOKEN;
@@ -35,5 +36,12 @@ public class FcmTokenDao {
         });
 
         return FcmTokenEntity.toDomain(fcmTokenEntity);
+    }
+
+    public void delete(final String fcmToken) {
+        int deleteResult = fcmTokenMapper.delete(fcmToken);
+        if (deleteResult != 1) {
+            throw new InternalException(FAIL_TO_DELETE);
+        }
     }
 }
