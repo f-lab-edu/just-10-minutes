@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @Getter
@@ -55,13 +57,16 @@ public class FcmConfig {
 
         return HttpClients.custom()
                 .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(RequestConfig.custom()
+                                                    .setResponseTimeout(15, TimeUnit.SECONDS)
+                                                    .build())
                 .build();
     }
 
     @Bean(name = "fcmHttpClientFactory")
     public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory(HttpClient fcmHttpClient) {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(fcmHttpClient);
-        factory.setConnectionRequestTimeout(Duration.ofSeconds(30));
+        factory.setConnectionRequestTimeout(Duration.ofSeconds(15));
         factory.setConnectTimeout(Duration.ofSeconds(10));
         return factory;
     }
