@@ -6,16 +6,17 @@ import com.flab.just_10_minutes.payment.infrastructure.Iamport.IamportApiClient;
 import com.flab.just_10_minutes.payment.infrastructure.entity.PaymentResultEntity;
 import com.flab.just_10_minutes.payment.infrastructure.repository.PaymentResultDao;
 import com.flab.just_10_minutes.common.convertor.slack.model.SlackClient;
-import com.flab.just_10_minutes.common.exception.iamport.IamportException;
-import com.flab.just_10_minutes.common.exception.webhook.WebhookException;
+import com.flab.just_10_minutes.common.exception.infra.iamport.IamportException;
+import com.flab.just_10_minutes.common.exception.infra.webhook.WebhookException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static com.flab.just_10_minutes.common.exception.infra.webhook.WebHookMessage.DIFFER_STATUS;
+import static com.flab.just_10_minutes.common.exception.infra.webhook.WebHookMessage.NOT_FOUND;
 import static com.flab.just_10_minutes.payment.domain.PaymentResultStatus.PAID;
 import static com.flab.just_10_minutes.common.convertor.slack.model.SlackMessage.createDiffersStatus;
 import static com.flab.just_10_minutes.common.convertor.slack.model.SlackMessage.createImpUidMissingInternal;
-import static com.flab.just_10_minutes.common.exception.webhook.WebHookMessage.*;
 
 @Slf4j
 @Service
