@@ -1,6 +1,7 @@
 package com.flab.just_10_minutes.notification.infrastructure.repository;
 
 import com.flab.just_10_minutes.notification.infrastructure.entity.FcmTokenEntity;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -21,4 +22,7 @@ public interface FcmTokenMapper {
 
     @Select("SELECT * FROM fcm_tokens WHERE login_id = #{loginId}")
     FcmTokenEntity findByLoginId(final String loginId);
+
+    @Delete("DELETE FROM fcm_tokens WHERE token = #{token}")
+    int delete(final String token);
 }

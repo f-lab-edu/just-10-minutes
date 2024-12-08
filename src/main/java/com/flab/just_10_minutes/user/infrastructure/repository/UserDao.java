@@ -2,19 +2,19 @@ package com.flab.just_10_minutes.user.infrastructure.repository;
 
 import com.flab.just_10_minutes.user.domain.User;
 import com.flab.just_10_minutes.user.infrastructure.entity.UserEntity;
-import com.flab.just_10_minutes.util.exception.database.DuplicatedKeyException;
-import com.flab.just_10_minutes.util.exception.database.InternalException;
-import com.flab.just_10_minutes.util.exception.database.NotFoundException;
+import com.flab.just_10_minutes.common.exception.database.DuplicatedKeyException;
+import com.flab.just_10_minutes.common.exception.database.InternalException;
+import com.flab.just_10_minutes.common.exception.database.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.util.exception.database.DuplicatedKeyException.DUPLICATED_KEY;
-import static com.flab.just_10_minutes.util.exception.database.InternalException.FAIL_TO_INSERT;
-import static com.flab.just_10_minutes.util.exception.database.InternalException.FAIL_TO_UPDATE;
-import static com.flab.just_10_minutes.util.exception.database.NotFoundException.NOT_FOUND;
-import static com.flab.just_10_minutes.util.exception.database.NotFoundException.USER;
+import static com.flab.just_10_minutes.common.exception.database.DuplicatedKeyException.DUPLICATED_KEY;
+import static com.flab.just_10_minutes.common.exception.database.InternalException.FAIL_TO_INSERT;
+import static com.flab.just_10_minutes.common.exception.database.InternalException.FAIL_TO_UPDATE;
+import static com.flab.just_10_minutes.common.exception.database.NotFoundException.NOT_FOUND;
+import static com.flab.just_10_minutes.common.exception.database.NotFoundException.USER;
 
 @Repository
 @RequiredArgsConstructor

@@ -2,7 +2,6 @@ package com.flab.just_10_minutes.product.service;
 
 import com.flab.just_10_minutes.product.domain.Product;
 import com.flab.just_10_minutes.product.infrastructure.repository.ProductDao;
-import com.flab.just_10_minutes.util.exception.business.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,16 +1,13 @@
 package com.flab.just_10_minutes.notification.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Getter;
-import lombok.Builder;
-import lombok.With;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
 @With
+@ToString
 public class FcmNotificationEvent {
 
     private String eventId;
@@ -19,9 +16,9 @@ public class FcmNotificationEvent {
 
     public static FcmNotificationEvent from(final String eventId, final String receiverId, final Long campaignId) {
         return FcmNotificationEvent.builder()
-                .eventId(eventId)
-                .receiverId(receiverId)
-                .campaignId(campaignId)
-                .build();
+                                .eventId(eventId)
+                                .receiverId(receiverId)
+                                .campaignId(campaignId)
+                                .build();
     }
 }

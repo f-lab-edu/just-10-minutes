@@ -3,7 +3,7 @@ package com.flab.just_10_minutes.payment.dto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.flab.just_10_minutes.payment.domain.PaymentResultStatus;
-import com.flab.just_10_minutes.util.validator.PaidWebhook;
+import com.flab.just_10_minutes.common.validator.PaidWebhook;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

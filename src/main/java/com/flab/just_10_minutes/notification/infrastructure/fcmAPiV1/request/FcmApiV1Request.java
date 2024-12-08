@@ -6,9 +6,11 @@ import com.flab.just_10_minutes.notification.domain.Campaign;
 import com.flab.just_10_minutes.notification.domain.FcmNotification;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Builder
+@ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FcmApiV1Request {
 
@@ -17,6 +19,7 @@ public class FcmApiV1Request {
 
     @Data
     @Builder
+    @ToString
     public static class Message {
         private Notification notification;
         private String token;
@@ -24,6 +27,7 @@ public class FcmApiV1Request {
 
     @Data
     @Builder
+    @ToString
     public static class Notification {
         private String title;
         private String body;

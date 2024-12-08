@@ -33,7 +33,6 @@ dependencies {
 
 	implementation 'org.springframework.retry:spring-retry:2.0.10'
 
-
 	implementation 'com.google.code.gson:gson:2.10.1'
 
 	//restClient
@@ -51,6 +50,10 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
+	testImplementation 'org.testcontainers:junit-jupiter:1.20.4'
+	testImplementation 'org.awaitility:awaitility:4.2.2'
+	testImplementation 'org.testcontainers:localstack:1.20.4'
+
 	//wiremock
 	testImplementation 'com.squareup.okhttp3:mockwebserver'
 
@@ -63,6 +66,10 @@ dependencies {
 
 	//fcm
 	implementation 'com.google.firebase:firebase-admin:8.1.0'
+
+	//aws
+	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.1'
 }
 
 tasks.named('test') {

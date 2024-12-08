@@ -2,9 +2,9 @@ package com.flab.just_10_minutes.user.service;
 
 import com.flab.just_10_minutes.user.domain.User;
 import com.flab.just_10_minutes.user.infrastructure.repository.UserDao;
-import com.flab.just_10_minutes.util.exception.business.BusinessException;
-import com.flab.just_10_minutes.util.exception.database.DatabaseException;
-import com.flab.just_10_minutes.util.exception.database.NotFoundException;
+import com.flab.just_10_minutes.common.exception.business.BusinessException;
+import com.flab.just_10_minutes.common.exception.database.DatabaseException;
+import com.flab.just_10_minutes.common.exception.database.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

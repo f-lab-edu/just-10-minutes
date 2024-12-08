@@ -1,7 +1,7 @@
 package com.flab.just_10_minutes.user.dto;
 
 import com.flab.just_10_minutes.user.domain.User;
-import com.flab.just_10_minutes.util.validator.PhoneNum;
+import com.flab.just_10_minutes.common.validator.PhoneNum;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

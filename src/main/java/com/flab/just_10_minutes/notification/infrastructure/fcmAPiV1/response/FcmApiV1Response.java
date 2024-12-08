@@ -2,9 +2,11 @@ package com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 public class FcmApiV1Response {
 
     private int code;

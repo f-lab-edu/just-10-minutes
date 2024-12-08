@@ -1,12 +1,12 @@
 package com.flab.just_10_minutes.payment.domain;
 
-import com.flab.just_10_minutes.util.exception.database.NotFoundException;
+import com.flab.just_10_minutes.common.exception.database.NotFoundException;
 import lombok.Getter;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.flab.just_10_minutes.util.exception.database.NotFoundException.NOT_FOUND;
+import static com.flab.just_10_minutes.common.exception.database.NotFoundException.NOT_FOUND;
 
 @Getter
 public enum PaymentResultStatus {
