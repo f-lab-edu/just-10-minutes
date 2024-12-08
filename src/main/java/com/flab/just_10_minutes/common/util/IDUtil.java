@@ -20,7 +20,7 @@ public class IDUtil {
         return issueUUID().toString();
     }
 
-    private static UUID issueUUID() {
+    public static UUID issueUUID() {
         return UUID.randomUUID();
     }
 }

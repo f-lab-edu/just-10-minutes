@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.flab.just_10_minutes.common.util.IDUtil.issueEventId;
+import static com.flab.just_10_minutes.common.util.IDUtil.issueUUID;
 
 @Slf4j
 @Service
@@ -28,8 +29,8 @@ public class NotificationService {
     private final ApplicationEventPublisher eventPublisher;
     private final SqsTemplate sqsTemplate;
 
-    @Value("${spring.cloud.aws.sqs.queue-name.notification-event}")
-    private String notificationQueue;
+    @Value("${spring.cloud.aws.sqs.queue-name.notification-event-fifo}")
+    private String notificationQueueFIFO;
 
     public void saveToken(FcmTokenRequest fcmTokenRequest) {
         //TODO : 유저가 여러개 디바이스를 등록할 때 처리
@@ -48,10 +49,12 @@ public class NotificationService {
         Campaign campaign = campaignDao.fetchById(fcmNotificationRequest.getCampaignId());
 
         sqsTemplate.send(to -> {
-            to.queue(notificationQueue);
+            to.queue(notificationQueueFIFO);
+            to.messageDeduplicationId(issueUUID().toString());
+            //TODO: MessageGroupId 설정
             to.payload(FcmNotificationEvent.from(issueEventId(),
-                    fcmToken.getLoginId(),
-                    campaign.getId()
+                                                fcmToken.getLoginId(),
+                                                campaign.getId()
             ));
         });
     }

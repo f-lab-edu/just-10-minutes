@@ -16,7 +16,7 @@ spring:
       sqs:
         endpoint: http://localhost:4566
         queue-name:
-          notification-event: notification_event.fifo
+          notification-event-fifo: notification_event.fifo
 
 mybatis:
   configuration:

@@ -13,6 +13,7 @@ import com.flab.just_10_minutes.notification.infrastructure.repository.CampaignD
 import com.flab.just_10_minutes.notification.infrastructure.repository.FcmNotificationDao;
 import com.flab.just_10_minutes.notification.infrastructure.repository.FcmTokenDao;
 import io.awspring.cloud.sqs.annotation.SqsListener;
+import io.awspring.cloud.sqs.listener.acknowledgement.handler.AcknowledgementMode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class PublishFcmNotificationSqsListener {
     private final FcmApiClient fcmApiClient;
 
     @SqsListener(
-            value = "${spring.cloud.aws.sqs.queue-name.notification-event}",
+            value = "${spring.cloud.aws.sqs.queue-name.notification-event-fifo}",
             factory = "sqsMessageListenerContainerFactory",
             messageVisibilitySeconds = "15"
     )
