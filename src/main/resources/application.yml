@@ -14,9 +14,8 @@ spring:
         access-key: ${AWS_ACCESS_KEY}
         secret-key: ${AWS_SECRET_KEY}
       sqs:
-        endpoint: http://localhost:4566
         queue-name:
-          notification-event-fifo: notification_event.fifo
+          notification-event-fifo: Notification.fifo
 
 mybatis:
   configuration:

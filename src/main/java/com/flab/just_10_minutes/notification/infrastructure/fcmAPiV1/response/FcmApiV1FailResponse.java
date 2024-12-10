@@ -2,13 +2,17 @@ package com.flab.just_10_minutes.notification.infrastructure.fcmAPiV1.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flab.just_10_minutes.common.exception.infra.fcm.FcmCredentialException;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Data
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class FcmApiV1FailResponse {
 
     private Error error;
@@ -16,6 +20,8 @@ public class FcmApiV1FailResponse {
     @Data
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @AllArgsConstructor
+    @NoArgsConstructor
     static class Error {
         private String status;
         private String message;

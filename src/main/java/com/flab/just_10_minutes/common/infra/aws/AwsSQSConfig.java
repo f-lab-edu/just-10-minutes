@@ -23,9 +23,6 @@ public class AwsSQSConfig {
     @Value("${spring.cloud.aws.credentials.secret-key}")
     private String awsSecretKey;
 
-    @Value("${spring.cloud.aws.sqs.endpoint}")
-    private String sqsEndPoint;
-
     @Bean
     public AwsCredentials awsCredentials() {
         return new AwsCredentials() {
@@ -44,7 +41,6 @@ public class AwsSQSConfig {
     @Bean
     public SqsAsyncClient sqsAsyncClient() {
         return SqsAsyncClient.builder()
-                .endpointOverride(URI.create(sqsEndPoint))
                 .credentialsProvider(this::awsCredentials)
                 .region(Region.of(awsRegionStatic))
                 .build();
