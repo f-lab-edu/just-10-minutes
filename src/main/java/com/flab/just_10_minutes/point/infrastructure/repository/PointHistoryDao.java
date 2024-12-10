@@ -2,17 +2,17 @@ package com.flab.just_10_minutes.point.infrastructure.repository;
 
 import com.flab.just_10_minutes.point.domain.PointHistory;
 import com.flab.just_10_minutes.point.infrastructure.entity.PointHistoryEntity;
-import com.flab.just_10_minutes.util.exception.database.InternalException;
-import com.flab.just_10_minutes.util.exception.database.NotFoundException;
+import com.flab.just_10_minutes.common.exception.database.InternalException;
+import com.flab.just_10_minutes.common.exception.database.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.flab.just_10_minutes.util.exception.database.InternalException.FAIL_TO_INSERT;
-import static com.flab.just_10_minutes.util.exception.database.NotFoundException.NOT_FOUND;
-import static com.flab.just_10_minutes.util.exception.database.NotFoundException.USER;
+import static com.flab.just_10_minutes.common.exception.database.InternalException.FAIL_TO_INSERT;
+import static com.flab.just_10_minutes.common.exception.database.NotFoundException.NOT_FOUND;
+import static com.flab.just_10_minutes.common.exception.database.NotFoundException.USER;
 
 @Repository
 @RequiredArgsConstructor

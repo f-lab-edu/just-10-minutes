@@ -6,7 +6,7 @@ import com.flab.just_10_minutes.payment.domain.PaymentResult;
 import com.flab.just_10_minutes.payment.infrastructure.repository.BillingKeyDao;
 import com.flab.just_10_minutes.payment.infrastructure.Iamport.IamportApiClient;
 import com.flab.just_10_minutes.payment.infrastructure.repository.PaymentResultDao;
-import com.flab.just_10_minutes.util.exception.business.BusinessException;
+import com.flab.just_10_minutes.common.exception.business.BusinessException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

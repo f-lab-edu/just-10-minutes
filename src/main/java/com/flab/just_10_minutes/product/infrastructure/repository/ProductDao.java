@@ -5,16 +5,15 @@ import com.flab.just_10_minutes.product.infrastructure.entity.ProductEntity;
 import com.flab.just_10_minutes.user.domain.User;
 import com.flab.just_10_minutes.user.infrastructure.entity.UserEntity;
 import com.flab.just_10_minutes.user.infrastructure.repository.UserMapper;
-import com.flab.just_10_minutes.util.exception.business.BusinessException;
-import com.flab.just_10_minutes.util.exception.database.InternalException;
-import com.flab.just_10_minutes.util.exception.database.NotFoundException;
+import com.flab.just_10_minutes.common.exception.business.BusinessException;
+import com.flab.just_10_minutes.common.exception.database.InternalException;
+import com.flab.just_10_minutes.common.exception.database.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-import static com.flab.just_10_minutes.util.exception.database.InternalException.FAIL_TO_INSERT;
-import static com.flab.just_10_minutes.util.exception.database.InternalException.FAIL_TO_UPDATE;
-import static com.flab.just_10_minutes.util.exception.database.NotFoundException.*;
+import static com.flab.just_10_minutes.common.exception.database.InternalException.FAIL_TO_INSERT;
+import static com.flab.just_10_minutes.common.exception.database.NotFoundException.*;
 
 @Repository
 @RequiredArgsConstructor

@@ -11,15 +11,15 @@ import com.flab.just_10_minutes.payment.infrastructure.Iamport.response.IamportA
 import com.flab.just_10_minutes.payment.infrastructure.Iamport.response.IamportBillingCustomer;
 import com.flab.just_10_minutes.payment.infrastructure.Iamport.response.IamportResponse;
 import com.flab.just_10_minutes.payment.infrastructure.Iamport.response.IamportPayment;
-import com.flab.just_10_minutes.util.exception.iamport.IamportException;
-import com.flab.just_10_minutes.util.iamport.IamportConfig;
+import com.flab.just_10_minutes.common.exception.infra.iamport.IamportException;
+import com.flab.just_10_minutes.common.infra.iamport.IamportConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
-import static com.flab.just_10_minutes.util.common.IDUtil.issueCustomUid;
+import static com.flab.just_10_minutes.common.util.IDUtil.issueCustomUid;
 
 @Component
 @RequiredArgsConstructor
